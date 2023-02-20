@@ -1,0 +1,32 @@
+version: "3.9"
+services:
+  postgres:
+    image: postgres:14.4-alpine
+    container_name: postgres
+    restart: always
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/0_init.sql
+      - postgress_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    expose:
+      - 54321
+    environment:
+      POSTGRES_DB: petmall
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      SERVICE_TAGS: dev
+  redis:
+    image: redis:6.2.7-alpine
+    container_name: rediscontainer
+    volumes:
+      - redis_data:/data
+    ports:
+      - 6379:6379
+    expose:
+      - 6379
+volumes:
+  redis_data:
+    external: false
+  postgress_data:
+    external: false

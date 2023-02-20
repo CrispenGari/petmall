@@ -1,0 +1,31 @@
+{
+  "name": "@petmall/shared",
+  "version": "1.0.0",
+  "description": "these are shared stuff accross the petmall startup",
+  "main": "graphql/generated/graphql.tsx",
+  "author": "CrispenGari",
+  "license": "MIT",
+  "scripts": {
+    "gen": "graphql-codegen --config codegen.yml"
+  },
+  "dependencies": {
+    "graphql": "15.3.0",
+    "urql": "^3.0.3"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "2.13.5",
+    "@graphql-codegen/client-preset": "1.0.5",
+    "@graphql-codegen/fragment-matcher": "^3.3.1",
+    "@graphql-codegen/introspection": "^2.2.1",
+    "@graphql-codegen/typescript": "^2.7.3",
+    "@graphql-codegen/typescript-document-nodes": "^2.3.3",
+    "@graphql-codegen/typescript-graphql-files-modules": "^2.2.1",
+    "@graphql-codegen/typescript-operations": "^2.5.3",
+    "@graphql-codegen/typescript-urql": "^3.3.3",
+    "@types/apollo-upload-client": "^17.0.2",
+    "@types/node": "18.8.0"
+  },
+  "resolutions": {
+    "graphql": "15.3.0"
+  }
+}
