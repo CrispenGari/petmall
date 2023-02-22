@@ -14,15 +14,6 @@ Online pet marketing made easy online.
 - web
 ```
 
-```css
- {
-  --main-color: #082032;
-  --main-primary: #2c394b;
-  --main-secondary: #334756;
-  --main-tertiary: #ff4c29;
-}
-```
-
 ### License
 
 In this project i'm using the `MIT` license which reads as follows:

@@ -1,0 +1,70 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String  @unique @default(uuid())
+  email String @unique
+  password String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  comment Comment?
+  reaction Reaction?
+}
+
+model Pet {
+  id       String  @unique @default(uuid())
+  name String
+  age Int
+  location String?
+  gender String
+  image String
+  category Category
+  sold Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Comment{
+  id       String  @unique @default(uuid())
+  comment String
+
+  user User @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  userId String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+model Reaction{
+  id       String  @unique @default(uuid())
+  reaction ReactionType
+
+  user User @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  userId String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Category {
+  CAT
+  DOG
+}
+
+enum ReactionType {
+  LIKE
+  LOVE
+  CLAP
+  DISLIKE
+  BLUSH
+}
