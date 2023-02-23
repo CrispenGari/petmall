@@ -18,6 +18,7 @@ export type AppDrawerParamList = {
   Market: undefined;
   Login: undefined;
   Register: undefined;
+  Profile: undefined;
 };
 
 export type AppDrawerNavProps<T extends keyof AppDrawerParamList> = {

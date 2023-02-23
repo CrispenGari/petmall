@@ -15,6 +15,22 @@ export type Scalars = {
   Float: number;
 };
 
+export type ErrorType = {
+  __typename?: 'ErrorType';
+  field: Scalars['String'];
+  message: Scalars['String'];
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  register: RegisterObjectType;
+};
+
+
+export type MutationRegisterArgs = {
+  input: RegisterInput;
+};
+
 export type Query = {
   __typename?: 'Query';
   hello: Scalars['String'];
@@ -24,6 +40,26 @@ export type Query = {
 export type QueryHelloArgs = {
   name: Scalars['String'];
 };
+
+export type RegisterInput = {
+  confirmPassword: Scalars['String'];
+  email: Scalars['String'];
+  isWeb: Scalars['Boolean'];
+  password: Scalars['String'];
+};
+
+export type RegisterObjectType = {
+  __typename?: 'RegisterObjectType';
+  error?: Maybe<ErrorType>;
+  jwt?: Maybe<Scalars['String']>;
+};
+
+export type RegisterMutationVariables = Exact<{
+  input: RegisterInput;
+}>;
+
+
+export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'RegisterObjectType', jwt?: string | null, error?: { __typename?: 'ErrorType', field: string, message: string } | null } };
 
 export type HelloQueryVariables = Exact<{
   name: Scalars['String'];
@@ -44,6 +80,21 @@ export type HelloQuery = { __typename?: 'Query', hello: string };
       export default result;
     
 
+export const RegisterDocument = gql`
+    mutation Register($input: RegisterInput!) {
+  register(input: $input) {
+    error {
+      field
+      message
+    }
+    jwt
+  }
+}
+    `;
+
+export function useRegisterMutation() {
+  return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
+};
 export const HelloDocument = gql`
     query Hello($name: String!) {
   hello(name: $name)

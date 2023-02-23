@@ -5,42 +5,66 @@ import { AppDrawerParamList } from "../params";
 import { Login, Register } from "../screens/auth";
 import Market from "../screens/app/Market";
 import { COLORS, FONTS } from "../constants";
-import { TouchableOpacity } from "react-native";
+import Profile from "../screens/app/Profile";
+import AppDrawer from "../components/AppDrawer/AppDrawer";
+import { useMeQuery } from "../graphql/generated/graphql";
+import { View } from "react-native";
+import { BoxIndicator } from "../components";
+import { useDispatch } from "react-redux";
+import { setUser } from "../actions";
 const Drawer = createDrawerNavigator<AppDrawerParamList>();
+
 const Routes = () => {
+  const [{ fetching, data }] = useMeQuery();
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!data?.me) {
+      dispatch(setUser(data.me));
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [dispatch, data]);
+
+  if (fetching) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <BoxIndicator color={COLORS.main} size={20} />
+      </View>
+    );
+  }
   return (
     <NavigationContainer>
       <Drawer.Navigator
+        drawerContent={(props) => <AppDrawer props={props} />}
         initialRouteName="Market"
-        screenOptions={{
+        screenOptions={({ route: { name } }) => ({
           headerStyle: {
             backgroundColor: COLORS.main,
             height: 100,
           },
           headerTitleStyle: {
-            color: COLORS.white,
+            color: "white",
             fontFamily: FONTS.regularBold,
+            fontSize: 30,
+            letterSpacing: 1,
           },
           drawerStyle: {
-            backgroundColor: COLORS.primary,
+            backgroundColor: COLORS.main,
           },
           drawerItemStyle: {
-            backgroundColor: COLORS.primary,
+            backgroundColor: COLORS.secondary,
           },
-          drawerActiveBackgroundColor: COLORS.main,
-          drawerLabelStyle: {
-            color: COLORS.white,
+          drawerContentStyle: {
+            padding: 0,
+            margin: 0,
           },
-          // drawerLabel: (props) => {
-          //   return (
-          //     <TouchableOpacity>
-          //       <Text>Hello</Text>
-          //     </TouchableOpacity>
-          //   );
-          // },
-        }}
+          drawerHideStatusBarOnOpen: true,
+        })}
       >
         <Drawer.Screen name="Market" component={Market} />
+        <Drawer.Screen name="Profile" component={Profile} />
         <Drawer.Screen name="Login" component={Login} />
         <Drawer.Screen name="Register" component={Register} />
       </Drawer.Navigator>

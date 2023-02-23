@@ -1,4 +1,5 @@
 import Layout from "@/components/Layout/Layout";
+import ChakraProvider from "@/providers/ChakraProvider";
 import UrqlProvider from "@/providers/UrqlProvider";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
@@ -10,9 +11,11 @@ const PetMall: React.FunctionComponent<AppProps> = ({
 }) => {
   return (
     <UrqlProvider>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
+      <ChakraProvider>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </ChakraProvider>
     </UrqlProvider>
   );
 };

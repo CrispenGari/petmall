@@ -1,9 +1,9 @@
 import { Dimensions } from "react-native";
 
 export const constants = {
-  SET_DUID: "SET_DUID",
+  SET_USER: "SET_USER",
 };
-export const url = "https://f3d0-197-98-127-119.ngrok.io/graphql";
+export const url = "https://c1a5-197-98-127-119.ngrok.io/graphql";
 
 export const relativeTimeObject = {
   future: "in %s",
@@ -21,13 +21,13 @@ export const relativeTimeObject = {
   yy: "%dy",
 };
 
-export const TOKEN_KEY: string = "uk";
+export const TOKEN_KEY: string = "qid";
 export const COLORS = {
   main: "#082032",
   primary: "#2c394b",
   secondary: "#334756",
   tertiary: "#ff4c29",
-  white: "#fffff",
+  white: "white",
   red: "#FF3953",
 };
 

@@ -8,6 +8,8 @@ import { CtxType } from "./types";
 import { resolvers } from "./resolvers";
 import { PrismaClient } from "@prisma/client";
 import cors from "@fastify/cors";
+import cookie from "@fastify/cookie";
+import { tokenRoute } from "./routes/token";
 _();
 
 const PORT: any = process.env.PORT || 3001;
@@ -30,8 +32,19 @@ const HOST =
 
   fastify.register(cors, {
     credentials: true,
-    origin: "*",
+    origin: ["http://localhost:3000"],
   });
+
+  fastify.register(cookie, {
+    secret: "my-secret",
+    parseOptions: {
+      sameSite: "lax",
+      httpOnly: false,
+      secure: false,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    },
+  });
+  fastify.register(tokenRoute);
   fastify.register(mercurius, {
     context: (request, reply): CtxType => {
       return {
