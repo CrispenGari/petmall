@@ -4,7 +4,6 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { AppDrawerNavProps, MarketParamList } from "../../params";
 import Pets from "./stacks/Pets/Pets";
 import Pet from "./stacks/Pet/Pet";
-import NewPet from "./stacks/NewPet/NewPet";
 import { AntDesign } from "@expo/vector-icons";
 
 const Stack = createStackNavigator<MarketParamList>();
@@ -42,7 +41,6 @@ const Market: React.FunctionComponent<AppDrawerNavProps<"Market">> = ({
     >
       <Stack.Screen name="Pets" component={Pets} />
       <Stack.Screen name="Pet" component={Pet} />
-      <Stack.Screen name="NewPet" component={NewPet} />
     </Stack.Navigator>
   );
 };

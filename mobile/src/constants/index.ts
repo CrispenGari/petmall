@@ -3,7 +3,7 @@ import { Dimensions } from "react-native";
 export const constants = {
   SET_USER: "SET_USER",
 };
-export const url = "https://c1a5-197-98-127-119.ngrok.io/graphql";
+export const url = "https://c126-197-98-127-119.ngrok.io/graphql";
 
 export const relativeTimeObject = {
   future: "in %s",

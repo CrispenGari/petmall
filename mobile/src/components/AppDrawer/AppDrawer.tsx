@@ -1,16 +1,16 @@
-import { View, Text, Image } from "react-native";
-import React, { useEffect } from "react";
+import React from "react";
 import {
   DrawerContentComponentProps,
   DrawerContentScrollView,
 } from "@react-navigation/drawer";
-
+import { Image, Text, View } from "react-native";
 import DrawerProfile from "../DrawerProfile/DrawerProfile";
 import DrawerItem from "../DrawerItem/DrawerItem";
-import { Foundation, AntDesign } from "@expo/vector-icons";
+import { Foundation, AntDesign, MaterialIcons } from "@expo/vector-icons";
 import { COLORS } from "../../constants";
 import { useSelector } from "react-redux";
 import { StateType } from "../../types";
+import { styles } from "../../styles";
 interface Props {
   props: DrawerContentComponentProps;
 }
@@ -26,7 +26,40 @@ const AppDrawer: React.FunctionComponent<Props> = ({
         paddingHorizontal: 10,
       }}
     >
-      {user ? <DrawerProfile /> : null}
+      {user ? (
+        <DrawerProfile />
+      ) : (
+        <View
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            borderBottomColor: "white",
+            borderBottomWidth: 0.5,
+            paddingBottom: 20,
+            marginBottom: 10,
+          }}
+        >
+          <Text
+            style={[
+              styles.h1,
+              { fontSize: 20, letterSpacing: 1, color: "white" },
+            ]}
+          >
+            PETMALL
+          </Text>
+          <Image
+            source={{
+              uri: Image.resolveAssetSource(require("../../../assets/icon.png"))
+                .uri,
+            }}
+            style={{
+              width: 100,
+              height: 100,
+              marginVertical: 10,
+            }}
+          />
+        </View>
+      )}
 
       <DrawerItem
         title="Market"
@@ -58,7 +91,13 @@ const AppDrawer: React.FunctionComponent<Props> = ({
             }
           />
         </>
-      ) : null}
+      ) : (
+        <DrawerItem
+          title="Market Pet"
+          onPress={() => navigation.navigate("NewPet")}
+          icon={<MaterialIcons name="pets" size={24} color="white" />}
+        />
+      )}
     </DrawerContentScrollView>
   );
 };

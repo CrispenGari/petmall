@@ -1,7 +1,11 @@
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { CtxType } from "../../types";
-import { RegisterInput } from "./inputs/inputTypes";
-import { MeObjectType, RegisterObjectType } from "./objects/objectTypes";
+import { LoginInput, RegisterInput } from "./inputs/inputTypes";
+import {
+  LoginObjectType,
+  MeObjectType,
+  RegisterObjectType,
+} from "./objects/objectTypes";
 import argon2 from "argon2";
 import { isValidEmail, isValidPassword } from "@crispengari/regex-validator";
 import { signJwt, storeCookie, verifyJwt } from "../../utils";
@@ -13,10 +17,7 @@ export class UserResolver {
     @Ctx() { prisma, request }: CtxType
   ): Promise<MeObjectType | undefined> {
     const jwt = request.headers.authorization?.split(" ")[1];
-
-    console.log(jwt);
     if (!!!jwt) return undefined;
-
     const payload = await verifyJwt(jwt);
     if (!!!payload) return undefined;
     const user = await prisma.user.findFirst({ where: { id: payload.id } });
@@ -26,12 +27,58 @@ export class UserResolver {
     };
   }
 
+  @Mutation(() => Boolean)
+  async logout(@Ctx() { prisma, request }: CtxType): Promise<Boolean> {
+    const jwt = request.headers.authorization?.split(" ")[1];
+    if (!!!jwt) return false;
+    const payload = await verifyJwt(jwt);
+    if (!!!payload) return false;
+    const user = await prisma.user.findFirst({ where: { id: payload.id } });
+    if (!!!user) return false;
+    return true;
+  }
+
+  @Mutation(() => LoginObjectType)
+  async login(
+    @Arg("input", () => LoginInput, { nullable: false })
+    { email, password }: LoginInput,
+    @Ctx() { prisma, reply }: CtxType
+  ): Promise<LoginObjectType> {
+    const user = await prisma.user.findFirst({
+      where: { email: email.toLowerCase().trim() },
+    });
+
+    if (!!!user) {
+      return {
+        error: {
+          field: "email",
+          message: "The email address does not have an account.",
+        },
+      };
+    }
+
+    const correct = await argon2.verify(user.password, password.trim());
+
+    if (!correct) {
+      return {
+        error: {
+          field: "password",
+          message: "Invalid account password.",
+        },
+      };
+    }
+    const jwt: string = await signJwt(user);
+    return {
+      jwt,
+      me: user,
+    };
+  }
   @Mutation(() => RegisterObjectType)
   async register(
     @Arg("input", () => RegisterInput, { nullable: false })
-    { confirmPassword, email, password, isWeb }: RegisterInput,
-    @Ctx() { prisma, reply }: CtxType
-  ): Promise<RegisterObjectType | undefined> {
+    { confirmPassword, email, password }: RegisterInput,
+    @Ctx() { prisma }: CtxType
+  ): Promise<RegisterObjectType> {
     const _user = await prisma.user.findFirst({
       where: {
         email: email.trim().toLowerCase(),
@@ -79,11 +126,9 @@ export class UserResolver {
       },
     });
     const jwt: string = await signJwt(user);
-    if (isWeb) {
-      storeCookie(reply, jwt);
-    }
     return {
-      jwt: isWeb ? "" : jwt,
+      jwt,
+      me: user,
     };
   }
 }

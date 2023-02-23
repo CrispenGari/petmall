@@ -8,14 +8,17 @@ import {
 } from "react-native";
 import React, { useLayoutEffect } from "react";
 import { AppDrawerNavProps } from "../../params";
-import { AntDesign } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 
-import { FONTS, COLORS, SCREEN_HEIGHT } from "../../constants";
+import { FONTS, COLORS, SCREEN_HEIGHT, TOKEN_KEY } from "../../constants";
 import { styles } from "../../styles";
 import { Entypo, FontAwesome } from "@expo/vector-icons";
 import { BoxIndicator, Footer, CustomTextInput } from "../../components";
 import Divider from "../../components/Divider/Divider";
+import { useLoginMutation } from "../../graphql/generated/graphql";
+import { store } from "../../utils";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../actions";
 
 interface ErrorType {
   message: string;
@@ -25,12 +28,12 @@ interface ErrorType {
 const Login: React.FunctionComponent<AppDrawerNavProps<"Login">> = ({
   navigation,
 }) => {
-  const isLoading = false;
   const [password, setPassword] = React.useState<string>("");
   const [hidePassword, setHidePassword] = React.useState<boolean>(true);
   const [email, setEmail] = React.useState<string>("");
   const [error, setError] = React.useState<ErrorType | undefined>();
-
+  const [{ data, fetching }, loginHandler] = useLoginMutation();
+  const dispatch = useDispatch();
   useLayoutEffect(() => {
     let mounted: boolean = true;
     if (mounted) {
@@ -38,7 +41,41 @@ const Login: React.FunctionComponent<AppDrawerNavProps<"Login">> = ({
         headerShown: false,
       });
     }
+    return () => {
+      mounted = false;
+    };
   }, []);
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!data?.login) {
+      if (data.login.error) {
+        setError(data.login.error);
+        setPassword("");
+      } else {
+        setEmail("");
+        setError(undefined);
+        setPassword("");
+        dispatch(setUser(data.login.me || null));
+        (async () => {
+          await store(TOKEN_KEY, data.login.jwt ?? "");
+          navigation.navigate("Market");
+        })();
+      }
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [data, dispatch]);
+
+  const login = async () => {
+    await loginHandler({
+      input: {
+        email,
+        password,
+      },
+    });
+  };
 
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.main }}>
@@ -184,11 +221,12 @@ const Login: React.FunctionComponent<AppDrawerNavProps<"Login">> = ({
                 onRightIconPress={() => setHidePassword((state) => !state)}
                 secureTextEntry={hidePassword}
                 onChangeText={(text) => setPassword(text)}
+                onSubmitEditing={login}
               />
               <TouchableOpacity
                 activeOpacity={0.7}
-                // onPress={register}
-                disabled={isLoading}
+                onPress={login}
+                disabled={fetching}
                 style={[
                   styles.button,
                   {
@@ -203,12 +241,12 @@ const Login: React.FunctionComponent<AppDrawerNavProps<"Login">> = ({
                 <Text
                   style={[
                     styles.button__text,
-                    { fontSize: 20, marginRight: isLoading ? 10 : 0 },
+                    { fontSize: 20, marginRight: fetching ? 10 : 0 },
                   ]}
                 >
                   LOGIN
                 </Text>
-                {isLoading ? (
+                {fetching ? (
                   <BoxIndicator color={COLORS.main} size={5} />
                 ) : null}
               </TouchableOpacity>
@@ -217,7 +255,7 @@ const Login: React.FunctionComponent<AppDrawerNavProps<"Login">> = ({
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => navigation.navigate("Register")}
-                disabled={isLoading}
+                disabled={fetching}
                 style={[
                   styles.button,
                   {

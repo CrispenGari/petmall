@@ -18,6 +18,8 @@ import { BoxIndicator, Footer, CustomTextInput } from "../../components";
 import Divider from "../../components/Divider/Divider";
 import { useRegisterMutation } from "../../graphql/generated/graphql";
 import { store } from "../../utils";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../actions";
 
 interface ErrorType {
   message: string;
@@ -33,6 +35,7 @@ const Register: React.FunctionComponent<AppDrawerNavProps<"Register">> = ({
   const [conf, setConf] = React.useState<string>("");
   const [error, setError] = React.useState<ErrorType | undefined>();
   const [{ fetching, data }, registerHandler] = useRegisterMutation();
+  const dispatch = useDispatch();
 
   useLayoutEffect(() => {
     let mounted: boolean = true;
@@ -58,28 +61,27 @@ const Register: React.FunctionComponent<AppDrawerNavProps<"Register">> = ({
         setEmail("");
         setError(undefined);
         setPassword("");
+        dispatch(setUser(data.register.me || null));
         (async () => {
           await store(TOKEN_KEY, data.register.jwt ?? "");
+          navigation.navigate("Market");
         })();
       }
     }
     return () => {
       mounted = false;
     };
-  }, [data]);
+  }, [data, dispatch]);
 
   const register = async () => {
     await registerHandler({
       input: {
-        isWeb: false,
         email,
         confirmPassword: conf,
         password,
       },
     });
   };
-
-  console.log(JSON.stringify(data, null, 2));
 
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.main }}>

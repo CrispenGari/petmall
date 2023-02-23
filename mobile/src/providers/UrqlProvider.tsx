@@ -1,10 +1,8 @@
 import React from "react";
-
 import { TOKEN_KEY, url } from "../constants";
 import {
   createClient,
   dedupExchange,
-  cacheExchange,
   fetchExchange,
   Provider,
   makeOperation,
@@ -16,17 +14,13 @@ export const client = createClient({
   url,
   exchanges: [
     dedupExchange,
-    cacheExchange,
+
     authExchange({
       getAuth: async ({ authState }: any) => {
-        if (!!!authState) {
-          const token = await retrieve(TOKEN_KEY);
-          if (!!token) {
-            return { token };
-          }
-          return null;
-        }
-        return null;
+        const token = await retrieve(TOKEN_KEY);
+        return {
+          token,
+        };
       },
       addAuthToOperation({ authState, operation }) {
         if (!authState || !authState.token) {
@@ -50,14 +44,6 @@ export const client = createClient({
     }),
     fetchExchange,
   ],
-
-  // () => {
-  //   const token = getToken();
-  //   return {
-  //     credentials: "include",
-  //     headers: { authorization: token ? `Bearer ${token}` : "" },
-  //   };
-  // },
 });
 
 type Props = {

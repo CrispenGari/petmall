@@ -6,7 +6,6 @@ import { StackNavigationProp } from "@react-navigation/stack";
 export type MarketParamList = {
   Pets: undefined;
   Pet: undefined;
-  NewPet: undefined;
 };
 
 export type MarketNavProps<T extends keyof MarketParamList> = {
@@ -19,6 +18,7 @@ export type AppDrawerParamList = {
   Login: undefined;
   Register: undefined;
   Profile: undefined;
+  NewPet: undefined;
 };
 
 export type AppDrawerNavProps<T extends keyof AppDrawerParamList> = {
