@@ -14,10 +14,10 @@ export const client = createClient({
   url,
   exchanges: [
     dedupExchange,
-
     authExchange({
       getAuth: async ({ authState }: any) => {
         const token = await retrieve(TOKEN_KEY);
+        console.log({ token });
         return {
           token,
         };

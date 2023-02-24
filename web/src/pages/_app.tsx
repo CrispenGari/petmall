@@ -1,5 +1,6 @@
+import "semantic-ui-css/semantic.min.css";
 import Layout from "@/components/Layout/Layout";
-import ChakraProvider from "@/providers/ChakraProvider";
+import ReduxProvider from "@/providers/ReduxProvider";
 import UrqlProvider from "@/providers/UrqlProvider";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
@@ -11,11 +12,11 @@ const PetMall: React.FunctionComponent<AppProps> = ({
 }) => {
   return (
     <UrqlProvider>
-      <ChakraProvider>
+      <ReduxProvider>
         <Layout>
           <Component {...pageProps} />
         </Layout>
-      </ChakraProvider>
+      </ReduxProvider>
     </UrqlProvider>
   );
 };

@@ -1,0 +1,35 @@
+.header__icon__btn,
+.header__icon__btn__active {
+  display: flex;
+  user-select: none;
+  user-zoom: none;
+  width: 70px;
+  transition: all 1s;
+  flex-direction: column;
+  cursor: pointer;
+  justify-content: center;
+  margin: 0px 3px;
+  align-items: center;
+  padding: 5px 0;
+  border-radius: 5px;
+  align-items: center;
+}
+.header__icon__btn__icon {
+  margin-bottom: -10px;
+}
+.header__icon__btn__active {
+  background-color: var(--primary);
+}
+.header__icon__btn > h1,
+.header__icon__btn__active > h1 {
+  color: white;
+  font-size: 0.8rem !important;
+  letter-spacing: 1;
+}
+.header__icon__btn__icon {
+  color: white;
+  font-size: 1.5rem;
+}
+.header__icon__btn:hover {
+  background-color: var(--primary);
+}

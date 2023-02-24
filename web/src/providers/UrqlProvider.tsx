@@ -1,17 +1,49 @@
 import React from "react";
-import { createClient, Provider } from "urql";
-export const url = "http://127.0.0.1:3001/graphql";
+import { TOKEN_KEY, url } from "../constants";
+import {
+  createClient,
+  dedupExchange,
+  fetchExchange,
+  Provider,
+  makeOperation,
+} from "urql";
+import { authExchange } from "@urql/exchange-auth";
+import { retrieve } from "../utils";
+
 export const client = createClient({
   url,
-  fetchOptions: () => {
-    const token = undefined;
-    return {
-      headers: { authorization: token ? `Bearer ${token}` : "" },
-      credentials: "include",
+  exchanges: [
+    dedupExchange,
 
-    };
-
-  },
+    authExchange({
+      getAuth: async ({ authState }: any) => {
+        const token = await retrieve(TOKEN_KEY);
+        return {
+          token,
+        };
+      },
+      addAuthToOperation({ authState, operation }) {
+        if (!authState || !authState.token) {
+          return operation;
+        }
+        const fetchOptions =
+          typeof operation.context.fetchOptions === "function"
+            ? operation.context.fetchOptions()
+            : operation.context.fetchOptions || {};
+        return makeOperation(operation.kind, operation, {
+          ...operation.context,
+          fetchOptions: {
+            ...fetchOptions,
+            headers: {
+              ...fetchOptions.headers,
+              Authorization: `Bearer ${authState.token}`,
+            },
+          },
+        });
+      },
+    }),
+    fetchExchange,
+  ],
 });
 
 type Props = {

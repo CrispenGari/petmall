@@ -1,0 +1,35 @@
+.header {
+  z-index: 10;
+  background-color: var(--main);
+  width: 100%;
+  position: sticky;
+  top: 0;
+  padding: 0px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header__left > img {
+  width: 40px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: none !important;
+  user-select: none;
+}
+.header__right {
+  display: flex;
+}
+.header__right__profile {
+  display: flex;
+  user-select: none;
+  user-zoom: none;
+  width: 70px;
+  transition: all 1s;
+  flex-direction: column;
+  cursor: pointer;
+  justify-content: center;
+  margin: 0px 3px;
+  align-items: center;
+  padding: 5px 0;
+  border-radius: 5px;
+}

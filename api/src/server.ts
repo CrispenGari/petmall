@@ -56,6 +56,7 @@ const HOST =
     graphiql: true,
     schema: schema as any,
     errorHandler(error, request, reply) {
+      console.log(error);
       console.error(error.message);
     },
   });

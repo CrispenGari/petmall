@@ -8,8 +8,8 @@
 }
 
 body {
-  --main-color: #082032;
-  --main-primary: #2c394b;
-  --main-secondary: #334756;
-  --main-tertiary: #ff4c29;
+  --main: #082032;
+  --primary: #2c394b;
+  --secondary: #334756;
+  --tertiary: #ff4c29;
 }
