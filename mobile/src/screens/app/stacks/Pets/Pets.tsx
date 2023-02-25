@@ -1,16 +1,20 @@
-import { View, Text, Button } from "react-native";
+import { View, Text, Button, ScrollView } from "react-native";
 import React from "react";
 import { MarketNavProps } from "../../../../params";
+import Banner from "../../../../components/Banner/Banner";
 
 const Pets: React.FunctionComponent<MarketNavProps<"Pets">> = ({
   navigation,
 }) => {
   return (
-    <View>
-      <Text>Pets</Text>
-
-      <Button title="Nme" onPress={() => navigation.navigate("Pet")} />
-    </View>
+    <ScrollView
+      style={{ flex: 1 }}
+      showsHorizontalScrollIndicator={false}
+      showsVerticalScrollIndicator={false}
+      bounces={false}
+    >
+      <Banner />
+    </ScrollView>
   );
 };
 

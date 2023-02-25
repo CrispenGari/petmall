@@ -3,8 +3,22 @@ import { Dimensions } from "react-native";
 export const constants = {
   SET_USER: "SET_USER",
 };
-export const url = "https://c126-197-98-127-119.ngrok.io/graphql";
+export const url = "https://1179-197-98-127-119.ngrok.io/graphql";
 
+export const PETS_CATEGORIES = [
+  "CATS",
+  "DOGS",
+  "BIRDS",
+  "RABBITS",
+  "HORSES",
+  "FERRETS",
+  "FISH",
+  "GUINEA_PIGS",
+  "RATS_AND_MICE",
+  "AMPHIBIANS",
+  "REPTILES",
+];
+export const GENDERS = ["MALE", "FEMALE"];
 export const relativeTimeObject = {
   future: "in %s",
   past: "%s",

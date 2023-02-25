@@ -15,7 +15,7 @@ import { COLORS, FONTS, GENDERS, PETS_CATEGORIES } from "../../constants";
 import SelectDropdown from "react-native-select-dropdown";
 import { Entypo } from "@expo/vector-icons";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
-const NewPet: React.FunctionComponent<AppDrawerNavProps<"NewPet">> = ({
+const PreviewPet: React.FunctionComponent<AppDrawerNavProps<"PreviewPet">> = ({
   navigation,
 }) => {
   const [name, setName] = React.useState<string>("");
@@ -31,7 +31,7 @@ const NewPet: React.FunctionComponent<AppDrawerNavProps<"NewPet">> = ({
     let mounted: boolean = true;
     if (mounted) {
       navigation.setOptions({
-        headerTitle: "Sell new Pet",
+        headerTitle: "Preview Pet",
         headerLeft: (props) => {
           return (
             <TouchableOpacity
@@ -269,4 +269,4 @@ const NewPet: React.FunctionComponent<AppDrawerNavProps<"NewPet">> = ({
   );
 };
 
-export default NewPet;
+export default PreviewPet;

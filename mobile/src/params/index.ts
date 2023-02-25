@@ -19,6 +19,20 @@ export type AppDrawerParamList = {
   Register: undefined;
   Profile: undefined;
   NewPet: undefined;
+  PreviewPet: {
+    image: {
+      uri: string;
+      name: string;
+      mimeType: string;
+    };
+    location: string;
+    description: string;
+    category: string;
+    gender: string;
+    price: number;
+    age: number;
+    name: string;
+  };
 };
 
 export type AppDrawerNavProps<T extends keyof AppDrawerParamList> = {

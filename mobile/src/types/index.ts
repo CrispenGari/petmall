@@ -13,3 +13,5 @@ export interface ActionType<T> {
   payload: T;
   type: string;
 }
+
+export type GenderType = "MALE" | "FEMALE";

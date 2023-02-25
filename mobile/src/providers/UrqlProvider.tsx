@@ -8,6 +8,7 @@ import {
   makeOperation,
 } from "urql";
 import { authExchange } from "@urql/exchange-auth";
+import { multipartFetchExchange } from "@urql/exchange-multipart-fetch";
 import { retrieve } from "../utils";
 
 export const client = createClient({
@@ -17,13 +18,12 @@ export const client = createClient({
     authExchange({
       getAuth: async ({ authState }: any) => {
         const token = await retrieve(TOKEN_KEY);
-        console.log({ token });
         return {
           token,
         };
       },
       addAuthToOperation({ authState, operation }) {
-        if (!authState || !authState.token) {
+        if (!authState || !!!authState.token) {
           return operation;
         }
         const fetchOptions =
@@ -43,6 +43,7 @@ export const client = createClient({
       },
     }),
     fetchExchange,
+    multipartFetchExchange,
   ],
 });
 

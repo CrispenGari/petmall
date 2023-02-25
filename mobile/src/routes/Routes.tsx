@@ -12,6 +12,7 @@ import { View } from "react-native";
 import { BoxIndicator } from "../components";
 import { useDispatch } from "react-redux";
 import { setUser } from "../actions";
+import NewPet from "../screens/app/NewPet";
 const Drawer = createDrawerNavigator<AppDrawerParamList>();
 
 const Routes = () => {
@@ -43,6 +44,10 @@ const Routes = () => {
           headerStyle: {
             backgroundColor: COLORS.main,
             height: 100,
+            elevation: 0,
+            borderBottomColor: "transparent",
+            borderBottomWidth: 0,
+            shadowOpacity: 0,
           },
           headerTitleStyle: {
             color: "white",
@@ -61,12 +66,14 @@ const Routes = () => {
             margin: 0,
           },
           drawerHideStatusBarOnOpen: true,
+          drawerType: "front",
         })}
       >
         <Drawer.Screen name="Market" component={Market} />
         <Drawer.Screen name="Profile" component={Profile} />
         <Drawer.Screen name="Login" component={Login} />
         <Drawer.Screen name="Register" component={Register} />
+        <Drawer.Screen name="NewPet" component={NewPet} />
       </Drawer.Navigator>
     </NavigationContainer>
   );

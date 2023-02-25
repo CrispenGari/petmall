@@ -16,6 +16,10 @@ Online pet marketing made easy online.
 
 ### License
 
+```js
+['CATS', 'DOGS', 'BIRDS', 'RABBITS', 'HORSES', 'FERRETS', 'FISH', 'GUINEA-PIGS', 'RATS-AND-MICE', 'AMPHIBIANS', 'REPTILES']
+```
+
 In this project i'm using the `MIT` license which reads as follows:
 
 ```shell
