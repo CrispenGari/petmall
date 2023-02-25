@@ -10,6 +10,8 @@ import { PrismaClient } from "@prisma/client";
 import cors from "@fastify/cors";
 import cookie from "@fastify/cookie";
 import { tokenRoute } from "./routes/token";
+import fastifyStatic from "@fastify/static";
+import path from "path";
 _();
 
 const PORT: any = process.env.PORT || 3001;
@@ -43,6 +45,11 @@ const HOST =
       secure: false,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     },
+  });
+  fastify.register(fastifyStatic, {
+    root: path.join(__dirname.replace("dist", ""), "storage"),
+    prefixAvoidTrailingSlash: true,
+    prefix: "/petmall/api/storage",
   });
   fastify.register(tokenRoute);
   fastify.register(mercurius, {

@@ -16,7 +16,6 @@ export class UserResolver {
   async me(
     @Ctx() { prisma, request }: CtxType
   ): Promise<MeObjectType | undefined> {
-    console.log(request.headers);
     const jwt = request.headers.authorization?.split(" ")[1];
     if (!!!jwt) return undefined;
     const payload = await verifyJwt(jwt);

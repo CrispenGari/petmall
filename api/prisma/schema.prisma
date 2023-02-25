@@ -59,6 +59,15 @@ model Reaction{
 enum Category {
   CAT
   DOG
+  BIRDS
+  RABBITS
+  HORSES
+  FERRETS
+  FISH
+  GUINEA_PIGS
+  RATS_AND_MICE
+  AMPHIBIANS
+  REPTILES
 }
 
 enum ReactionType {

@@ -25,6 +25,7 @@
     "@crispengari/regex-validator": "^1.0.3",
     "@fastify/cookie": "^8.3.0",
     "@fastify/cors": "^8.2.0",
+    "@fastify/static": "^6.9.0",
     "@prisma/client": "^4.10.1",
     "add": "^2.0.6",
     "argon2": "^0.30.3",
