@@ -1,6 +1,7 @@
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
+import * as Location from "expo-location";
 
 //  Market Stack Param Lists
 export type MarketParamList = {
@@ -18,20 +19,11 @@ export type AppDrawerParamList = {
   Login: undefined;
   Register: undefined;
   Profile: undefined;
-  NewPet: undefined;
+  NewPet: Partial<{
+    editPet: string;
+  }>;
   PreviewPet: {
-    image: {
-      uri: string;
-      name: string;
-      mimeType: string;
-    };
-    location: string;
-    description: string;
-    category: string;
-    gender: string;
-    price: number;
-    age: number;
-    name: string;
+    newPet: string;
   };
 };
 

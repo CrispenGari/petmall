@@ -1,6 +1,0 @@
-fragment UserFragment on MeObjectType {
-  id
-  email
-  createdAt
-  updatedAt
-}

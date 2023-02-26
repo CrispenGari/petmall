@@ -10,3 +10,29 @@ export type CtxType = {
     Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
   >;
 };
+
+export enum Gender {
+  MALE,
+  FEMALE,
+}
+export enum Category {
+  CAT,
+  DOG,
+  BIRDS,
+  RABBITS,
+  HORSES,
+  FERRETS,
+  FISH,
+  GUINEA_PIGS,
+  RATS_AND_MICE,
+  AMPHIBIANS,
+  REPTILES,
+}
+
+export enum ReactionType {
+  LIKE,
+  LOVE,
+  CLAP,
+  DISLIKE,
+  BLUSH,
+}

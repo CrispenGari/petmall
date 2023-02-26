@@ -11,7 +11,6 @@ Online pet marketing made easy online.
 ```shell
 - api
 - mobile
-- web
 ```
 
 ### License

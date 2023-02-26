@@ -15,7 +15,7 @@ const PetMall = () => {
   const [loaded] = useFonts(Fonts);
   if (!loaded) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" , backgroundColor: COLORS.secondary}}>
         <StatusBar barStyle={"light-content"} />
         <BoxIndicator color={COLORS.main} size={20} />
       </View>

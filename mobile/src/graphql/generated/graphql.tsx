@@ -13,12 +13,46 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  Upload: any;
 };
+
+export enum Category {
+  Amphibians = 'AMPHIBIANS',
+  Birds = 'BIRDS',
+  Cat = 'CAT',
+  Dog = 'DOG',
+  Ferrets = 'FERRETS',
+  Fish = 'FISH',
+  GuineaPigs = 'GUINEA_PIGS',
+  Horses = 'HORSES',
+  Rabbits = 'RABBITS',
+  RatsAndMice = 'RATS_AND_MICE',
+  Reptiles = 'REPTILES'
+}
 
 export type ErrorType = {
   __typename?: 'ErrorType';
   field: Scalars['String'];
   message: Scalars['String'];
+};
+
+export enum Gender {
+  Female = 'FEMALE',
+  Male = 'MALE'
+}
+
+export type LocationInput = {
+  city: Scalars['String'];
+  country: Scalars['String'];
+  district: Scalars['String'];
+  isoCountryCode: Scalars['String'];
+  name: Scalars['String'];
+  postalCode: Scalars['String'];
+  region: Scalars['String'];
+  street: Scalars['String'];
+  streetNumber: Scalars['String'];
+  subregion: Scalars['String'];
+  timezone: Scalars['String'];
 };
 
 export type LoginInput = {
@@ -43,9 +77,15 @@ export type MeObjectType = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  add: Scalars['Boolean'];
   login: LoginObjectType;
   logout: Scalars['Boolean'];
   register: RegisterObjectType;
+};
+
+
+export type MutationAddArgs = {
+  input: NewPetInputType;
 };
 
 
@@ -56,6 +96,17 @@ export type MutationLoginArgs = {
 
 export type MutationRegisterArgs = {
   input: RegisterInput;
+};
+
+export type NewPetInputType = {
+  age: Scalars['Int'];
+  category: Category;
+  description: Scalars['String'];
+  gender: Gender;
+  image: Scalars['Upload'];
+  location?: InputMaybe<LocationInput>;
+  name: Scalars['String'];
+  price: Scalars['Float'];
 };
 
 export type Query = {
@@ -97,6 +148,13 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
+
+export type NewPetMutationVariables = Exact<{
+  input: NewPetInputType;
+}>;
+
+
+export type NewPetMutation = { __typename?: 'Mutation', add: boolean };
 
 export type RegisterMutationVariables = Exact<{
   input: RegisterInput;
@@ -168,6 +226,15 @@ export const LogoutDocument = gql`
 
 export function useLogoutMutation() {
   return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
+};
+export const NewPetDocument = gql`
+    mutation NewPet($input: NewPetInputType!) {
+  add(input: $input)
+}
+    `;
+
+export function useNewPetMutation() {
+  return Urql.useMutation<NewPetMutation, NewPetMutationVariables>(NewPetDocument);
 };
 export const RegisterDocument = gql`
     mutation Register($input: RegisterInput!) {

@@ -12,6 +12,7 @@ import cookie from "@fastify/cookie";
 import { tokenRoute } from "./routes/token";
 import fastifyStatic from "@fastify/static";
 import path from "path";
+import MercuriusGQLUpload from "mercurius-upload";
 _();
 
 const PORT: any = process.env.PORT || 3001;
@@ -51,6 +52,7 @@ const HOST =
     prefixAvoidTrailingSlash: true,
     prefix: "/petmall/api/storage",
   });
+  fastify.register(MercuriusGQLUpload, {});
   fastify.register(tokenRoute);
   fastify.register(mercurius, {
     context: (request, reply): CtxType => {

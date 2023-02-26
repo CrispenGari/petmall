@@ -19,12 +19,28 @@ model User {
   comment Comment?
   reaction Reaction?
 }
+model Location {
+  id       String  @unique @default(uuid())
+  district String
+  city String
+  street String
+  region String
+  country String
+  postalCode String
+  subregion String?
+  timezone String
+  streetNumber String
+  name String
+  isoCountryCode String
 
+  pet Pet @relation(fields: [petId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  petId String @unique
+}
 model Pet {
   id       String  @unique @default(uuid())
   name String
   age Int
-  location String?
+  location Location?
   gender Gender
   image String
   category Category

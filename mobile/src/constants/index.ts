@@ -2,8 +2,9 @@ import { Dimensions } from "react-native";
 
 export const constants = {
   SET_USER: "SET_USER",
+  SET_LOCATION: "SET_LOCATION",
 };
-export const url = "https://1179-197-98-127-119.ngrok.io/graphql";
+export const url = "https://2543-197-98-127-119.ngrok.io/graphql";
 
 export const PETS_CATEGORIES = [
   "CATS",

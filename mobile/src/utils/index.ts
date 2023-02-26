@@ -4,16 +4,15 @@ import { ReactNativeFile } from "apollo-upload-client";
 export const generateRNFile = ({
   uri,
   name,
-  mimeType,
 }: {
   uri: string;
   name: string;
-  mimeType: string;
 }) => {
+  const type: string = "image/png";
   return uri
     ? new ReactNativeFile({
         uri,
-        type: mimeType,
+        type,
         name,
       })
     : null;

@@ -1,3 +1,4 @@
+import * as Location from "expo-location";
 export type User = {
   id: string;
   email: string;
@@ -7,6 +8,7 @@ export type User = {
 
 export interface StateType {
   user: User | null;
+  location: Location.LocationGeocodedAddress | null;
 }
 
 export interface ActionType<T> {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { AppDrawerParamList } from "../params";
@@ -10,14 +10,57 @@ import AppDrawer from "../components/AppDrawer/AppDrawer";
 import { useMeQuery } from "../graphql/generated/graphql";
 import { View } from "react-native";
 import { BoxIndicator } from "../components";
-import { useDispatch } from "react-redux";
-import { setUser } from "../actions";
+import { useDispatch, useSelector } from "react-redux";
+import { setLocationAction, setUser } from "../actions";
 import NewPet from "../screens/app/NewPet";
+import { useLocationPermission, useMediaPermission } from "../hooks";
+import * as Location from "expo-location";
+import { StateType } from "../types";
+import PreviewPet from "../screens/app/PreviewPet";
 const Drawer = createDrawerNavigator<AppDrawerParamList>();
 
 const Routes = () => {
   const [{ fetching, data }] = useMeQuery();
+  const { user } = useSelector((state: StateType) => state);
   const dispatch = useDispatch();
+  const [location, setLocation] = useState<Location.LocationObject>();
+
+  const { granted } = useLocationPermission();
+
+  const [loading, setLoading] = React.useState<boolean>(false);
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && granted && !!user) {
+      setLoading(true);
+      (async () => {
+        const location = await Location.getCurrentPositionAsync();
+        setLocation(location);
+        setLoading(false);
+      })();
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [granted]);
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    (async () => {
+      setLoading(true);
+      if (granted && mounted && location && !!user) {
+        const [reversed, _] = await Location.reverseGeocodeAsync({
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        });
+        dispatch(setLocationAction(reversed));
+        setLoading(false);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [location, granted, user, dispatch]);
+
   React.useEffect(() => {
     let mounted: boolean = true;
     if (mounted && !!data?.me) {
@@ -28,9 +71,18 @@ const Routes = () => {
     };
   }, [dispatch, data]);
 
-  if (fetching) {
+  console.log({ location, fetching, loading });
+
+  if (fetching || loading) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: COLORS.secondary,
+        }}
+      >
         <BoxIndicator color={COLORS.main} size={20} />
       </View>
     );
@@ -74,6 +126,7 @@ const Routes = () => {
         <Drawer.Screen name="Login" component={Login} />
         <Drawer.Screen name="Register" component={Register} />
         <Drawer.Screen name="NewPet" component={NewPet} />
+        <Drawer.Screen name="PreviewPet" component={PreviewPet} />
       </Drawer.Navigator>
     </NavigationContainer>
   );

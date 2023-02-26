@@ -94,7 +94,11 @@ const AppDrawer: React.FunctionComponent<Props> = ({
       ) : (
         <DrawerItem
           title="Market Pet"
-          onPress={() => navigation.navigate("NewPet")}
+          onPress={() =>
+            navigation.navigate("NewPet", {
+              editPet: "",
+            })
+          }
           icon={<MaterialIcons name="pets" size={24} color="white" />}
         />
       )}
