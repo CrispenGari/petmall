@@ -10,13 +10,28 @@ Online pet marketing made easy online.
 
 ```shell
 - api
-- mobile
+```
+
+```shell
+curl http://localhost:3001/graphql -F operations='{"query":"mutation NewPet($input: NewPetInputType!){ add(input:$input) }", "variables":{"input": { "image":null } } }' -F map='{ "0": ["variables.input.image"] }' -F 0=@male.jpg
 ```
 
 ### License
 
 ```js
-['CATS', 'DOGS', 'BIRDS', 'RABBITS', 'HORSES', 'FERRETS', 'FISH', 'GUINEA-PIGS', 'RATS-AND-MICE', 'AMPHIBIANS', 'REPTILES']
+[
+  "CATS",
+  "DOGS",
+  "BIRDS",
+  "RABBITS",
+  "HORSES",
+  "FERRETS",
+  "FISH",
+  "GUINEA-PIGS",
+  "RATS-AND-MICE",
+  "AMPHIBIANS",
+  "REPTILES",
+];
 ```
 
 In this project i'm using the `MIT` license which reads as follows:

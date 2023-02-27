@@ -16,8 +16,8 @@ export enum Gender {
   FEMALE,
 }
 export enum Category {
-  CAT,
-  DOG,
+  CATS,
+  DOGS,
   BIRDS,
   RABBITS,
   HORSES,

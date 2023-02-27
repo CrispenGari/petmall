@@ -52,7 +52,9 @@ const HOST =
     prefixAvoidTrailingSlash: true,
     prefix: "/petmall/api/storage",
   });
-  fastify.register(MercuriusGQLUpload, {});
+  fastify.register(MercuriusGQLUpload, {
+    validate: false,
+  });
   fastify.register(tokenRoute);
   fastify.register(mercurius, {
     context: (request, reply): CtxType => {

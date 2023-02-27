@@ -26,8 +26,19 @@ const PreviewPet: React.FunctionComponent<AppDrawerNavProps<"PreviewPet">> = ({
     age: number;
     name: string;
   } = JSON.parse(route.params.newPet);
-
   const [{ fetching, data }, addPet] = useNewPetMutation();
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!data) {
+      if (data.add?.id) {
+        navigation.navigate("Market");
+      }
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [data, navigation]);
 
   useLayoutEffect(() => {
     let mounted: boolean = true;
@@ -52,26 +63,18 @@ const PreviewPet: React.FunctionComponent<AppDrawerNavProps<"PreviewPet">> = ({
     };
   }, []);
 
-  console.log(
-    generateRNFile({
-      name: pet.image.name,
-      uri: pet.image.uri,
-    })
-  );
-  console.log({ data });
   const add = async () => {
-    const response = await fetch(pet.image.uri);
-    const blob = await response.blob();
-
-    console.log(blob);
+    const image = await generateRNFile({
+      ...pet.image,
+    });
 
     await addPet({
       input: {
         age: pet.age,
-        category: pet.category as any,
+        category: pet.category,
         description: pet.description,
-        gender: pet.gender as any,
-        image: blob,
+        gender: pet.gender,
+        image: image,
         name: pet.name,
         price: pet.price,
         location:

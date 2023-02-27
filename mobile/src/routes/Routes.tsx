@@ -73,7 +73,7 @@ const Routes = () => {
 
   console.log({ location, fetching, loading });
 
-  if (fetching || loading) {
+  if (fetching) {
     return (
       <View
         style={{

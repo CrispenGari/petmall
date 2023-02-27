@@ -14,7 +14,6 @@ import { retrieve } from "../utils";
 export const client = createClient({
   url,
   exchanges: [
-    dedupExchange,
     authExchange({
       getAuth: async ({ authState }: any) => {
         const token = await retrieve(TOKEN_KEY);
@@ -42,7 +41,6 @@ export const client = createClient({
         });
       },
     }),
-    fetchExchange,
     multipartFetchExchange,
   ],
 });

@@ -8,11 +8,10 @@ export const generateRNFile = ({
   uri: string;
   name: string;
 }) => {
-  const type: string = "image/png";
   return uri
     ? new ReactNativeFile({
         uri,
-        type,
+        type: "image/png",
         name,
       })
     : null;

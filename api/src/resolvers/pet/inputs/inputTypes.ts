@@ -2,14 +2,6 @@ import { InputType, Field, Float, Int, registerEnumType } from "type-graphql";
 import { Category, Gender } from "../../../types";
 import GraphQLUpload from "graphql-upload/GraphQLUpload.js";
 import { FileUpload } from "graphql-upload/Upload";
-registerEnumType(Gender, {
-  name: "Gender", // this one is mandatory
-});
-
-registerEnumType(Category, {
-  name: "Category", // this one is mandatory
-});
-
 @InputType()
 export class LocationInput {
   @Field(() => String, { nullable: true })
@@ -46,14 +38,20 @@ export class NewPetInputType {
 
   @Field(() => String, { nullable: false })
   description: string;
-  @Field(() => Category, { nullable: false })
-  category: Category;
-  @Field(() => Gender, { nullable: false })
-  gender: Gender;
+  @Field(() => String, { nullable: false })
+  category: String;
+  @Field(() => String, { nullable: false })
+  gender: String;
   @Field(() => Float, { nullable: false })
   price: number;
   @Field(() => Int, { nullable: false })
   age: number;
   @Field(() => String, { nullable: false })
   name: string;
+}
+
+@InputType()
+export class GetCategoryPetsInput {
+  @Field(() => String, { nullable: false })
+  category: String;
 }

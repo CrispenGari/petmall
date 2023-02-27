@@ -18,34 +18,43 @@ model User {
 
   comment Comment?
   reaction Reaction?
+  pets Pet[]
 }
+
 model Location {
   id       String  @unique @default(uuid())
-  district String
-  city String
-  street String
-  region String
-  country String
-  postalCode String
+  district String?
+  city String?
+  street String?
+  region String?
+  country String?
+  postalCode String?
   subregion String?
-  timezone String
-  streetNumber String
-  name String
-  isoCountryCode String
+  timezone String?
+  streetNumber String?
+  name String?
+  isoCountryCode String?
 
-  pet Pet @relation(fields: [petId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  petId String @unique
+  pet Pet?
+
 }
 model Pet {
   id       String  @unique @default(uuid())
   name String
   age Int
-  location Location?
-  gender Gender
+
+  description String
+  gender String
   image String
-  category Category
+  category String
   sold Boolean @default(false)
   price Float
+
+  seller User @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sellerId String
+
+  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  locationId String @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -64,37 +73,11 @@ model Comment{
 }
 model Reaction{
   id       String  @unique @default(uuid())
-  reaction ReactionType
+  reaction String
 
   user User @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   userId String @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-enum Gender {
-  MALE
-  FEMALE
-}
-enum Category {
-  CAT
-  DOG
-  BIRDS
-  RABBITS
-  HORSES
-  FERRETS
-  FISH
-  GUINEA_PIGS
-  RATS_AND_MICE
-  AMPHIBIANS
-  REPTILES
-}
-
-enum ReactionType {
-  LIKE
-  LOVE
-  CLAP
-  DISLIKE
-  BLUSH
 }

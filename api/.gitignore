@@ -1,5 +1,16 @@
 node_modules
 # Keep environment variables out of version control
 .env
+# all images
 storage/avatars/*.jpg
 storage/pets/*.jpg
+storage/avatars/*.png
+storage/pets/*.png
+storage/avatars/*.jpeg
+storage/pets/*.jpeg
+storage/avatars/*.gif
+storage/pets/*.gif
+storage/avatars/*.webp
+storage/pets/*.webp
+
+

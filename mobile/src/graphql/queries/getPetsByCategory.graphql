@@ -1,5 +1,5 @@
-mutation NewPet($input: NewPetInputType!) {
-  add(input: $input) {
+query GetPetsByCategory($input: GetCategoryPetsInput!) {
+  getCategoryPets(input: $input) {
     id
     name
     age

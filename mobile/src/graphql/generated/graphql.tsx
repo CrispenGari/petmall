@@ -16,43 +16,28 @@ export type Scalars = {
   Upload: any;
 };
 
-export enum Category {
-  Amphibians = 'AMPHIBIANS',
-  Birds = 'BIRDS',
-  Cat = 'CAT',
-  Dog = 'DOG',
-  Ferrets = 'FERRETS',
-  Fish = 'FISH',
-  GuineaPigs = 'GUINEA_PIGS',
-  Horses = 'HORSES',
-  Rabbits = 'RABBITS',
-  RatsAndMice = 'RATS_AND_MICE',
-  Reptiles = 'REPTILES'
-}
-
 export type ErrorType = {
   __typename?: 'ErrorType';
   field: Scalars['String'];
   message: Scalars['String'];
 };
 
-export enum Gender {
-  Female = 'FEMALE',
-  Male = 'MALE'
-}
+export type GetCategoryPetsInput = {
+  category: Scalars['String'];
+};
 
 export type LocationInput = {
-  city: Scalars['String'];
-  country: Scalars['String'];
-  district: Scalars['String'];
-  isoCountryCode: Scalars['String'];
-  name: Scalars['String'];
-  postalCode: Scalars['String'];
-  region: Scalars['String'];
-  street: Scalars['String'];
-  streetNumber: Scalars['String'];
-  subregion: Scalars['String'];
-  timezone: Scalars['String'];
+  city?: InputMaybe<Scalars['String']>;
+  country?: InputMaybe<Scalars['String']>;
+  district?: InputMaybe<Scalars['String']>;
+  isoCountryCode?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+  postalCode?: InputMaybe<Scalars['String']>;
+  region?: InputMaybe<Scalars['String']>;
+  street?: InputMaybe<Scalars['String']>;
+  streetNumber?: InputMaybe<Scalars['String']>;
+  subregion?: InputMaybe<Scalars['String']>;
+  timezone?: InputMaybe<Scalars['String']>;
 };
 
 export type LoginInput = {
@@ -77,7 +62,7 @@ export type MeObjectType = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  add: Scalars['Boolean'];
+  add?: Maybe<PetObjectType>;
   login: LoginObjectType;
   logout: Scalars['Boolean'];
   register: RegisterObjectType;
@@ -100,19 +85,39 @@ export type MutationRegisterArgs = {
 
 export type NewPetInputType = {
   age: Scalars['Int'];
-  category: Category;
+  category: Scalars['String'];
   description: Scalars['String'];
-  gender: Gender;
+  gender: Scalars['String'];
   image: Scalars['Upload'];
   location?: InputMaybe<LocationInput>;
   name: Scalars['String'];
   price: Scalars['Float'];
 };
 
+export type PetObjectType = {
+  __typename?: 'PetObjectType';
+  age: Scalars['Int'];
+  category: Scalars['String'];
+  createdAt: Scalars['String'];
+  description: Scalars['String'];
+  gender: Scalars['String'];
+  id: Scalars['String'];
+  image: Scalars['String'];
+  name: Scalars['String'];
+  price: Scalars['Float'];
+  sold: Scalars['Boolean'];
+};
+
 export type Query = {
   __typename?: 'Query';
+  getCategoryPets: Array<PetObjectType>;
   hello: Scalars['String'];
   me?: Maybe<MeObjectType>;
+};
+
+
+export type QueryGetCategoryPetsArgs = {
+  input: GetCategoryPetsInput;
 };
 
 
@@ -154,7 +159,7 @@ export type NewPetMutationVariables = Exact<{
 }>;
 
 
-export type NewPetMutation = { __typename?: 'Mutation', add: boolean };
+export type NewPetMutation = { __typename?: 'Mutation', add?: { __typename?: 'PetObjectType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string } | null };
 
 export type RegisterMutationVariables = Exact<{
   input: RegisterInput;
@@ -162,6 +167,13 @@ export type RegisterMutationVariables = Exact<{
 
 
 export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'RegisterObjectType', jwt?: string | null, error?: { __typename?: 'ErrorType', field: string, message: string } | null, me?: { __typename?: 'MeObjectType', id: string, email: string, createdAt: string, updatedAt: string } | null } };
+
+export type GetPetsByCategoryQueryVariables = Exact<{
+  input: GetCategoryPetsInput;
+}>;
+
+
+export type GetPetsByCategoryQuery = { __typename?: 'Query', getCategoryPets: Array<{ __typename?: 'PetObjectType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string }> };
 
 export type HelloQueryVariables = Exact<{
   name: Scalars['String'];
@@ -229,7 +241,18 @@ export function useLogoutMutation() {
 };
 export const NewPetDocument = gql`
     mutation NewPet($input: NewPetInputType!) {
-  add(input: $input)
+  add(input: $input) {
+    id
+    name
+    age
+    description
+    gender
+    image
+    category
+    sold
+    price
+    createdAt
+  }
 }
     `;
 
@@ -253,6 +276,26 @@ ${UserFragmentFragmentDoc}`;
 
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
+};
+export const GetPetsByCategoryDocument = gql`
+    query GetPetsByCategory($input: GetCategoryPetsInput!) {
+  getCategoryPets(input: $input) {
+    id
+    name
+    age
+    description
+    gender
+    image
+    category
+    sold
+    price
+    createdAt
+  }
+}
+    `;
+
+export function useGetPetsByCategoryQuery(options: Omit<Urql.UseQueryArgs<GetPetsByCategoryQueryVariables>, 'query'>) {
+  return Urql.useQuery<GetPetsByCategoryQuery, GetPetsByCategoryQueryVariables>({ query: GetPetsByCategoryDocument, ...options });
 };
 export const HelloDocument = gql`
     query Hello($name: String!) {
