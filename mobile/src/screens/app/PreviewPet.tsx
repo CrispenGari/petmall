@@ -31,7 +31,7 @@ const PreviewPet: React.FunctionComponent<AppDrawerNavProps<"PreviewPet">> = ({
   React.useEffect(() => {
     let mounted: boolean = true;
     if (mounted && !!data) {
-      if (data.add?.id) {
+      if (!!data.add?.success) {
         navigation.navigate("Market");
       }
     }
@@ -39,6 +39,7 @@ const PreviewPet: React.FunctionComponent<AppDrawerNavProps<"PreviewPet">> = ({
       mounted = false;
     };
   }, [data, navigation]);
+  console.log({ data: data?.add });
 
   useLayoutEffect(() => {
     let mounted: boolean = true;

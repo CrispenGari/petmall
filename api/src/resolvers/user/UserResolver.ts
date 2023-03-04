@@ -28,13 +28,7 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
-  async logout(@Ctx() { prisma, request }: CtxType): Promise<Boolean> {
-    const jwt = request.headers.authorization?.split(" ")[1];
-    if (!!!jwt) return false;
-    const payload = await verifyJwt(jwt);
-    if (!!!payload) return false;
-    const user = await prisma.user.findFirst({ where: { id: payload.id } });
-    if (!!!user) return false;
+  async logout(@Ctx() {}: CtxType): Promise<Boolean> {
     return true;
   }
 

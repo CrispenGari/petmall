@@ -1,14 +1,5 @@
 mutation NewPet($input: NewPetInputType!) {
   add(input: $input) {
-    id
-    name
-    age
-    description
-    gender
-    image
-    category
-    sold
-    price
-    createdAt
+    success
   }
 }

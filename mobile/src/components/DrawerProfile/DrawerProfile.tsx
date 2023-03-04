@@ -7,7 +7,7 @@ import { useLogoutMutation } from "../../graphql/generated/graphql";
 import BoxIndicator from "../BoxIndicator/BoxIndicator";
 import { COLORS, TOKEN_KEY } from "../../constants";
 import { setUser } from "../../actions";
-import { store } from "../../utils";
+import { del } from "../../utils";
 
 interface Props {
   onPress?: () => void;
@@ -21,8 +21,11 @@ const DrawerProfile: React.FunctionComponent<Props> = ({ onPress }) => {
     let mounted: boolean = true;
     if (mounted && data?.logout) {
       (async () => {
-        await store(TOKEN_KEY, "");
-        dispatch(setUser(null));
+        const success = await del(TOKEN_KEY);
+        console.log({ success });
+        if (success) {
+          dispatch(setUser(null));
+        }
       })();
     }
     return () => {

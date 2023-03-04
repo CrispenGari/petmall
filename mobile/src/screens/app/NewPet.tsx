@@ -139,6 +139,16 @@ const NewPet: React.FunctionComponent<AppDrawerNavProps<"NewPet">> = ({
         location: location ? myLocation : null,
       }),
     });
+
+    setName("");
+    setAge("1");
+    setImage(undefined);
+    setDescription("");
+    setPrice("");
+    setGender(GENDERS[0]);
+    setCategory(PETS_CATEGORIES[0]);
+    setError("");
+    setLocation(false);
   };
 
   const selectImage = async () => {
@@ -455,7 +465,18 @@ const NewPet: React.FunctionComponent<AppDrawerNavProps<"NewPet">> = ({
             },
           ]}
           activeOpacity={0.7}
-          onPress={() => navigation.navigate("Market")}
+          onPress={() => {
+            setName("");
+            setAge("1");
+            setImage(undefined);
+            setDescription("");
+            setPrice("");
+            setGender(GENDERS[0]);
+            setCategory(PETS_CATEGORIES[0]);
+            setError("");
+            setLocation(false);
+            navigation.navigate("Market");
+          }}
         >
           <Text style={[styles.h1, { color: "white" }]}>Cancel</Text>
         </TouchableOpacity>

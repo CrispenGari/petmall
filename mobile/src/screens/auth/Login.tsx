@@ -58,15 +58,17 @@ const Login: React.FunctionComponent<AppDrawerNavProps<"Login">> = ({
         setPassword("");
         dispatch(setUser(data.login.me || null));
         (async () => {
-          await store(TOKEN_KEY, data.login.jwt ?? "");
-          navigation.navigate("Market");
+          const success = await store(TOKEN_KEY, data.login.jwt ?? "");
+          if (success) {
+            navigation.navigate("Market");
+          }
         })();
       }
     }
     return () => {
       mounted = false;
     };
-  }, [data, dispatch]);
+  }, [data, dispatch, navigation]);
 
   const login = async () => {
     await loginHandler({

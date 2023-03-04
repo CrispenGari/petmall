@@ -1,27 +1,20 @@
-import { Field, Float, Int, ObjectType } from "type-graphql";
+import { Field, Int, ObjectType } from "type-graphql";
+import { PetType } from "../../common/objects/PetType";
+
+@ObjectType()
+export class PetsObjectType {
+  @Field(() => [PetType], { nullable: true })
+  pets?: PetType[];
+
+  @Field(() => Int, { nullable: false })
+  count: number;
+}
 
 @ObjectType()
 export class PetObjectType {
-  @Field(() => String)
-  id: string;
-  @Field(() => String)
-  name: string;
-  @Field(() => Int)
-  age: number;
-  @Field(() => String)
-  description: string;
-  @Field(() => String)
-  gender: string;
-  @Field(() => String)
-  image: string;
-  @Field(() => String)
-  category: string;
-  @Field(() => Boolean)
-  sold: boolean;
-  @Field(() => Float)
-  price: number;
+  @Field(() => PetType, { nullable: true })
+  pet?: PetType;
 
-  @Field(() => String)
-  createdAt: Date;
-  updatedAt: Date;
+  @Field(() => Boolean, { nullable: false })
+  success: boolean;
 }

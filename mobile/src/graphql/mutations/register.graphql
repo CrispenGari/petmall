@@ -5,7 +5,7 @@ mutation Register($input: RegisterInput!) {
     }
     jwt
     me {
-      ...UserFragment
+      ...MeFragment
     }
   }
 }

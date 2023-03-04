@@ -1,14 +1,8 @@
 query GetPetsByCategory($input: GetCategoryPetsInput!) {
   getCategoryPets(input: $input) {
-    id
-    name
-    age
-    description
-    gender
-    image
-    category
-    sold
-    price
-    createdAt
+    pets {
+      ...PetFragment
+    }
+    count
   }
 }

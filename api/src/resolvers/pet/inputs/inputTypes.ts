@@ -55,3 +55,9 @@ export class GetCategoryPetsInput {
   @Field(() => String, { nullable: false })
   category: String;
 }
+
+@InputType()
+export class GetPetByIdInput {
+  @Field(() => String, { nullable: false })
+  id: String;
+}

@@ -1,5 +1,9 @@
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
-import { GetCategoryPetsInput, NewPetInputType } from "./inputs/inputTypes";
+import {
+  GetCategoryPetsInput,
+  GetPetByIdInput,
+  NewPetInputType,
+} from "./inputs/inputTypes";
 import stream from "stream";
 import util from "util";
 import fs from "fs";
@@ -7,7 +11,7 @@ import path from "path";
 import { __storageBaseURL__ } from "../../constants";
 import { CtxType } from "../../types";
 import { verifyJwt } from "../../utils";
-import { PetObjectType } from "./objects/objectTypes";
+import { PetObjectType, PetsObjectType } from "./objects/objectTypes";
 export const storageDir = path.join(
   __dirname.replace("dist\\resolvers\\pet", ""),
   "storage"
@@ -16,21 +20,24 @@ const pipeline = util.promisify(stream.pipeline);
 
 @Resolver()
 export class PetResolver {
-  @Query(() => [PetObjectType])
+  @Query(() => PetsObjectType)
   async getCategoryPets(
     @Arg("input", () => GetCategoryPetsInput)
     { category }: GetCategoryPetsInput,
     @Ctx() { prisma }: CtxType
-  ): Promise<Array<PetObjectType>> {
+  ): Promise<PetsObjectType> {
     const pets = await prisma.pet.findMany({
       where: {
         category: category as any,
       },
     });
-    return pets;
+    return {
+      count: pets.length,
+      pets: pets ?? [],
+    };
   }
 
-  @Mutation(() => PetObjectType, { nullable: true })
+  @Mutation(() => PetObjectType, { nullable: false })
   async add(
     @Arg("input", () => NewPetInputType)
     {
@@ -44,13 +51,27 @@ export class PetResolver {
       location: loc,
     }: NewPetInputType,
     @Ctx() { prisma, request }: CtxType
-  ): Promise<PetObjectType | undefined> {
+  ): Promise<PetObjectType> {
     const jwt = request.headers.authorization?.split(" ")[1];
-    if (!!!jwt) return undefined;
+    console.log({ image });
+    if (!!!jwt)
+      return {
+        success: false,
+      };
+    console.log({ jwt });
     const payload = await verifyJwt(jwt);
-    if (!!!payload) return undefined;
+    console.log({ payload });
+    if (!!!payload)
+      return {
+        success: false,
+      };
     const user = await prisma.user.findFirst({ where: { id: payload.id } });
-    if (!!!user) return undefined;
+    if (!!!user)
+      return {
+        success: false,
+      };
+
+    console.log({ user });
     try {
       const _pet = await prisma.pet.create({
         data: {
@@ -87,6 +108,61 @@ export class PetResolver {
       });
 
       return {
+        success: true,
+        pet: {
+          age: pet.age,
+          category: pet.category,
+          createdAt: pet.createdAt,
+          description: pet.description,
+          gender: pet.gender,
+          id: pet.id,
+          image: pet.image,
+          name: pet.name,
+          price: pet.price,
+          sold: pet.sold,
+          updatedAt: pet.updatedAt,
+        },
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        success: false,
+      };
+    }
+  }
+
+  @Query(() => PetObjectType, { nullable: true })
+  async getPetById(
+    @Arg("input", () => GetPetByIdInput) { id }: GetPetByIdInput,
+    @Ctx() { prisma }: CtxType
+  ): Promise<PetObjectType> {
+    const pet = await prisma.pet.findFirst({
+      where: {
+        id: id as any,
+      },
+      include: {
+        location: true,
+        seller: true,
+        reactions: {
+          include: {
+            user: true,
+          },
+        },
+        comments: {
+          include: { user: true },
+        },
+      },
+    });
+
+    if (!!!pet) {
+      return {
+        success: false,
+      };
+    }
+
+    return {
+      success: true,
+      pet: {
         age: pet.age,
         category: pet.category,
         createdAt: pet.createdAt,
@@ -98,10 +174,32 @@ export class PetResolver {
         price: pet.price,
         sold: pet.sold,
         updatedAt: pet.updatedAt,
-      };
-    } catch (error) {
-      console.log(error);
-      return undefined;
-    }
+        location: {
+          id: pet.location.id,
+          city: pet.location.city as any,
+          country: pet.location.country as any,
+          isoCountryCode: pet.location.isoCountryCode as any,
+          district: pet.location.district as any,
+          name: pet.location.name as any,
+          createAt: pet.location.createdAt,
+          updateAt: pet.location.updatedAt,
+          subregion: pet.location.subregion as any,
+          streetNumber: pet.location.streetNumber as any,
+          street: pet.location.street as any,
+          region: pet.location.region as any,
+          timezone: pet.location.timezone as any,
+          postalCode: pet.location.postalCode as any,
+        },
+        seller: {
+          ...pet.seller,
+        },
+        reactions: {
+          ...pet.reactions,
+        },
+        comments: {
+          ...pet.comments,
+        },
+      },
+    };
   }
 }

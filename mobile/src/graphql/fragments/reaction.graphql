@@ -1,0 +1,9 @@
+fragment ReactionFragment on ReactionType {
+  id
+  reaction
+  createdAt
+  updatedAt
+  user {
+    ...UserFragment
+  }
+}

@@ -63,15 +63,17 @@ const Register: React.FunctionComponent<AppDrawerNavProps<"Register">> = ({
         setPassword("");
         dispatch(setUser(data.register.me || null));
         (async () => {
-          await store(TOKEN_KEY, data.register.jwt ?? "");
-          navigation.navigate("Market");
+          const success = await store(TOKEN_KEY, data.register.jwt ?? "");
+          if (success) {
+            navigation.navigate("Market");
+          }
         })();
       }
     }
     return () => {
       mounted = false;
     };
-  }, [data, dispatch]);
+  }, [data, dispatch, navigation]);
 
   const register = async () => {
     await registerHandler({

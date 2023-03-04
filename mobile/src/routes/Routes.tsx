@@ -4,7 +4,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { AppDrawerParamList } from "../params";
 import { Login, Register } from "../screens/auth";
 import Market from "../screens/app/Market";
-import { COLORS, FONTS } from "../constants";
+import { COLORS, FONTS, TOKEN_KEY } from "../constants";
 import Profile from "../screens/app/Profile";
 import AppDrawer from "../components/AppDrawer/AppDrawer";
 import { useMeQuery } from "../graphql/generated/graphql";
@@ -17,10 +17,10 @@ import { useLocationPermission, useMediaPermission } from "../hooks";
 import * as Location from "expo-location";
 import { StateType } from "../types";
 import PreviewPet from "../screens/app/PreviewPet";
+import { retrieve } from "../utils";
 const Drawer = createDrawerNavigator<AppDrawerParamList>();
 
 const Routes = () => {
-  const [{ fetching, data }] = useMeQuery();
   const { user } = useSelector((state: StateType) => state);
   const dispatch = useDispatch();
   const [location, setLocation] = useState<Location.LocationObject>();
@@ -45,6 +45,19 @@ const Routes = () => {
 
   React.useEffect(() => {
     let mounted: boolean = true;
+    if (mounted) {
+      (async () => {
+        const jwt = await retrieve(TOKEN_KEY);
+        console.log({ jwt });
+      })();
+    }
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
     (async () => {
       setLoading(true);
       if (granted && mounted && location && !!user) {
@@ -61,32 +74,20 @@ const Routes = () => {
     };
   }, [location, granted, user, dispatch]);
 
-  React.useEffect(() => {
-    let mounted: boolean = true;
-    if (mounted && !!data?.me) {
-      dispatch(setUser(data.me));
-    }
-    return () => {
-      mounted = false;
-    };
-  }, [dispatch, data]);
-
-  console.log({ location, fetching, loading });
-
-  if (fetching) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: COLORS.secondary,
-        }}
-      >
-        <BoxIndicator color={COLORS.main} size={20} />
-      </View>
-    );
-  }
+  // if (fetching) {
+  //   return (
+  //     <View
+  //       style={{
+  //         flex: 1,
+  //         justifyContent: "center",
+  //         alignItems: "center",
+  //         backgroundColor: COLORS.secondary,
+  //       }}
+  //     >
+  //       <BoxIndicator color={COLORS.main} size={20} />
+  //     </View>
+  //   );
+  // }
   return (
     <NavigationContainer>
       <Drawer.Navigator

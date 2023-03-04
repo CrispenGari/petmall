@@ -5,7 +5,7 @@ mutation Login($input: LoginInput!) {
     }
     jwt
     me {
-      ...UserFragment
+      ...MeFragment
     }
   }
 }

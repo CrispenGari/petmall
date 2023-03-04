@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,75 +8,91 @@ datasource db {
 }
 
 model User {
-  id       String  @unique @default(uuid())
-  email String @unique
+  id       String @unique @default(uuid())
+  email    String @unique
   password String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  comment Comment?
+  comment  Comment?
   reaction Reaction?
-  pets Pet[]
+  pets     Pet[]
 }
 
 model Location {
-  id       String  @unique @default(uuid())
-  district String?
-  city String?
-  street String?
-  region String?
-  country String?
-  postalCode String?
-  subregion String?
-  timezone String?
-  streetNumber String?
-  name String?
+  id             String  @unique @default(uuid())
+  district       String?
+  city           String?
+  street         String?
+  region         String?
+  country        String?
+  postalCode     String?
+  subregion      String?
+  timezone       String?
+  streetNumber   String?
+  name           String?
   isoCountryCode String?
 
-  pet Pet?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
+  pet Pet?
 }
+
 model Pet {
-  id       String  @unique @default(uuid())
+  id   String @unique @default(uuid())
   name String
-  age Int
+  age  Int
 
   description String
-  gender String
-  image String
-  category String
-  sold Boolean @default(false)
-  price Float
+  gender      String
+  image       String
+  category    String
+  sold        Boolean @default(false)
+  price       Float
 
-  seller User @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  reactions Reaction[]
+  comments  Comment[]
+
+  seller   User   @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   sellerId String
 
-  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  locationId String @unique
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  locationId String   @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
-model Comment{
-  id       String  @unique @default(uuid())
+model Comment {
+  id      String @unique @default(uuid())
   comment String
 
-  user User @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user   User   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   userId String @unique
+
+  reactions Reaction[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
+  Pet       Pet?     @relation(fields: [petId], references: [id])
+  petId     String?
 }
-model Reaction{
-  id       String  @unique @default(uuid())
+
+model Reaction {
+  id       String @unique @default(uuid())
   reaction String
 
-  user User @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user   User   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   userId String @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  pet   Pet?    @relation(fields: [petId], references: [id])
+  petId String?
+
+  comment   Comment? @relation(fields: [commentId], references: [id])
+  commentId String?
 }
