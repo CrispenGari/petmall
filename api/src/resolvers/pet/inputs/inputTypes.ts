@@ -39,9 +39,9 @@ export class NewPetInputType {
   @Field(() => String, { nullable: false })
   description: string;
   @Field(() => String, { nullable: false })
-  category: String;
+  category: string;
   @Field(() => String, { nullable: false })
-  gender: String;
+  gender: string;
   @Field(() => Float, { nullable: false })
   price: number;
   @Field(() => Int, { nullable: false })
@@ -53,11 +53,35 @@ export class NewPetInputType {
 @InputType()
 export class GetCategoryPetsInput {
   @Field(() => String, { nullable: false })
-  category: String;
+  category: string;
 }
 
 @InputType()
 export class GetPetByIdInput {
   @Field(() => String, { nullable: false })
+  id: string;
+}
+
+@InputType()
+export class MarkAsSoldInput {
+  @Field(() => String, { nullable: false })
   id: String;
+}
+
+@InputType()
+export class ReactToPetInput {
+  @Field(() => String, { nullable: false })
+  id: string;
+
+  @Field(() => String, { nullable: false })
+  reaction: string;
+}
+
+@InputType()
+export class CommentToPetInput {
+  @Field(() => String, { nullable: false })
+  id: string;
+
+  @Field(() => String, { nullable: false })
+  comment: string;
 }

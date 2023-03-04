@@ -1,8 +1,11 @@
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import {
+  CommentToPetInput,
   GetCategoryPetsInput,
   GetPetByIdInput,
+  MarkAsSoldInput,
   NewPetInputType,
+  ReactToPetInput,
 } from "./inputs/inputTypes";
 import stream from "stream";
 import util from "util";
@@ -53,14 +56,11 @@ export class PetResolver {
     @Ctx() { prisma, request }: CtxType
   ): Promise<PetObjectType> {
     const jwt = request.headers.authorization?.split(" ")[1];
-    console.log({ image });
     if (!!!jwt)
       return {
         success: false,
       };
-    console.log({ jwt });
     const payload = await verifyJwt(jwt);
-    console.log({ payload });
     if (!!!payload)
       return {
         success: false,
@@ -70,8 +70,6 @@ export class PetResolver {
       return {
         success: false,
       };
-
-    console.log({ user });
     try {
       const _pet = await prisma.pet.create({
         data: {
@@ -138,7 +136,7 @@ export class PetResolver {
   ): Promise<PetObjectType> {
     const pet = await prisma.pet.findFirst({
       where: {
-        id: id as any,
+        id,
       },
       include: {
         location: true,
@@ -200,6 +198,203 @@ export class PetResolver {
           ...pet.comments,
         },
       },
+    };
+  }
+
+  @Mutation(() => PetObjectType, { nullable: false })
+  async markAsSold(
+    @Arg("input", () => MarkAsSoldInput) { id }: MarkAsSoldInput,
+    @Ctx() { prisma, request }: CtxType
+  ): Promise<PetObjectType> {
+    const jwt = request.headers.authorization?.split(" ")[1];
+    if (!!!jwt)
+      return {
+        success: false,
+      };
+    const payload = await verifyJwt(jwt);
+    if (!!!payload)
+      return {
+        success: false,
+      };
+    const user = await prisma.user.findFirst({ where: { id: payload.id } });
+    if (!!!user)
+      return {
+        success: false,
+      };
+    try {
+      await prisma.pet.update({
+        where: {
+          id: id as string,
+        },
+        data: {
+          sold: true,
+        },
+      });
+    } catch (error) {
+      console.log({ error });
+      return {
+        success: false,
+      };
+    }
+    return {
+      success: true,
+    };
+  }
+
+  @Mutation(() => PetObjectType, { nullable: false })
+  async reactToPet(
+    @Arg("input", () => ReactToPetInput) { id, reaction }: ReactToPetInput,
+    @Ctx() { prisma, request }: CtxType
+  ): Promise<PetObjectType> {
+    const jwt = request.headers.authorization?.split(" ")[1];
+    if (!!!jwt)
+      return {
+        success: false,
+      };
+    const payload = await verifyJwt(jwt);
+    if (!!!payload)
+      return {
+        success: false,
+      };
+    const user = await prisma.user.findFirst({ where: { id: payload.id } });
+    if (!!!user)
+      return {
+        success: false,
+      };
+    const pet = await prisma.pet.findFirst({
+      where: {
+        id: id as string,
+      },
+      include: {
+        reactions: true,
+      },
+    });
+
+    if (!!!pet) {
+      return {
+        success: false,
+      };
+    }
+    // if you don't want to react to your own pet?
+    if (pet.sellerId === user.id) {
+      return { success: false };
+    }
+
+    if (!!pet.reactions.find((reaction) => reaction.userId === user.id)) {
+      // you liked the pet already
+      await prisma.reaction.delete({
+        where: {
+          userId: user.id,
+        },
+      });
+      return {
+        success: true,
+      };
+    }
+    try {
+      await prisma.reaction.create({
+        data: {
+          reaction,
+          user: {
+            connect: {
+              id: user.id,
+            },
+          },
+          pet: {
+            connect: {
+              id: pet.id,
+            },
+          },
+        },
+      });
+    } catch (error) {
+      console.log({ error });
+      return {
+        success: false,
+      };
+    }
+    return {
+      success: true,
+    };
+  }
+
+  @Mutation(() => PetObjectType, { nullable: false })
+  async commentToPet(
+    @Arg("input", () => CommentToPetInput) { id, comment }: CommentToPetInput,
+    @Ctx() { prisma, request }: CtxType
+  ): Promise<PetObjectType> {
+    const jwt = request.headers.authorization?.split(" ")[1];
+    if (!!!jwt)
+      return {
+        success: false,
+      };
+    const payload = await verifyJwt(jwt);
+    if (!!!payload)
+      return {
+        success: false,
+      };
+    const user = await prisma.user.findFirst({ where: { id: payload.id } });
+    if (!!!user)
+      return {
+        success: false,
+      };
+    const pet = await prisma.pet.findFirst({
+      where: {
+        id: id as string,
+      },
+      include: {
+        reactions: true,
+      },
+    });
+
+    if (!!!pet) {
+      return {
+        success: false,
+      };
+    }
+    // if you don't want to react to your own pet?
+    if (pet.sellerId === user.id) {
+      return { success: false };
+    }
+
+    if (!!pet.reactions.find((reaction) => reaction.userId === user.id)) {
+      // you liked the pet already
+      await prisma.reaction.delete({
+        where: {
+          userId: user.id,
+        },
+      });
+      return {
+        success: true,
+      };
+    }
+    try {
+      const cmt = await prisma.comment.create({
+        data: {
+          comment: comment,
+          user: {
+            connect: {
+              id: user.id,
+            },
+          },
+        },
+      });
+      await prisma.pet.update({
+        where: { id },
+        data: {
+          comments: {
+            connect: { id: cmt.id },
+          },
+        },
+      });
+    } catch (error) {
+      console.log({ error });
+      return {
+        success: false,
+      };
+    }
+    return {
+      success: true,
     };
   }
 }
