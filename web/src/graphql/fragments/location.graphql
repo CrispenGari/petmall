@@ -1,0 +1,15 @@
+fragment LocationFragment on LocationType {
+  id
+  name
+  city
+  isoCountryCode
+  streetNumber
+  timezone
+  subregion
+  country
+  postalCode
+  region
+  street
+  createAt
+  updateAt
+}

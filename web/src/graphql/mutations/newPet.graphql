@@ -1,0 +1,5 @@
+mutation NewPet($input: NewPetInputType!) {
+  add(input: $input) {
+    success
+  }
+}

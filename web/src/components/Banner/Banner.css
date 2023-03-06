@@ -1,0 +1,19 @@
+.banner {
+  width: 100%;
+  background-color: var(--main);
+  height: 70vh;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  user-zoom: none;
+  background-size: cover;
+  background-blend-mode: lighten;
+}
+.banner h1 {
+  color: white;
+  font-size: 3rem;
+  text-align: center;
+}
