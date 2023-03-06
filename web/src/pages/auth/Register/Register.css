@@ -1,0 +1,89 @@
+.register {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: var(--primary);
+  color: white;
+}
+.register::-webkit-scrollbar {
+  display: none;
+}
+.register__wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+.register__card {
+  padding: 20px !important;
+  width: 100% !important;
+  max-width: 400px !important;
+  user-select: none !important;
+  user-zoom: none !important;
+  border-radius: 5px;
+}
+.register__card__content > p {
+  text-align: center;
+  color: white;
+  font-size: 1rem;
+}
+.register__form {
+  margin-bottom: 10px;
+}
+.register__card__content > h1 {
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  color: white;
+}
+.register__card__content {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin-bottom: 30px !important;
+}
+.register__card__content > img {
+  user-zoom: none;
+  -webkit-user-drag: none;
+  width: 150px;
+}
+.register__form__input {
+  margin-bottom: 10px;
+}
+.register__form > button {
+  background-color: var(--secondary) !important;
+}
+.register__card > p {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.2rem;
+  color: white;
+}
+.register__card > p > span {
+  flex: 1;
+  border-bottom: 1px solid white;
+  margin-left: 10px;
+}
+.register__card > button {
+  background-color: var(--main) !important;
+}
+
+@media only screen and (max-width: 768px) {
+  /* iPads, Tablets */
+  .register__card {
+    border: none !important;
+  }
+}
+
+@media only screen and (orientation: landscape) {
+  .register {
+    overflow-y: scroll;
+  }
+  .register__wrapper {
+    padding: 30px 0;
+  }
+}

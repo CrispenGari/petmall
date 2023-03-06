@@ -26,6 +26,14 @@
   display: flex;
 }
 
+.app__header__right > a {
+  color: white;
+  margin-left: 10px;
+  text-decoration: underline;
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  padding: 20px 0;
+}
 @media only screen and (max-width: 768px) {
   .app__header {
     justify-content: center;

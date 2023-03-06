@@ -2,7 +2,7 @@ import React from "react";
 import { Navigate } from "react-router-dom";
 import { Routes as R, Route, BrowserRouter as Router } from "react-router-dom";
 import { Home } from "../pages/app";
-import {} from "../pages/auth";
+import { Login, Register } from "../pages/auth";
 import { NotFound } from "../pages/common";
 
 interface PropsType {
@@ -17,6 +17,9 @@ export class Routes extends React.Component<PropsType, StateType> {
         <R>
           <Route path="/" element={<Navigate to="/app/pets" replace />} />
           <Route path="/app/pets" caseSensitive element={<Home />} />
+          <Route path="/app/pet/new" caseSensitive element={<Home />} />
+          <Route path="/auth/login" caseSensitive element={<Login />} />
+          <Route path="/auth/register" caseSensitive element={<Register />} />
           <Route path="*" caseSensitive element={<NotFound />} />
         </R>
       </Router>

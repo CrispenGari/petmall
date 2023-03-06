@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { HeaderButton } from "..";
 import { withGlobalProps } from "../../hoc";
 import { GlobalPropsType } from "../../types";
@@ -34,19 +35,26 @@ class Header extends React.Component<PropsType, StateType> {
             <HeaderButton iconName="home" title="home" onClick={() => {}} />
           </div>
         </div>
-        <div className="app__header__right">
-          <HeaderButton
-            iconName="log out"
-            title="signout"
-            onClick={async () => {}}
-          />
-          <HeaderButton
-            iconName="settings"
-            title="settings"
-            onClick={() => {}}
-          />
-          <HeaderButton iconName="user" title="profile" onClick={() => {}} />
-        </div>
+        {!!user ? (
+          <div className="app__header__right">
+            <HeaderButton
+              iconName="log out"
+              title="signout"
+              onClick={async () => {}}
+            />
+            <HeaderButton iconName="add" title="add pet" onClick={() => {}} />
+            <HeaderButton iconName="user" title="profile" onClick={() => {}} />
+          </div>
+        ) : (
+          <div className="app__header__right">
+            <Link to={"/auth/login"} title="login">
+              Login
+            </Link>
+            <Link to={"/auth/register"} title="register">
+              Register
+            </Link>
+          </div>
+        )}
       </div>
     );
   }

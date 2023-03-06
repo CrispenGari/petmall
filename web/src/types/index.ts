@@ -27,3 +27,8 @@ export interface GlobalPropsType {
   dispatch: Dispatch<AnyAction>;
   user: User | null;
 }
+
+export type ErrorType = {
+  field: string;
+  message: string;
+};
