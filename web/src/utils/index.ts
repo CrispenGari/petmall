@@ -16,11 +16,11 @@ export const del = async (key: string): Promise<boolean> => {
   }
 };
 
-export const retrieve = async (key: string): Promise<string | null> => {
+export const retrieve = async (key: string): Promise<string> => {
   try {
     const data = await localStorage.getItem(key);
-    return data;
+    return data ?? "";
   } catch (error: any) {
-    return null;
+    return "";
   }
 };

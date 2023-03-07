@@ -1,12 +1,19 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Input, Icon, Message, Button, Form } from "semantic-ui-react";
+import { setUser } from "../../../actions";
 import { Footer } from "../../../components";
+import { TOKEN_KEY } from "../../../constants";
+import { useLoginMutation } from "../../../graphql/generated/graphql";
 import { ErrorType } from "../../../types";
+import { store } from "../../../utils";
 import "./Login.css";
 interface Props {}
-const Login: React.FC<Props> = ({}) => {
+const Login: React.FC<Props> = () => {
   const navigator = useNavigate();
+  const [{ fetching, data }, login] = useLoginMutation();
+  const dispatch = useDispatch();
   const [{ email, password }, setForm] = React.useState<{
     email: string;
     password: string;
@@ -28,8 +35,49 @@ const Login: React.FC<Props> = ({}) => {
   };
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log({ email, password });
+    await login({ input: { email, password } });
   };
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!data?.login) {
+      if (data.login.error) {
+        setForm((state) => ({ ...state, password: "", confirmPassword: "" }));
+        setError(data.login.error);
+      } else {
+        setError({ field: "", message: "" });
+      }
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [data]);
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!data?.login.jwt) {
+      (async () => {
+        const value = await store(TOKEN_KEY, data.login.jwt as any);
+        if (value) {
+          dispatch(setUser(data.login.me as any));
+        }
+      })();
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [data, dispatch]);
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!data?.login.jwt) {
+      setError({ field: "", message: "" });
+      setForm({ email: "", password: "" });
+      navigator("/app/pets", { replace: true });
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [data, navigator]);
+
   return (
     <div className="login">
       <div className="login__wrapper">
@@ -42,7 +90,7 @@ const Login: React.FC<Props> = ({}) => {
             </p>
           </div>
           <Form
-            // loading={loading}
+            loading={fetching}
             className={"login__form"}
             onSubmit={onSubmit}
           >
@@ -74,7 +122,7 @@ const Login: React.FC<Props> = ({}) => {
             />
             {error?.message && (
               <Message negative>
-                <p>{error ? error.message : ""}</p>
+                <p style={{ color: "red" }}>{error ? error.message : ""}</p>
               </Message>
             )}
             <Button color="green" type="submit" fluid>

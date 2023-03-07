@@ -1,5 +1,6 @@
 import React from "react";
 import { Banner, Header } from "../../../components";
+import { withGlobalProps } from "../../../hoc";
 import "./Home.css";
 interface PropsType {}
 interface StateType {}
@@ -18,4 +19,4 @@ class Home extends React.Component<PropsType, StateType> {
   }
 }
 
-export default Home;
+export default withGlobalProps(Home);

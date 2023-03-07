@@ -1,10 +1,6 @@
 import React from "react";
 import { TOKEN_KEY, url } from "../constants";
-import {
-  createClient,
-  Provider,
-  makeOperation,
-} from "urql";
+import { createClient, Provider, makeOperation, fetchExchange } from "urql";
 import { authExchange } from "@urql/exchange-auth";
 import { multipartFetchExchange } from "@urql/exchange-multipart-fetch";
 import { retrieve } from "../utils";
@@ -39,6 +35,7 @@ export const client = createClient({
         });
       },
     }),
+    fetchExchange,
     multipartFetchExchange,
   ],
 });

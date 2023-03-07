@@ -1,8 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { HeaderButton } from "..";
+import { setUser } from "../../actions";
+import { TOKEN_KEY } from "../../constants";
+import { LogoutDocument } from "../../graphql/generated/graphql";
 import { withGlobalProps } from "../../hoc";
+import { client } from "../../providers/UrqlProvider";
 import { GlobalPropsType } from "../../types";
+import { del } from "../../utils";
 import "./Header.css";
 interface PropsType {
   globalProps: GlobalPropsType;
@@ -14,11 +19,22 @@ class Header extends React.Component<PropsType, StateType> {
     this.state = {};
   }
 
+  signOut = async () => {
+    const { dispatch, location } = this.props.globalProps;
+    const { data } = await client.mutation(LogoutDocument, {}).toPromise();
+    if (data.logout) {
+      await del(TOKEN_KEY);
+      dispatch(setUser(null));
+      location.reload();
+    }
+  };
+
   render() {
     const {
       props: {
         globalProps: { user, navigate },
       },
+      signOut,
     } = this;
 
     return (
@@ -40,7 +56,7 @@ class Header extends React.Component<PropsType, StateType> {
             <HeaderButton
               iconName="log out"
               title="signout"
-              onClick={async () => {}}
+              onClick={signOut}
             />
             <HeaderButton iconName="add" title="add pet" onClick={() => {}} />
             <HeaderButton iconName="user" title="profile" onClick={() => {}} />

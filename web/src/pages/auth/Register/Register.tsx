@@ -1,12 +1,19 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Input, Icon, Message, Button, Form } from "semantic-ui-react";
+import { setUser } from "../../../actions";
 import { Footer } from "../../../components";
+import { TOKEN_KEY } from "../../../constants";
+import { useRegisterMutation } from "../../../graphql/generated/graphql";
 import { ErrorType } from "../../../types";
+import { store } from "../../../utils";
 import "./Register.css";
 interface Props {}
-const Register: React.FC<Props> = ({}) => {
+const Register: React.FC<Props> = () => {
   const navigator = useNavigate();
+  const [{ fetching, data }, register] = useRegisterMutation();
+  const dispatch = useDispatch();
   const [{ email, password, confirmPassword }, setForm] = React.useState<{
     email: string;
     password: string;
@@ -16,7 +23,6 @@ const Register: React.FC<Props> = ({}) => {
     password: "",
     confirmPassword: "",
   });
-
   const [error, setError] = React.useState<ErrorType>({
     field: "",
     message: "",
@@ -30,8 +36,50 @@ const Register: React.FC<Props> = ({}) => {
   };
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log({ email, password, confirmPassword });
+    await register({ input: { confirmPassword, email, password } });
   };
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!data?.register) {
+      if (data.register.error) {
+        setForm((state) => ({ ...state, password: "", confirmPassword: "" }));
+        setError(data.register.error);
+      } else {
+        setError({ field: "", message: "" });
+      }
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [data]);
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!data?.register.jwt) {
+      (async () => {
+        const value = await store(TOKEN_KEY, data.register.jwt as any);
+        if (value) {
+          dispatch(setUser(data.register.me as any));
+        }
+      })();
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [data, dispatch]);
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!data?.register.jwt) {
+      setError({ field: "", message: "" });
+      setForm({ email: "", password: "", confirmPassword: "" });
+      navigator("/app/pets", { replace: true });
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [data, navigator]);
+
   return (
     <div className="register">
       <div className="register__wrapper">
@@ -45,7 +93,7 @@ const Register: React.FC<Props> = ({}) => {
             </p>
           </div>
           <Form
-            // loading={loading}
+            loading={fetching}
             className={"register__form"}
             onSubmit={onSubmit}
           >
@@ -89,7 +137,7 @@ const Register: React.FC<Props> = ({}) => {
             />
             {error?.message && (
               <Message negative>
-                <p>{error ? error.message : ""}</p>
+                <p style={{ color: "red" }}>{error ? error.message : ""}</p>
               </Message>
             )}
             <Button color="green" type="submit" fluid>
