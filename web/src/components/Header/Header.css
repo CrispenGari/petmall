@@ -26,7 +26,8 @@
   display: flex;
 }
 
-.app__header__right > a {
+.app__header__right > a,
+.app__header__left > div > a {
   color: white;
   margin-left: 10px;
   text-decoration: underline;

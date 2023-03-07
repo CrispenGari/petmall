@@ -10,17 +10,8 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Location" (
     "id" TEXT NOT NULL,
-    "district" TEXT,
-    "city" TEXT,
-    "street" TEXT,
-    "region" TEXT,
-    "country" TEXT,
-    "postalCode" TEXT,
-    "subregion" TEXT,
-    "timezone" TEXT,
-    "streetNumber" TEXT,
-    "name" TEXT,
-    "isoCountryCode" TEXT,
+    "lat" DOUBLE PRECISION NOT NULL,
+    "lon" DOUBLE PRECISION NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL
 );
@@ -48,7 +39,8 @@ CREATE TABLE "Comment" (
     "comment" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "petId" TEXT
 );
 
 -- CreateTable
@@ -97,6 +89,9 @@ ALTER TABLE "Pet" ADD CONSTRAINT "Pet_locationId_fkey" FOREIGN KEY ("locationId"
 
 -- AddForeignKey
 ALTER TABLE "Comment" ADD CONSTRAINT "Comment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "Comment" ADD CONSTRAINT "Comment_petId_fkey" FOREIGN KEY ("petId") REFERENCES "Pet"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Reaction" ADD CONSTRAINT "Reaction_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;

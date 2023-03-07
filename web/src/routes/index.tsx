@@ -17,7 +17,6 @@ export class Routes extends React.Component<PropsType, StateType> {
         <R>
           <Route path="/" element={<Navigate to="/app/pets" replace />} />
           <Route path="/app/pets" caseSensitive element={<Home />} />
-          <Route path="/app/pet/new" caseSensitive element={<Home />} />
           <Route path="/auth/login" caseSensitive element={<Login />} />
           <Route path="/auth/register" caseSensitive element={<Register />} />
           <Route path="/app/pet/:petId" caseSensitive element={<Pet />} />

@@ -45,35 +45,17 @@ export type GetPetByIdInput = {
 };
 
 export type LocationInput = {
-  city?: InputMaybe<Scalars['String']>;
-  country?: InputMaybe<Scalars['String']>;
-  district?: InputMaybe<Scalars['String']>;
-  isoCountryCode?: InputMaybe<Scalars['String']>;
-  name?: InputMaybe<Scalars['String']>;
-  postalCode?: InputMaybe<Scalars['String']>;
-  region?: InputMaybe<Scalars['String']>;
-  street?: InputMaybe<Scalars['String']>;
-  streetNumber?: InputMaybe<Scalars['String']>;
-  subregion?: InputMaybe<Scalars['String']>;
-  timezone?: InputMaybe<Scalars['String']>;
+  lat: Scalars['Float'];
+  lon: Scalars['Float'];
 };
 
 export type LocationType = {
   __typename?: 'LocationType';
-  city?: Maybe<Scalars['String']>;
-  country?: Maybe<Scalars['String']>;
   createAt?: Maybe<Scalars['String']>;
-  district?: Maybe<Scalars['String']>;
   id: Scalars['String'];
-  isoCountryCode?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
+  lat?: Maybe<Scalars['Float']>;
+  lon?: Maybe<Scalars['Float']>;
   pet?: Maybe<PetType>;
-  postalCode?: Maybe<Scalars['String']>;
-  region?: Maybe<Scalars['String']>;
-  street?: Maybe<Scalars['String']>;
-  streetNumber?: Maybe<Scalars['String']>;
-  subregion?: Maybe<Scalars['String']>;
-  timezone?: Maybe<Scalars['String']>;
   updateAt?: Maybe<Scalars['String']>;
 };
 
@@ -247,11 +229,11 @@ export type CommentFragmentFragment = { __typename?: 'CommentType', id: string, 
 
 export type ErrorFragmentFragment = { __typename?: 'ErrorType', field: string, message: string };
 
-export type LocationFragmentFragment = { __typename?: 'LocationType', id: string, name?: string | null, city?: string | null, isoCountryCode?: string | null, streetNumber?: string | null, timezone?: string | null, subregion?: string | null, country?: string | null, postalCode?: string | null, region?: string | null, street?: string | null, createAt?: string | null, updateAt?: string | null };
+export type LocationFragmentFragment = { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null };
 
 export type MeFragmentFragment = { __typename?: 'MeObjectType', id: string, email: string, createdAt: string, updatedAt: string };
 
-export type PetFragmentFragment = { __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email?: string | null, createAt?: string | null, updateAt?: string | null } | null, location?: { __typename?: 'LocationType', id: string, name?: string | null, city?: string | null, isoCountryCode?: string | null, streetNumber?: string | null, timezone?: string | null, subregion?: string | null, country?: string | null, postalCode?: string | null, region?: string | null, street?: string | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null, createAt?: string | null, updateAt?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null, createAt?: string | null, updateAt?: string | null } | null }> | null };
+export type PetFragmentFragment = { __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email?: string | null, createAt?: string | null, updateAt?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null, createAt?: string | null, updateAt?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null, createAt?: string | null, updateAt?: string | null } | null }> | null };
 
 export type ReactionFragmentFragment = { __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null, createAt?: string | null, updateAt?: string | null } | null };
 
@@ -288,14 +270,14 @@ export type GetPetByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetPetByIdQuery = { __typename?: 'Query', getPetById?: { __typename?: 'PetObjectType', success: boolean, pet?: { __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email?: string | null, createAt?: string | null, updateAt?: string | null } | null, location?: { __typename?: 'LocationType', id: string, name?: string | null, city?: string | null, isoCountryCode?: string | null, streetNumber?: string | null, timezone?: string | null, subregion?: string | null, country?: string | null, postalCode?: string | null, region?: string | null, street?: string | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null, createAt?: string | null, updateAt?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null, createAt?: string | null, updateAt?: string | null } | null }> | null } | null } | null };
+export type GetPetByIdQuery = { __typename?: 'Query', getPetById?: { __typename?: 'PetObjectType', success: boolean, pet?: { __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email?: string | null, createAt?: string | null, updateAt?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null, createAt?: string | null, updateAt?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null, createAt?: string | null, updateAt?: string | null } | null }> | null } | null } | null };
 
 export type GetPetsByCategoryQueryVariables = Exact<{
   input: GetCategoryPetsInput;
 }>;
 
 
-export type GetPetsByCategoryQuery = { __typename?: 'Query', getCategoryPets: { __typename?: 'PetsObjectType', count: number, pets?: Array<{ __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email?: string | null, createAt?: string | null, updateAt?: string | null } | null, location?: { __typename?: 'LocationType', id: string, name?: string | null, city?: string | null, isoCountryCode?: string | null, streetNumber?: string | null, timezone?: string | null, subregion?: string | null, country?: string | null, postalCode?: string | null, region?: string | null, street?: string | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null, createAt?: string | null, updateAt?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null, createAt?: string | null, updateAt?: string | null } | null }> | null }> | null } };
+export type GetPetsByCategoryQuery = { __typename?: 'Query', getCategoryPets: { __typename?: 'PetsObjectType', count: number, pets?: Array<{ __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email?: string | null, createAt?: string | null, updateAt?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null, createAt?: string | null, updateAt?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null, createAt?: string | null, updateAt?: string | null } | null }> | null }> | null } };
 
 export type HelloQueryVariables = Exact<{
   name: Scalars['String'];
@@ -345,16 +327,8 @@ export const UserFragmentFragmentDoc = gql`
 export const LocationFragmentFragmentDoc = gql`
     fragment LocationFragment on LocationType {
   id
-  name
-  city
-  isoCountryCode
-  streetNumber
-  timezone
-  subregion
-  country
-  postalCode
-  region
-  street
+  lat
+  lon
   createAt
   updateAt
 }

@@ -11,7 +11,7 @@ Online pet marketing made easy online.
 ```shell
 - api
 ```
-
+<!-- http://www.geoplugin.net/extras/location.gp?lat=-32.9721835&long=27.909569&format=json -->
 ```shell
 curl http://localhost:3001/graphql -F operations='{"query":"mutation NewPet($input: NewPetInputType!){ add(input:$input) }", "variables":{"input": { "image":null } } }' -F map='{ "0": ["variables.input.image"] }' -F 0=@male.jpg
 ```

@@ -7,6 +7,7 @@ class Pet extends React.Component<PropsType, StateType> {
     super(props);
     this.state = {};
   }
+
   render() {
     const {} = this;
     return (

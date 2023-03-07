@@ -85,7 +85,8 @@ export class PetResolver {
           image: "",
           location: {
             create: {
-              ...loc,
+              lat: loc?.lat ?? 0,
+              lon: loc?.lon ?? 0,
             },
           },
         },
@@ -174,19 +175,10 @@ export class PetResolver {
         updatedAt: pet.updatedAt,
         location: {
           id: pet.location.id,
-          city: pet.location.city as any,
-          country: pet.location.country as any,
-          isoCountryCode: pet.location.isoCountryCode as any,
-          district: pet.location.district as any,
-          name: pet.location.name as any,
+          lat: pet.location.lat,
+          lon: pet.location.lon,
           createAt: pet.location.createdAt,
           updateAt: pet.location.updatedAt,
-          subregion: pet.location.subregion as any,
-          streetNumber: pet.location.streetNumber as any,
-          street: pet.location.street as any,
-          region: pet.location.region as any,
-          timezone: pet.location.timezone as any,
-          postalCode: pet.location.postalCode as any,
         },
         seller: {
           ...pet.seller,

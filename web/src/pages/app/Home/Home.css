@@ -1,0 +1,10 @@
+.home {
+  width: 100vw;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  background-color: var(--primary);
+}
+.home::-webkit-scrollbar {
+  display: none;
+}

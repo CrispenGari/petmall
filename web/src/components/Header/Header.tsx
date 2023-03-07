@@ -47,9 +47,17 @@ class Header extends React.Component<PropsType, StateType> {
               navigate("/app/pets");
             }}
           />
-          <div className="">
-            <HeaderButton iconName="home" title="home" onClick={() => {}} />
-          </div>
+          {!!user ? (
+            <div className="">
+              <HeaderButton iconName="home" title="home" onClick={() => {}} />
+            </div>
+          ) : (
+            <div>
+              <Link to={"/"} title="home">
+                Home
+              </Link>
+            </div>
+          )}
         </div>
         {!!user ? (
           <div className="app__header__right">
@@ -58,7 +66,13 @@ class Header extends React.Component<PropsType, StateType> {
               title="signout"
               onClick={signOut}
             />
-            <HeaderButton iconName="add" title="add pet" onClick={() => {}} />
+            <HeaderButton
+              iconName="add"
+              title="add pet"
+              onClick={() => {
+                navigate("/app/pet/new");
+              }}
+            />
             <HeaderButton iconName="user" title="profile" onClick={() => {}} />
           </div>
         ) : (

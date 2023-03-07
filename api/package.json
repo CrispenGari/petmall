@@ -39,6 +39,7 @@
     "mercurius-upload": "^6.0.1",
     "prisma": "^4.10.1",
     "reflect-metadata": "^0.1.13",
+    "reverse-geocoding": "^3.0.2",
     "type-graphql": "^2.0.0-beta.1",
     "ws": "^8.12.1",
     "yarn": "^1.22.19"

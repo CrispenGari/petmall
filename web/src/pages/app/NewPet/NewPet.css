@@ -1,0 +1,42 @@
+.new__pet {
+  width: 100vw;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  background-color: var(--primary);
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  user-zoom: none;
+}
+.new__pet::-webkit-scrollbar {
+  display: none;
+}
+.new__pet__form > h1 {
+  color: white !important;
+  text-align: center;
+}
+.new__pet::-webkit-scrollbar {
+  display: none;
+}
+.new__pet__form__input {
+  margin-bottom: 10px !important;
+}
+.new__pet__form {
+  margin: 10px;
+  width: 100%;
+  max-width: 500px !important;
+}
+.new__pet__form > label {
+  margin-bottom: 10px !important;
+  background-color: white !important;
+  height: 100px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+}
+.new__pet__create__btn {
+  background-color: var(--secondary) !important;
+  margin: 30px 0 !important;
+}

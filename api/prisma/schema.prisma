@@ -22,17 +22,8 @@ model User {
 
 model Location {
   id             String  @unique @default(uuid())
-  district       String?
-  city           String?
-  street         String?
-  region         String?
-  country        String?
-  postalCode     String?
-  subregion      String?
-  timezone       String?
-  streetNumber   String?
-  name           String?
-  isoCountryCode String?
+  lat Float
+  lon Float
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

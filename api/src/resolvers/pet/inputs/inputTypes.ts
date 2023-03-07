@@ -1,31 +1,12 @@
-import { InputType, Field, Float, Int, registerEnumType } from "type-graphql";
-import { Category, Gender } from "../../../types";
+import { InputType, Field, Float, Int } from "type-graphql";
 import GraphQLUpload from "graphql-upload/GraphQLUpload.js";
 import { FileUpload } from "graphql-upload/Upload";
 @InputType()
 export class LocationInput {
-  @Field(() => String, { nullable: true })
-  district?: string;
-  @Field(() => String, { nullable: true })
-  city?: string;
-  @Field(() => String, { nullable: true })
-  street?: string;
-  @Field(() => String, { nullable: true })
-  region?: string;
-  @Field(() => String, { nullable: true })
-  country?: string;
-  @Field(() => String, { nullable: true })
-  postalCode?: string;
-  @Field(() => String, { nullable: true })
-  subregion?: string;
-  @Field(() => String, { nullable: true })
-  timezone?: string;
-  @Field(() => String, { nullable: true })
-  streetNumber?: string;
-  @Field(() => String, { nullable: true })
-  name?: string;
-  @Field(() => String, { nullable: true })
-  isoCountryCode?: string;
+  @Field(() => Float, { nullable: false })
+  lat: number;
+  @Field(() => Float, { nullable: false })
+  lon: number;
 }
 
 @InputType()
