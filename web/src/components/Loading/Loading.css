@@ -1,0 +1,12 @@
+.loading {
+  width: 100vw;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  background-color: var(--primary);
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}

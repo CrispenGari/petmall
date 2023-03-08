@@ -4,6 +4,7 @@ fragment ReactionFragment on ReactionType {
   createdAt
   updatedAt
   user {
-    ...UserFragment
+    id
+    email
   }
 }

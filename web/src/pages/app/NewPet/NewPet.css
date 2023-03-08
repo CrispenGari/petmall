@@ -10,6 +10,23 @@
   user-select: none;
   user-zoom: none;
 }
+.new__pet__preview__image {
+  width: 100%;
+  height: 200px;
+  background-color: white;
+  border-radius: 5px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.new__pet__preview__image > img {
+  height: 100%;
+  object-fit: contain;
+  -webkit-user-drag: none;
+}
 .new__pet::-webkit-scrollbar {
   display: none;
 }
@@ -32,11 +49,18 @@
   margin-bottom: 10px !important;
   background-color: white !important;
   height: 100px;
-  padding: 30px;
   display: flex;
   flex-direction: column;
+  border: 1px dashed var(--secondary);
+  border-radius: 5px;
+  justify-content: center;
+  align-items: center;
 }
 .new__pet__create__btn {
   background-color: var(--secondary) !important;
   margin: 30px 0 !important;
+}
+.new__pet__form__dragzone {
+  font-size: 1.2rem;
+  color: var(--main);
 }

@@ -11,7 +11,7 @@ class Pet extends React.Component<PropsType, StateType> {
   render() {
     const {} = this;
     return (
-      <div className="Pet">
+      <div className="pet">
         <h1>Hello from Pet.tsx</h1>
       </div>
     );

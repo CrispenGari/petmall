@@ -1,22 +1,41 @@
 import React from "react";
-import { Banner, Header } from "../../../components";
-import { withGlobalProps } from "../../../hoc";
-import "./Home.css";
-interface PropsType {}
-interface StateType {}
-class Home extends React.Component<PropsType, StateType> {
-  constructor(props: PropsType) {
-    super(props);
-    this.state = {};
-  }
-  render() {
-    return (
-      <div className="home">
-        <Header />
-        <Banner />
-      </div>
-    );
-  }
-}
+import { useDispatch } from "react-redux";
+import { setUser } from "../../../actions";
+import { Header, Banner, Loading, FlatList } from "../../../components";
+import { useMeQuery } from "../../../graphql/generated/graphql";
 
-export default withGlobalProps(Home);
+import "./Home.css";
+interface Props {}
+const Home: React.FC<Props> = () => {
+  const dispatch = useDispatch();
+  const [{ data, fetching }] = useMeQuery();
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!data?.me) {
+      dispatch(
+        setUser({
+          createdAt: data.me.createdAt,
+          email: data.me.email,
+          id: data.me.id,
+          updatedAt: data.me.updatedAt,
+        })
+      );
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [dispatch, data]);
+
+  if (fetching) {
+    return <Loading />;
+  }
+  return (
+    <div className="home">
+      <Header />
+      <Banner />
+      <FlatList title="Dogs" subtitle="All dogs in the market." />
+    </div>
+  );
+};
+
+export default Home;
