@@ -1,0 +1,29 @@
+.no__pets {
+  width: 180px;
+  min-width: 180px;
+  height: 250px;
+  cursor: pointer;
+  margin-right: 10px;
+  padding: 5px;
+  background-color: var(--primary);
+  border-radius: 5px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+  user-zoom: none;
+  transition: transform 100ms ease-out;
+}
+.no__pets > h1 {
+  color: white;
+  font-size: 1rem;
+  text-align: center;
+  color: gray;
+  font-weight: 500;
+}
+.no__pets:hover {
+  cursor: pointer;
+  transform: scale(1.09);
+  border-radius: 5px;
+}

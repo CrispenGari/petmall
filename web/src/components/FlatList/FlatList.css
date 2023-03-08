@@ -1,2 +1,28 @@
 .flatlist {
+  /* height: 200px !important; */
+  background-color: var(--secondary);
+  padding: 20px;
+  margin-bottom: 10px;
+  user-select: none;
+  user-zoom: none;
+}
+.flatlist > h1 {
+  text-transform: capitalize;
+  color: white;
+  font-size: 1.4rem;
+  letter-spacing: 1px;
+  margin-bottom: 0;
+}
+.flatlist > p {
+  font-size: 1.1rem;
+}
+.flatlist__items {
+  display: flex;
+  width: 100%;
+  overflow-y: hidden;
+  overflow-x: scroll;
+}
+
+.flatlist__items::-webkit-scrollbar {
+  display: none !important;
 }

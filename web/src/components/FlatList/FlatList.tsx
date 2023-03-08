@@ -1,5 +1,7 @@
 import React from "react";
 import { useGetPetsByCategoryQuery } from "../../graphql/generated/graphql";
+import "./FlatList.css";
+import { NoPets, Pet } from "..";
 
 interface Props {
   title: string;
@@ -9,7 +11,7 @@ const FlatList: React.FC<Props> = ({ title, subtitle }) => {
   const [{ data, fetching }] = useGetPetsByCategoryQuery({
     variables: {
       input: {
-        category: "CATS",
+        category: title.toUpperCase(),
       },
     },
   });
@@ -18,7 +20,15 @@ const FlatList: React.FC<Props> = ({ title, subtitle }) => {
     <div className="flatlist">
       <h1>{title}</h1>
       <p>{subtitle}</p>
-      <div className="flatlist__items"></div>
+      <div className="flatlist__items">
+        {data?.getCategoryPets.count === 0 ? (
+          <NoPets category={title} />
+        ) : (
+          data?.getCategoryPets.pets?.map((pet) => (
+            <Pet key={pet.id} pet={pet} />
+          ))
+        )}
+      </div>
     </div>
   );
 };

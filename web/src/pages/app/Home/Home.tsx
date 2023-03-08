@@ -2,6 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../../actions";
 import { Header, Banner, Loading, FlatList } from "../../../components";
+import { PETS_CATEGORIES } from "../../../constants";
 import { useMeQuery } from "../../../graphql/generated/graphql";
 
 import "./Home.css";
@@ -33,7 +34,13 @@ const Home: React.FC<Props> = () => {
     <div className="home">
       <Header />
       <Banner />
-      <FlatList title="Dogs" subtitle="All dogs in the market." />
+      {PETS_CATEGORIES.map((category) => (
+        <FlatList
+          title={category}
+          key={category}
+          subtitle={`All ${category.toLowerCase()} in the market.`}
+        />
+      ))}
     </div>
   );
 };
