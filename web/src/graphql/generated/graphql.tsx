@@ -239,6 +239,13 @@ export type ReactionFragmentFragment = { __typename?: 'ReactionType', id: string
 
 export type UserFragmentFragment = { __typename?: 'UserType', id: string, email?: string | null, createAt?: string | null, updateAt?: string | null };
 
+export type CommentToPetMutationVariables = Exact<{
+  input: CommentToPetInput;
+}>;
+
+
+export type CommentToPetMutation = { __typename?: 'Mutation', commentToPet: { __typename?: 'PetObjectType', success: boolean } };
+
 export type LoginMutationVariables = Exact<{
   input: LoginInput;
 }>;
@@ -387,6 +394,17 @@ export const UserFragmentFragmentDoc = gql`
   updateAt
 }
     `;
+export const CommentToPetDocument = gql`
+    mutation CommentToPet($input: CommentToPetInput!) {
+  commentToPet(input: $input) {
+    success
+  }
+}
+    `;
+
+export function useCommentToPetMutation() {
+  return Urql.useMutation<CommentToPetMutation, CommentToPetMutationVariables>(CommentToPetDocument);
+};
 export const LoginDocument = gql`
     mutation Login($input: LoginInput!) {
   login(input: $input) {

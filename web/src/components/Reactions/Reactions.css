@@ -1,0 +1,22 @@
+.reactions {
+  display: flex;
+  width: fit-content;
+  padding: 5px;
+  background-color: white;
+}
+.reaction__button {
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  color: white;
+  background-color: var(--primary);
+  border-radius: 50%;
+  margin-right: 5px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  font-size: 1.5rem;
+}
+.reaction__button--active {
+  background-color: var(--main);
+}

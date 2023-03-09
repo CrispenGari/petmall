@@ -52,7 +52,7 @@ class Pet extends React.Component<PropsType, StateType> {
           <div className="pet__details__stats">
             <p>
               <Icon name="like" />
-              <span>{pet.reactions?.length ?? 0} likes</span>
+              <span>{pet.reactions?.length ?? 0} reactions</span>
             </p>
             <p>
               <Icon name="comments" />

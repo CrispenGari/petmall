@@ -15,8 +15,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  comment  Comment?
-  reaction Reaction?
+  comment  Comment[]
+  reaction Reaction[]
   pets     Pet[]
 }
 
@@ -61,7 +61,7 @@ model Comment {
   comment String
 
   user   User   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  userId String @unique
+  userId String
 
   reactions Reaction[]
 
@@ -76,7 +76,7 @@ model Reaction {
   reaction String
 
   user   User   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  userId String @unique
+  userId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

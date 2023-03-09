@@ -73,13 +73,7 @@ CREATE UNIQUE INDEX "Pet_locationId_key" ON "Pet"("locationId");
 CREATE UNIQUE INDEX "Comment_id_key" ON "Comment"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Comment_userId_key" ON "Comment"("userId");
-
--- CreateIndex
 CREATE UNIQUE INDEX "Reaction_id_key" ON "Reaction"("id");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Reaction_userId_key" ON "Reaction"("userId");
 
 -- AddForeignKey
 ALTER TABLE "Pet" ADD CONSTRAINT "Pet_sellerId_fkey" FOREIGN KEY ("sellerId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -4,6 +4,13 @@ export const constants = {
 };
 export const url = "http://127.0.0.1:3001/graphql";
 
+export const REACTIONS = [
+  "LIKE",
+  "LOVE",
+  "OFFER_LOVE",
+  "OFFER_MONEY",
+  "DISLIKE",
+];
 export const PETS_CATEGORIES = [
   "CATS",
   "DOGS",

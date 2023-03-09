@@ -1,0 +1,5 @@
+mutation CommentToPet($input: CommentToPetInput!) {
+  commentToPet(input: $input) {
+    success
+  }
+}

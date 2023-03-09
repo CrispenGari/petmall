@@ -268,9 +268,9 @@ export class PetResolver {
       };
     }
     // if you don't want to react to your own pet?
-    if (pet.sellerId === user.id) {
-      return { success: false };
-    }
+    // if (pet.sellerId === user.id) {
+    //   return { success: false };
+    // }
 
     if (!!pet.reactions.find((reaction) => reaction.userId === user.id)) {
       // you liked the pet already
@@ -342,22 +342,6 @@ export class PetResolver {
     if (!!!pet) {
       return {
         success: false,
-      };
-    }
-    // if you don't want to react to your own pet?
-    if (pet.sellerId === user.id) {
-      return { success: false };
-    }
-
-    if (!!pet.reactions.find((reaction) => reaction.userId === user.id)) {
-      // you liked the pet already
-      await prisma.reaction.delete({
-        where: {
-          userId: user.id,
-        },
-      });
-      return {
-        success: true,
       };
     }
     try {
