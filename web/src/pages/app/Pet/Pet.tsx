@@ -6,6 +6,7 @@ import {
   CommentType,
   useCommentToPetMutation,
   useGetPetByIdQuery,
+  useReplyCommentMutation,
 } from "../../../graphql/generated/graphql";
 import { withGlobalProps } from "../../../hoc";
 import { GlobalPropsType } from "../../../types";
@@ -21,21 +22,37 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
   const [{ data }, refetchPet] = useGetPetByIdQuery({
     variables: { input: { id: params.petId as string } },
   });
-
   const [{ data: result, fetching }, commentToPet] = useCommentToPetMutation();
+  const [{ data: result0, fetching: loading }, replyToComment] =
+    useReplyCommentMutation();
   const [comment, setComment] = React.useState<string>("");
   const [reaction, setReaction] = React.useState<string>("");
-  const [replyTo, setReplyTo] = React.useState<CommentType | undefined>();
+  const [replyTo, setReplyTo] = React.useState<
+    | (CommentType & {
+        parentCommentId: string;
+      })
+    | undefined
+  >();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!!!comment.trim()) return;
-    await commentToPet({
-      input: {
-        id: params.petId as string,
-        comment,
-      },
-    });
+    if (!!replyTo) {
+      await replyToComment({
+        input: {
+          comment,
+          id: replyTo.parentCommentId,
+        },
+      });
+    } else {
+      await commentToPet({
+        input: {
+          id: params.petId as string,
+          comment,
+        },
+      });
+    }
+
     setComment("");
     await refetchPet();
   };
@@ -48,8 +65,6 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
       mounted = false;
     };
   }, [data]);
-
-  console.log({ result });
   return (
     <div className="pet__page">
       <Header />
@@ -149,7 +164,7 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
               data?.getPetById?.pet?.comments?.map((comment) => (
                 <Comment
                   key={comment.id}
-                  comment={comment}
+                  comment={comment as any}
                   setReplyTo={setReplyTo}
                 />
               ))
@@ -165,7 +180,7 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
               />
             </p>
           ) : null}
-          <Form loading={fetching} onSubmit={onSubmit}>
+          <Form loading={fetching || loading} onSubmit={onSubmit}>
             <TextArea
               placeholder={
                 !!!replyTo

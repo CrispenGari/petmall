@@ -3,6 +3,31 @@ fragment CommentFragment on CommentType {
   comment
   createdAt
   updatedAt
+  reactions {
+    id
+    reaction
+    user {
+      email
+      id
+    }
+  }
+  replies {
+    reactions {
+      id
+      reaction
+      user {
+        email
+        id
+      }
+    }
+    user {
+      id
+      email
+    }
+    comment
+    createdAt
+    updatedAt
+  }
   user {
     id
     email

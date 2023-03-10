@@ -159,8 +159,6 @@ export class PetResolver {
       },
     });
 
-    console.log(pet);
-
     if (!!!pet) {
       return {
         success: false,
@@ -192,7 +190,7 @@ export class PetResolver {
           ...pet.seller,
         },
         reactions: pet.reactions,
-        comments: {},
+        comments: pet.comments,
       },
     };
   }

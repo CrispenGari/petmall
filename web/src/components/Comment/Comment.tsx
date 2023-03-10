@@ -7,13 +7,35 @@ import CommentReactions from "../CommentReactions/CommentReactions";
 import "./Comment.css";
 interface Props {
   comment: CommentType;
-  setReplyTo: React.Dispatch<React.SetStateAction<CommentType | undefined>>;
+  setReplyTo: React.Dispatch<
+    React.SetStateAction<
+      | (CommentType & {
+          parentCommentId: string;
+        })
+      | undefined
+    >
+  >;
 }
 const Comment: React.FC<Props> = ({ comment, setReplyTo }) => {
   return (
     <div className="comment__main">
-      <CommentChild comment={comment} withReply setReplyTo={setReplyTo} />
-      <div className="comment__responses"></div>
+      <CommentChild
+        parentCommentId={comment.id}
+        comment={comment}
+        withReply
+        setReplyTo={setReplyTo}
+      />
+      <div className="comment__responses">
+        {comment.replies?.map((reply) => (
+          <CommentChild
+            parentCommentId={comment.id}
+            comment={reply}
+            key={reply.id}
+            withReply
+            setReplyTo={setReplyTo}
+          />
+        ))}
+      </div>
     </div>
   );
 };
@@ -23,8 +45,16 @@ export default Comment;
 const CommentChild: React.FunctionComponent<{
   comment: CommentType;
   withReply?: boolean;
-  setReplyTo?: React.Dispatch<React.SetStateAction<CommentType | undefined>>;
-}> = ({ comment, withReply, setReplyTo }) => {
+  parentCommentId: string;
+  setReplyTo: React.Dispatch<
+    React.SetStateAction<
+      | (CommentType & {
+          parentCommentId: string;
+        })
+      | undefined
+    >
+  >;
+}> = ({ comment, withReply, setReplyTo, parentCommentId }) => {
   const [reaction, setReaction] = React.useState<string>("");
   return (
     <div className="comment">
@@ -39,7 +69,10 @@ const CommentChild: React.FunctionComponent<{
             className="comment__details__reply__button"
             title="reply"
             onClick={() => {
-              setReplyTo!(comment);
+              setReplyTo!({
+                ...comment,
+                parentCommentId,
+              });
             }}
           >
             <FaReply />

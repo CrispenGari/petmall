@@ -26,6 +26,8 @@ export type CommentType = {
   comment: Scalars['String'];
   createdAt: Scalars['String'];
   id: Scalars['String'];
+  reactions?: Maybe<Array<ReactionType>>;
+  replies?: Maybe<Array<CommentType>>;
   updatedAt: Scalars['String'];
   user?: Maybe<UserType>;
 };
@@ -92,6 +94,7 @@ export type Mutation = {
   markAsSold: PetObjectType;
   reactToPet: PetObjectType;
   register: RegisterObjectType;
+  replyToComment: PetObjectType;
 };
 
 
@@ -122,6 +125,11 @@ export type MutationReactToPetArgs = {
 
 export type MutationRegisterArgs = {
   input: RegisterInput;
+};
+
+
+export type MutationReplyToCommentArgs = {
+  input: ReplyToCommentInput;
 };
 
 export type NewPetInputType = {
@@ -216,6 +224,11 @@ export type RegisterObjectType = {
   me?: Maybe<MeObjectType>;
 };
 
+export type ReplyToCommentInput = {
+  comment: Scalars['String'];
+  id: Scalars['String'];
+};
+
 export type UserType = {
   __typename?: 'UserType';
   createAt?: Maybe<Scalars['String']>;
@@ -225,7 +238,7 @@ export type UserType = {
   updateAt?: Maybe<Scalars['String']>;
 };
 
-export type CommentFragmentFragment = { __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null } | null };
+export type CommentFragmentFragment = { __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, user?: { __typename?: 'UserType', email?: string | null, id: string } | null }> | null, replies?: Array<{ __typename?: 'CommentType', comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, user?: { __typename?: 'UserType', email?: string | null, id: string } | null }> | null, user?: { __typename?: 'UserType', id: string, email?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email?: string | null } | null };
 
 export type ErrorFragmentFragment = { __typename?: 'ErrorType', field: string, message: string };
 
@@ -233,7 +246,7 @@ export type LocationFragmentFragment = { __typename?: 'LocationType', id: string
 
 export type MeFragmentFragment = { __typename?: 'MeObjectType', id: string, email: string, createdAt: string, updatedAt: string };
 
-export type PetFragmentFragment = { __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null } | null }> | null };
+export type PetFragmentFragment = { __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, user?: { __typename?: 'UserType', email?: string | null, id: string } | null }> | null, replies?: Array<{ __typename?: 'CommentType', comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, user?: { __typename?: 'UserType', email?: string | null, id: string } | null }> | null, user?: { __typename?: 'UserType', id: string, email?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email?: string | null } | null }> | null };
 
 export type ReactionFragmentFragment = { __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null } | null };
 
@@ -272,19 +285,26 @@ export type RegisterMutationVariables = Exact<{
 
 export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'RegisterObjectType', jwt?: string | null, error?: { __typename?: 'ErrorType', field: string, message: string } | null, me?: { __typename?: 'MeObjectType', id: string, email: string, createdAt: string, updatedAt: string } | null } };
 
+export type ReplyCommentMutationVariables = Exact<{
+  input: ReplyToCommentInput;
+}>;
+
+
+export type ReplyCommentMutation = { __typename?: 'Mutation', replyToComment: { __typename?: 'PetObjectType', success: boolean } };
+
 export type GetPetByIdQueryVariables = Exact<{
   input: GetPetByIdInput;
 }>;
 
 
-export type GetPetByIdQuery = { __typename?: 'Query', getPetById?: { __typename?: 'PetObjectType', success: boolean, pet?: { __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null } | null }> | null } | null } | null };
+export type GetPetByIdQuery = { __typename?: 'Query', getPetById?: { __typename?: 'PetObjectType', success: boolean, pet?: { __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, user?: { __typename?: 'UserType', email?: string | null, id: string } | null }> | null, replies?: Array<{ __typename?: 'CommentType', comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, user?: { __typename?: 'UserType', email?: string | null, id: string } | null }> | null, user?: { __typename?: 'UserType', id: string, email?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email?: string | null } | null }> | null } | null } | null };
 
 export type GetPetsByCategoryQueryVariables = Exact<{
   input: GetCategoryPetsInput;
 }>;
 
 
-export type GetPetsByCategoryQuery = { __typename?: 'Query', getCategoryPets: { __typename?: 'PetsObjectType', count: number, pets?: Array<{ __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null } | null }> | null }> | null } };
+export type GetPetsByCategoryQuery = { __typename?: 'Query', getCategoryPets: { __typename?: 'PetsObjectType', count: number, pets?: Array<{ __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, user?: { __typename?: 'UserType', email?: string | null, id: string } | null }> | null, replies?: Array<{ __typename?: 'CommentType', comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, user?: { __typename?: 'UserType', email?: string | null, id: string } | null }> | null, user?: { __typename?: 'UserType', id: string, email?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email?: string | null } | null }> | null }> | null } };
 
 export type HelloQueryVariables = Exact<{
   name: Scalars['String'];
@@ -350,6 +370,31 @@ export const CommentFragmentFragmentDoc = gql`
   comment
   createdAt
   updatedAt
+  reactions {
+    id
+    reaction
+    user {
+      email
+      id
+    }
+  }
+  replies {
+    reactions {
+      id
+      reaction
+      user {
+        email
+        id
+      }
+    }
+    user {
+      id
+      email
+    }
+    comment
+    createdAt
+    updatedAt
+  }
   user {
     id
     email
@@ -460,6 +505,17 @@ ${MeFragmentFragmentDoc}`;
 
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
+};
+export const ReplyCommentDocument = gql`
+    mutation ReplyComment($input: ReplyToCommentInput!) {
+  replyToComment(input: $input) {
+    success
+  }
+}
+    `;
+
+export function useReplyCommentMutation() {
+  return Urql.useMutation<ReplyCommentMutation, ReplyCommentMutationVariables>(ReplyCommentDocument);
 };
 export const GetPetByIdDocument = gql`
     query GetPetById($input: GetPetByIdInput!) {
