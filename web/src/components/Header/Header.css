@@ -3,7 +3,7 @@
   flex-direction: row;
   width: 100%;
   padding: 0px 20px;
-  background-color: var(--main);
+  background-color: rgb(8, 32, 50, 0.5);
   justify-content: space-between;
   position: sticky;
   z-index: 20;

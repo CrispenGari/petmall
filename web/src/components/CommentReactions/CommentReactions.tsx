@@ -51,7 +51,7 @@ class CommentReactions extends React.Component<PropsType, StateType> {
           <FaHandHoldingUsd />
         </div>
         <div
-          className={`reaction__button ${
+          className={`comment__reactions__button ${
             reaction === "DISLIKE" ? "comment__reactions__button--active" : ""
           }`}
           onClick={() => setReaction("DISLIKE")}

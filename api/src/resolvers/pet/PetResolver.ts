@@ -148,10 +148,18 @@ export class PetResolver {
           },
         },
         comments: {
-          include: { user: true },
+          include: {
+            user: true,
+            reactions: true,
+            replies: {
+              include: { user: true, reactions: true },
+            },
+          },
         },
       },
     });
+
+    console.log(pet);
 
     if (!!!pet) {
       return {
@@ -183,12 +191,8 @@ export class PetResolver {
         seller: {
           ...pet.seller,
         },
-        reactions: {
-          ...pet.reactions,
-        },
-        comments: {
-          ...pet.comments,
-        },
+        reactions: pet.reactions,
+        comments: {},
       },
     };
   }
@@ -271,12 +275,14 @@ export class PetResolver {
     // if (pet.sellerId === user.id) {
     //   return { success: false };
     // }
-
-    if (!!pet.reactions.find((reaction) => reaction.userId === user.id)) {
+    const _reaction = pet.reactions.find(
+      (reaction) => reaction.userId === user.id
+    );
+    if (!!_reaction) {
       // you liked the pet already
       await prisma.reaction.delete({
         where: {
-          userId: user.id,
+          id: _reaction.id,
         },
       });
       return {

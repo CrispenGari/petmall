@@ -35,8 +35,10 @@
 }
 .comment__details {
   margin-top: 4px;
+  display: flex;
 }
-.comment__details__reactions__button {
+.comment__details__reactions__button,
+.comment__details__reply__button {
   cursor: pointer;
   width: fit-content;
   height: fit-content;
@@ -56,4 +58,13 @@
 .comment__details__reactions > p {
   margin-left: 5px;
   user-select: none;
+}
+.comment__responses {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: flex-end;
+}
+.comment__details__reply__button {
+  margin-right: 10px;
 }

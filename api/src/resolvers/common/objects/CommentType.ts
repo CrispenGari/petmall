@@ -2,7 +2,7 @@ import { Field, ObjectType } from "type-graphql";
 import { UserType } from "./UserType";
 
 @ObjectType()
-export class CommentType {
+class Comment {
   @Field(() => String)
   id: string;
   @Field(() => String)
@@ -15,4 +15,12 @@ export class CommentType {
   createdAt: Date;
   @Field(() => String)
   updatedAt: Date;
+}
+@ObjectType()
+export class CommentType {
+  @Field(() => [Comment])
+  replies: CommentType[];
+
+  @Field(() => Comment)
+  mainComment: Comment;
 }

@@ -7,6 +7,12 @@
   display: flex;
   flex-direction: column;
 }
+.pet__page__comments__comments > p {
+  padding: 30px 10px;
+  text-align: center;
+  user-select: none;
+  font-size: 1rem;
+}
 .pet__page::-webkit-scrollbar {
   display: none;
 }

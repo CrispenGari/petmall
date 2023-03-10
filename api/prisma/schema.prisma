@@ -11,24 +11,15 @@ model User {
   id       String @unique @default(uuid())
   email    String @unique
   password String
+  avatar String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  comment  Comment[]
-  reaction Reaction[]
+ // relations
   pets     Pet[]
-}
-
-model Location {
-  id             String  @unique @default(uuid())
-  lat Float
-  lon Float
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  pet Pet?
+  comments Comment[]
+  reactions Reaction[]
 }
 
 model Pet {
@@ -56,6 +47,19 @@ model Pet {
   updatedAt DateTime @updatedAt
 }
 
+model Location {
+  id             String  @unique @default(uuid())
+  lat Float
+  lon Float
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  pet Pet?
+}
+
+
+
 model Comment {
   id      String @unique @default(uuid())
   comment String
@@ -63,7 +67,12 @@ model Comment {
   user   User   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   userId String
 
+  // relations
   reactions Reaction[]
+  commentId String?
+
+  mainComment   Comment?   @relation("CommentsReplies", fields: [commentId], references: [id])
+  replies  Comment[]  @relation("CommentsReplies")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -3,6 +3,7 @@ import React from "react";
 import { Form, Icon, Button, TextArea, Popup } from "semantic-ui-react";
 import { Comment, Header, Reactions } from "../../../components";
 import {
+  CommentType,
   useCommentToPetMutation,
   useGetPetByIdQuery,
 } from "../../../graphql/generated/graphql";
@@ -11,7 +12,7 @@ import { GlobalPropsType } from "../../../types";
 import CountUp from "react-countup";
 import { AiFillLike, AiFillDislike, AiFillHeart } from "react-icons/ai";
 import { FaHandHoldingHeart, FaHandHoldingUsd } from "react-icons/fa";
-
+import { GiCancel } from "react-icons/gi";
 import "./Pet.css";
 interface Props {
   globalProps: GlobalPropsType;
@@ -24,6 +25,7 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
   const [{ data: result, fetching }, commentToPet] = useCommentToPetMutation();
   const [comment, setComment] = React.useState<string>("");
   const [reaction, setReaction] = React.useState<string>("");
+  const [replyTo, setReplyTo] = React.useState<CommentType | undefined>();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -139,17 +141,37 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
           <div className="pet__page__pet__seller"></div>
         </div>
         <div className="pet__page__comments">
-          <h1>Comments about {data?.getPetById?.pet?.name}</h1>
+          <h1>Reviews about {data?.getPetById?.pet?.name}</h1>
           <div className="pet__page__comments__comments">
-            {Array(10)
-              .fill(0)
-              .map((_, i) => (
-                <Comment />
-              ))}
+            {data?.getPetById?.pet?.comments?.length === 0 ? (
+              <p>No reviews about {data?.getPetById?.pet?.name}</p>
+            ) : (
+              data?.getPetById?.pet?.comments?.map((comment) => (
+                <Comment
+                  key={comment.id}
+                  comment={comment}
+                  setReplyTo={setReplyTo}
+                />
+              ))
+            )}
           </div>
+          {!!replyTo ? (
+            <p style={{ display: "flex", alignItems: "center" }}>
+              replying to: @{replyTo.user?.email} on "{replyTo.comment}"
+              <GiCancel
+                style={{ marginLeft: 5, color: "#ff3953", fontSize: "1.2rem" }}
+                title={"cancel reply"}
+                onClick={() => setReplyTo(undefined)}
+              />
+            </p>
+          ) : null}
           <Form loading={fetching} onSubmit={onSubmit}>
             <TextArea
-              placeholder="Write a comment about this pet..."
+              placeholder={
+                !!!replyTo
+                  ? "Write a comment about this pet..."
+                  : `replying to: @${replyTo.user?.email} on "${replyTo.comment}"`
+              }
               fluid
               className={"pet__page__comments__input"}
               onChange={(e) => setComment(e.target.value)}

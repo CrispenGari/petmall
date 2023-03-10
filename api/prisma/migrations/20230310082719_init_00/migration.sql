@@ -3,15 +3,7 @@ CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL
-);
-
--- CreateTable
-CREATE TABLE "Location" (
-    "id" TEXT NOT NULL,
-    "lat" DOUBLE PRECISION NOT NULL,
-    "lon" DOUBLE PRECISION NOT NULL,
+    "avatar" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL
 );
@@ -29,6 +21,15 @@ CREATE TABLE "Pet" (
     "price" DOUBLE PRECISION NOT NULL,
     "sellerId" TEXT NOT NULL,
     "locationId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "Location" (
+    "id" TEXT NOT NULL,
+    "lat" DOUBLE PRECISION NOT NULL,
+    "lon" DOUBLE PRECISION NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL
 );
@@ -61,19 +62,25 @@ CREATE UNIQUE INDEX "User_id_key" ON "User"("id");
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Location_id_key" ON "Location"("id");
-
--- CreateIndex
 CREATE UNIQUE INDEX "Pet_id_key" ON "Pet"("id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Pet_locationId_key" ON "Pet"("locationId");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Location_id_key" ON "Location"("id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Comment_id_key" ON "Comment"("id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Comment_userId_key" ON "Comment"("userId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Reaction_id_key" ON "Reaction"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Reaction_userId_key" ON "Reaction"("userId");
 
 -- AddForeignKey
 ALTER TABLE "Pet" ADD CONSTRAINT "Pet_sellerId_fkey" FOREIGN KEY ("sellerId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
