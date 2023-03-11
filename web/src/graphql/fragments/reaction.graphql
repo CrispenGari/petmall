@@ -3,6 +3,7 @@ fragment ReactionFragment on ReactionType {
   reaction
   createdAt
   updatedAt
+  userId
   user {
     id
     email

@@ -6,5 +6,6 @@ export { default as Comment } from "./Comment/Comment";
 export { default as NoPets } from "./NoPets/NoPets";
 export { default as Loading } from "./Loading/Loading";
 export { default as FlatList } from "./FlatList/FlatList";
+export { default as ReactionsSummary } from "./ReactionsSummary/ReactionsSummary";
 export { default as Reactions } from "./Reactions/Reactions";
 export { default as HeaderButton } from "./HeaderButton/HeaderButton";

@@ -1,7 +1,12 @@
 import React from "react";
 
 import { Form, Icon, Button, TextArea, Popup } from "semantic-ui-react";
-import { Comment, Header, Reactions } from "../../../components";
+import {
+  Comment,
+  Header,
+  Reactions,
+  ReactionsSummary,
+} from "../../../components";
 import {
   CommentType,
   useCommentToPetMutation,
@@ -9,12 +14,13 @@ import {
   useReplyCommentMutation,
 } from "../../../graphql/generated/graphql";
 import { withGlobalProps } from "../../../hoc";
-import { GlobalPropsType } from "../../../types";
+import { GlobalPropsType, StateType } from "../../../types";
 import CountUp from "react-countup";
 import { AiFillLike, AiFillDislike, AiFillHeart } from "react-icons/ai";
 import { FaHandHoldingHeart, FaHandHoldingUsd } from "react-icons/fa";
 import { GiCancel } from "react-icons/gi";
 import "./Pet.css";
+import { useSelector } from "react-redux";
 interface Props {
   globalProps: GlobalPropsType;
 }
@@ -22,9 +28,9 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
   const [{ data }, refetchPet] = useGetPetByIdQuery({
     variables: { input: { id: params.petId as string } },
   });
-  const [{ data: result, fetching }, commentToPet] = useCommentToPetMutation();
-  const [{ data: result0, fetching: loading }, replyToComment] =
-    useReplyCommentMutation();
+  const { user } = useSelector((state: StateType) => state);
+  const [{ fetching }, commentToPet] = useCommentToPetMutation();
+  const [{ fetching: loading }, replyToComment] = useReplyCommentMutation();
   const [comment, setComment] = React.useState<string>("");
   const [reaction, setReaction] = React.useState<string>("");
   const [replyTo, setReplyTo] = React.useState<
@@ -59,12 +65,21 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
 
   React.useEffect(() => {
     let mounted: boolean = true;
-    if (mounted && !!data?.getPetById?.success) {
+    if (mounted && !!data?.getPetById?.pet?.reactions) {
+      const _reaction = data?.getPetById?.pet?.reactions.find(
+        (reaction) => reaction.userId === user?.id
+      );
+      if (!!!_reaction) {
+        setReaction("");
+      } else {
+        setReaction(_reaction.reaction);
+      }
     }
     return () => {
       mounted = false;
     };
-  }, [data]);
+  }, [user, data]);
+
   return (
     <div className="pet__page">
       <Header />
@@ -96,7 +111,12 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
             <div>
               <Popup
                 content={
-                  <Reactions reaction={reaction} setReaction={setReaction} />
+                  <Reactions
+                    petId={data?.getPetById?.pet?.id || ""}
+                    reaction={reaction}
+                    setReaction={setReaction}
+                    refetchPet={refetchPet}
+                  />
                 }
                 on="click"
                 pinned
@@ -108,6 +128,9 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
                       <div
                         className="pet__page__pet__reaction__button"
                         title="react"
+                        style={{
+                          backgroundColor: !!reaction ? "#ff3953" : "#334756",
+                        }}
                       >
                         <AiFillDislike />
                       </div>
@@ -115,13 +138,19 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
                       <div
                         className="pet__page__pet__reaction__button"
                         title="react"
+                        style={{
+                          backgroundColor: !!reaction ? "#ff3953" : "#334756",
+                        }}
                       >
                         <AiFillHeart />
                       </div>
-                    ) : reaction === "OFFER_HEART" ? (
+                    ) : reaction === "OFFER_LOVE" ? (
                       <div
                         className="pet__page__pet__reaction__button"
                         title="react"
+                        style={{
+                          backgroundColor: !!reaction ? "#ff3953" : "#334756",
+                        }}
                       >
                         <FaHandHoldingHeart />
                       </div>
@@ -129,6 +158,9 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
                       <div
                         className="pet__page__pet__reaction__button"
                         title="react"
+                        style={{
+                          backgroundColor: !!reaction ? "#ff3953" : "#334756",
+                        }}
                       >
                         <FaHandHoldingUsd />
                       </div>
@@ -136,6 +168,9 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
                       <div
                         className="pet__page__pet__reaction__button"
                         title="react"
+                        style={{
+                          backgroundColor: !!reaction ? "#ff3953" : "#334756",
+                        }}
                       >
                         <AiFillLike />
                       </div>
@@ -143,8 +178,20 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
                   </div>
                 }
               />
-
-              <p>{data?.getPetById?.pet?.reactions?.length ?? 0} likes</p>
+              <Popup
+                content={
+                  <ReactionsSummary
+                    reactions={data?.getPetById?.pet?.reactions || []}
+                  />
+                }
+                on="click"
+                pinned
+                closeOnDocumentClick
+                className="comment__details__reactions__popup"
+                trigger={
+                  <p>{data?.getPetById?.pet?.reactions?.length ?? 0} likes</p>
+                }
+              />
             </div>
             <div>
               <div className="pet__page__pet__button__disabled">
@@ -166,6 +213,7 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
                   key={comment.id}
                   comment={comment as any}
                   setReplyTo={setReplyTo}
+                  refetchPet={refetchPet}
                 />
               ))
             )}

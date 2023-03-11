@@ -48,21 +48,3 @@ export class MarkAsSoldInput {
   @Field(() => String, { nullable: false })
   id: String;
 }
-
-@InputType()
-export class ReactToPetInput {
-  @Field(() => String, { nullable: false })
-  id: string;
-
-  @Field(() => String, { nullable: false })
-  reaction: string;
-}
-
-@InputType()
-export class CommentToPetInput {
-  @Field(() => String, { nullable: false })
-  id: string;
-
-  @Field(() => String, { nullable: false })
-  comment: string;
-}

@@ -6,6 +6,7 @@ fragment CommentFragment on CommentType {
   reactions {
     id
     reaction
+    userId
     user {
       email
       id
@@ -15,6 +16,7 @@ fragment CommentFragment on CommentType {
     reactions {
       id
       reaction
+      userId
       user {
         email
         id
@@ -24,6 +26,7 @@ fragment CommentFragment on CommentType {
       id
       email
     }
+    id
     comment
     createdAt
     updatedAt

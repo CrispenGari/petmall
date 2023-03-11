@@ -1,19 +1,19 @@
 import { InputType, Field } from "type-graphql";
 
 @InputType()
-export class ReplyToCommentInput {
+export class ReactToPetInput {
   @Field(() => String, { nullable: false })
   id: string;
 
   @Field(() => String, { nullable: false })
-  comment: string;
+  reaction: string;
 }
 
 @InputType()
-export class CommentToPetInput {
+export class ReactToCommentInput {
   @Field(() => String, { nullable: false })
   id: string;
 
   @Field(() => String, { nullable: false })
-  comment: string;
+  reaction: string;
 }

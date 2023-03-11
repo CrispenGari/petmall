@@ -19,5 +19,5 @@
   font-size: 1rem;
 }
 .comment__reactions__button--active {
-  background-color: var(--main);
+  background-color: var(--tertiary);
 }

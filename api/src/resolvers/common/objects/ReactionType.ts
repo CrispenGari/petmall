@@ -8,6 +8,9 @@ export class ReactionType {
   @Field(() => String)
   reaction: string;
 
+  @Field(() => String)
+  userId: string;
+
   @Field(() => UserType, { nullable: true })
   user?: UserType;
 
