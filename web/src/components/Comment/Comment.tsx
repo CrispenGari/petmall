@@ -3,7 +3,6 @@ import { AiFillLike, AiFillDislike, AiFillHeart } from "react-icons/ai";
 import { FaHandHoldingHeart, FaHandHoldingUsd, FaReply } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { Popup } from "semantic-ui-react";
-import { OperationContext } from "urql";
 import { CommentType } from "../../graphql/generated/graphql";
 import { StateType } from "../../types";
 import CommentReactions from "../CommentReactions/CommentReactions";
@@ -19,9 +18,8 @@ interface Props {
       | undefined
     >
   >;
-  refetchPet: (opts?: Partial<OperationContext> | undefined) => void;
 }
-const Comment: React.FC<Props> = ({ comment, setReplyTo, refetchPet }) => {
+const Comment: React.FC<Props> = ({ comment, setReplyTo }) => {
   return (
     <div className="comment__main">
       <CommentChild
@@ -29,7 +27,6 @@ const Comment: React.FC<Props> = ({ comment, setReplyTo, refetchPet }) => {
         comment={comment}
         withReply
         setReplyTo={setReplyTo}
-        refetchPet={refetchPet}
       />
       <div className="comment__responses">
         {comment.replies?.map((reply, index) => (
@@ -39,7 +36,6 @@ const Comment: React.FC<Props> = ({ comment, setReplyTo, refetchPet }) => {
             key={index}
             withReply
             setReplyTo={setReplyTo}
-            refetchPet={refetchPet}
           />
         ))}
       </div>
@@ -61,8 +57,7 @@ const CommentChild: React.FunctionComponent<{
       | undefined
     >
   >;
-  refetchPet: (opts?: Partial<OperationContext> | undefined) => void;
-}> = ({ comment, withReply, setReplyTo, parentCommentId, refetchPet }) => {
+}> = ({ comment, withReply, setReplyTo, parentCommentId }) => {
   const [reaction, setReaction] = React.useState<string>("");
   const { user } = useSelector((state: StateType) => state);
 
@@ -112,7 +107,6 @@ const CommentChild: React.FunctionComponent<{
                 commentId={comment.id}
                 reaction={reaction}
                 setReaction={setReaction}
-                refetchPet={refetchPet}
               />
             }
             on="click"
@@ -151,7 +145,7 @@ const CommentChild: React.FunctionComponent<{
                   >
                     <FaHandHoldingHeart />
                   </div>
-                ) : reaction === "OFFER__MONEY" ? (
+                ) : reaction === "OFFER_MONEY" ? (
                   <div
                     className="comment__details__reactions__button"
                     title="react"

@@ -1,4 +1,12 @@
-import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Ctx,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+  Subscription,
+} from "type-graphql";
 import {
   GetCategoryPetsInput,
   GetPetByIdInput,
@@ -9,10 +17,14 @@ import stream from "stream";
 import util from "util";
 import fs from "fs";
 import path from "path";
-import { __storageBaseURL__ } from "../../constants";
+import { Events, __storageBaseURL__ } from "../../constants";
 import { CtxType } from "../../types";
 import { verifyJwt } from "../../utils";
-import { PetObjectType, PetsObjectType } from "./objects/objectTypes";
+import {
+  PetInteractionType,
+  PetObjectType,
+  PetsObjectType,
+} from "./objects/objectTypes";
 export const storageDir = path.join(
   __dirname.replace("dist\\resolvers\\pet", ""),
   "storage"
@@ -30,6 +42,20 @@ export class PetResolver {
     const pets = await prisma.pet.findMany({
       where: {
         category: category as any,
+      },
+      include: {
+        seller: true,
+        reactions: true,
+        location: true,
+        comments: {
+          include: {
+            replies: {
+              include: {
+                user: true,
+              },
+            },
+          },
+        },
       },
     });
     return {
@@ -230,6 +256,23 @@ export class PetResolver {
     }
     return {
       success: true,
+    };
+  }
+
+  @Subscription(() => PetInteractionType, {
+    topics: [
+      Events.NEW_COMMENT,
+      Events.NEW_COMMENT_REPLY,
+      Events.NEW_REACTION_TO_PET,
+      Events.NEW_REACTION_TO_COMMENT,
+    ],
+    nullable: false,
+  })
+  async petInteraction(@Root() { petId }: { petId: string }): Promise<{
+    petId: string;
+  }> {
+    return {
+      petId,
     };
   }
 }

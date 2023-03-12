@@ -3,31 +3,20 @@ import "./CommentReactions.css";
 import { AiFillLike, AiFillDislike, AiFillHeart } from "react-icons/ai";
 import { FaHandHoldingHeart, FaHandHoldingUsd } from "react-icons/fa";
 import { useReactToCommentMutation } from "../../graphql/generated/graphql";
-import { OperationContext } from "urql";
+
 interface Props {
   setReaction: React.Dispatch<React.SetStateAction<string>>;
   reaction?: string;
   commentId: string;
-  refetchPet: (opts?: Partial<OperationContext> | undefined) => void;
 }
 
 const CommentReactions: React.FC<Props> = ({
   setReaction,
   reaction,
   commentId: id,
-  refetchPet,
 }) => {
-  const [{ data }, reactToComment] = useReactToCommentMutation();
+  const [, reactToComment] = useReactToCommentMutation();
 
-  React.useEffect(() => {
-    let mounted: boolean = true;
-    if (mounted && !!data?.reactToComment.success) {
-      refetchPet();
-    }
-    return () => {
-      mounted = false;
-    };
-  }, [data, refetchPet]);
   return (
     <div className="comment__reactions">
       <div

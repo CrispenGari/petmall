@@ -17,8 +17,8 @@ const FlatList: React.FC<Props> = ({ title, subtitle }) => {
   });
   return (
     <div className="flatlist">
-      <h1>{title}</h1>
-      <p>{subtitle}</p>
+      <h1>{title.replace(/_/g, " ")}</h1>
+      <p>{subtitle.replace(/_/g, " ")}</p>
       <div className="flatlist__items">
         {data?.getCategoryPets.count === 0 ? (
           <NoPets category={title} />

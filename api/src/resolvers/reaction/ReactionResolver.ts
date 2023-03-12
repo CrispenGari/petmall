@@ -1,4 +1,12 @@
-import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
+import {
+  Arg,
+  Ctx,
+  Mutation,
+  PubSub,
+  PubSubEngine,
+  Resolver,
+} from "type-graphql";
+import { Events } from "../../constants";
 import { CtxType } from "../../types";
 import { verifyJwt } from "../../utils";
 import { PetObjectType } from "../pet/objects/objectTypes";
@@ -10,7 +18,8 @@ export class ReactionResolver {
   async reactToComment(
     @Arg("input", () => ReactToCommentInput)
     { id, reaction }: ReactToCommentInput,
-    @Ctx() { prisma, request }: CtxType
+    @Ctx() { prisma, request }: CtxType,
+    @PubSub() pubsub: PubSubEngine
   ): Promise<PetObjectType> {
     const jwt = request.headers.authorization?.split(" ")[1];
     if (!!!jwt)
@@ -33,6 +42,11 @@ export class ReactionResolver {
       },
       include: {
         reactions: true,
+        pet: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
 
@@ -41,6 +55,18 @@ export class ReactionResolver {
         success: false,
       };
     }
+
+    let petId = comment.petId;
+
+    if (!!!petId) {
+      const _parentComment = await prisma.comment.findFirst({
+        where: { id: comment.commentId! },
+      });
+      petId = _parentComment!.petId;
+    }
+    await pubsub.publish(Events.NEW_REACTION_TO_COMMENT, {
+      petId,
+    });
     // if you don't want to react to your own comment?
     // if (pet.sellerId === user.id) {
     //   return { success: false };
@@ -59,6 +85,7 @@ export class ReactionResolver {
         success: true,
       };
     }
+
     try {
       await prisma.reaction.create({
         data: {
@@ -86,7 +113,8 @@ export class ReactionResolver {
   @Mutation(() => PetObjectType, { nullable: false })
   async reactToPet(
     @Arg("input", () => ReactToPetInput) { id, reaction }: ReactToPetInput,
-    @Ctx() { prisma, request }: CtxType
+    @Ctx() { prisma, request }: CtxType,
+    @PubSub() pubsub: PubSubEngine
   ): Promise<PetObjectType> {
     const jwt = request.headers.authorization?.split(" ")[1];
     if (!!!jwt)
@@ -117,6 +145,9 @@ export class ReactionResolver {
         success: false,
       };
     }
+    await pubsub.publish(Events.NEW_REACTION_TO_PET, {
+      petId: pet.id,
+    });
     // if you don't want to react to your own pet?
     // if (pet.sellerId === user.id) {
     //   return { success: false };

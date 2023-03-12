@@ -76,7 +76,7 @@ model Comment {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  Pet       Pet?     @relation(fields: [petId], references: [id])
+  pet       Pet?     @relation(fields: [petId], references: [id])
   petId     String?
 }
 

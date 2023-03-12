@@ -31,6 +31,12 @@ class Pet extends React.Component<PropsType, StateType> {
       pet,
       globalProps: { navigate },
     } = this.props;
+    console.log({ pet });
+    const repliesCount: number =
+      pet.comments
+        ?.map((cmt) => cmt.replies?.length || 0)
+        .reduce((a, b) => a + b, 0) || 0;
+    const commentCount: number = pet.comments?.length || 0;
     return (
       <div className="pet" onClick={() => navigate(`/app/pet/${pet.id}`)}>
         <h1>{pet.name}</h1>
@@ -56,7 +62,7 @@ class Pet extends React.Component<PropsType, StateType> {
             </p>
             <p>
               <Icon name="comments" />
-              <span>{pet.comments?.length ?? 0} comments</span>
+              <span>{repliesCount + commentCount} comments</span>
             </p>
           </div>
           <div className="pet__details__seller">

@@ -3,32 +3,16 @@ import "./Reactions.css";
 import { AiFillLike, AiFillDislike, AiFillHeart } from "react-icons/ai";
 import { FaHandHoldingHeart, FaHandHoldingUsd } from "react-icons/fa";
 import { useReactToPetMutation } from "../../graphql/generated/graphql";
-import { OperationContext } from "urql";
 interface Props {
   setReaction: React.Dispatch<React.SetStateAction<string>>;
   reaction?: string;
-  refetchPet: (opts?: Partial<OperationContext> | undefined) => void;
   petId: string;
 }
 
 interface Props {}
-const Reactions: React.FC<Props> = ({
-  reaction,
-  setReaction,
-  refetchPet,
-  petId: id,
-}) => {
-  const [{ data }, reactToPet] = useReactToPetMutation();
+const Reactions: React.FC<Props> = ({ reaction, setReaction, petId: id }) => {
+  const [, reactToPet] = useReactToPetMutation();
 
-  React.useEffect(() => {
-    let mounted: boolean = true;
-    if (mounted && !!data?.reactToPet.success) {
-      refetchPet();
-    }
-    return () => {
-      mounted = false;
-    };
-  }, [data, refetchPet]);
   return (
     <div className="reactions">
       <div

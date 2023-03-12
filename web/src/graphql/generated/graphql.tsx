@@ -161,6 +161,11 @@ export type NewPetInputType = {
   price: Scalars['Float'];
 };
 
+export type PetInteractionType = {
+  __typename?: 'PetInteractionType';
+  petId: Scalars['String'];
+};
+
 export type PetObjectType = {
   __typename?: 'PetObjectType';
   pet?: Maybe<PetType>;
@@ -256,6 +261,7 @@ export type ReplyToCommentInput = {
 export type Subscription = {
   __typename?: 'Subscription';
   notify: Scalars['String'];
+  petInteraction: PetInteractionType;
 };
 
 export type UserType = {
@@ -372,6 +378,11 @@ export type NotificationsSubscriptionVariables = Exact<{ [key: string]: never; }
 
 
 export type NotificationsSubscription = { __typename?: 'Subscription', notify: string };
+
+export type PetInteractionSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type PetInteractionSubscription = { __typename?: 'Subscription', petInteraction: { __typename?: 'PetInteractionType', petId: string } };
 
 
       export interface PossibleTypesResultData {
@@ -663,4 +674,15 @@ export const NotificationsDocument = gql`
 
 export function useNotificationsSubscription<TData = NotificationsSubscription>(options: Omit<Urql.UseSubscriptionArgs<NotificationsSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<NotificationsSubscription, TData>) {
   return Urql.useSubscription<NotificationsSubscription, TData, NotificationsSubscriptionVariables>({ query: NotificationsDocument, ...options }, handler);
+};
+export const PetInteractionDocument = gql`
+    subscription PetInteraction {
+  petInteraction {
+    petId
+  }
+}
+    `;
+
+export function usePetInteractionSubscription<TData = PetInteractionSubscription>(options: Omit<Urql.UseSubscriptionArgs<PetInteractionSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<PetInteractionSubscription, TData>) {
+  return Urql.useSubscription<PetInteractionSubscription, TData, PetInteractionSubscriptionVariables>({ query: PetInteractionDocument, ...options }, handler);
 };

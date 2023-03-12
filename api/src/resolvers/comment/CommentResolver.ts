@@ -1,16 +1,25 @@
-import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
+import {
+  Arg,
+  Ctx,
+  Mutation,
+  PubSub,
+  PubSubEngine,
+  Resolver,
+} from "type-graphql";
 import { CtxType } from "../../types";
 import { verifyJwt } from "../../utils";
 import { CommentToPetInput } from "./inputs/inputTypes";
 import { PetObjectType } from "../pet/objects/objectTypes";
 import { ReplyToCommentInput } from "./inputs/inputTypes";
+import { Events } from "../../constants";
 
 @Resolver()
 export class CommentResolver {
   @Mutation(() => PetObjectType, { nullable: false })
   async commentToPet(
     @Arg("input", () => CommentToPetInput) { id, comment }: CommentToPetInput,
-    @Ctx() { prisma, request }: CtxType
+    @Ctx() { prisma, request }: CtxType,
+    @PubSub() pubsub: PubSubEngine
   ): Promise<PetObjectType> {
     const jwt = request.headers.authorization?.split(" ")[1];
     if (!!!jwt)
@@ -60,6 +69,9 @@ export class CommentResolver {
           },
         },
       });
+      await pubsub.publish(Events.NEW_COMMENT, {
+        petId: pet.id,
+      });
     } catch (error) {
       console.log({ error });
       return {
@@ -74,7 +86,8 @@ export class CommentResolver {
   async replyToComment(
     @Arg("input", () => ReplyToCommentInput)
     { id, comment }: ReplyToCommentInput,
-    @Ctx() { prisma, request }: CtxType
+    @Ctx() { prisma, request }: CtxType,
+    @PubSub() pubsub: PubSubEngine
   ): Promise<PetObjectType> {
     const jwt = request.headers.authorization?.split(" ")[1];
     if (!!!jwt)
@@ -102,6 +115,9 @@ export class CommentResolver {
         success: false,
       };
     }
+    await pubsub.publish(Events.NEW_COMMENT_REPLY, {
+      petId: _comment.petId,
+    });
     try {
       const cmt = await prisma.comment.create({
         data: {

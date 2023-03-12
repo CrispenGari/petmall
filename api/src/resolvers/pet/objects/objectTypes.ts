@@ -18,3 +18,9 @@ export class PetObjectType {
   @Field(() => Boolean, { nullable: false })
   success: boolean;
 }
+
+@ObjectType()
+export class PetInteractionType {
+  @Field(() => String, { nullable: false })
+  petId: String;
+}

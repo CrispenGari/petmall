@@ -11,6 +11,7 @@ import {
   CommentType,
   useCommentToPetMutation,
   useGetPetByIdQuery,
+  usePetInteractionSubscription,
   useReplyCommentMutation,
 } from "../../../graphql/generated/graphql";
 import { withGlobalProps } from "../../../hoc";
@@ -28,6 +29,8 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
   const [{ data }, refetchPet] = useGetPetByIdQuery({
     variables: { input: { id: params.petId as string } },
   });
+  const [{ data: petModification }] = usePetInteractionSubscription();
+
   const { user } = useSelector((state: StateType) => state);
   const [{ fetching }, commentToPet] = useCommentToPetMutation();
   const [{ fetching: loading }, replyToComment] = useReplyCommentMutation();
@@ -39,6 +42,24 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
       })
     | undefined
   >();
+
+  console.log({
+    petId: petModification?.petInteraction.petId,
+    id: params.petId,
+  });
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!petModification?.petInteraction.petId) {
+      (async () => {
+        if (petModification.petInteraction.petId === (params.petId as string)) {
+          await refetchPet();
+        }
+      })();
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [refetchPet, petModification, params]);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -60,8 +81,13 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
     }
 
     setComment("");
-    await refetchPet();
   };
+
+  const repliesCount: number =
+    data?.getPetById?.pet?.comments
+      ?.map((cmt) => cmt.replies?.length || 0)
+      .reduce((a, b) => a + b, 0) || 0;
+  const commentCount: number = data?.getPetById?.pet?.comments?.length || 0;
 
   React.useEffect(() => {
     let mounted: boolean = true;
@@ -115,7 +141,6 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
                     petId={data?.getPetById?.pet?.id || ""}
                     reaction={reaction}
                     setReaction={setReaction}
-                    refetchPet={refetchPet}
                   />
                 }
                 on="click"
@@ -154,7 +179,7 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
                       >
                         <FaHandHoldingHeart />
                       </div>
-                    ) : reaction === "OFFER__MONEY" ? (
+                    ) : reaction === "OFFER_MONEY" ? (
                       <div
                         className="pet__page__pet__reaction__button"
                         title="react"
@@ -197,7 +222,7 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
               <div className="pet__page__pet__button__disabled">
                 <Icon name="comments" />
               </div>
-              <p>{data?.getPetById?.pet?.comments?.length ?? 0} comments</p>
+              <p>{repliesCount + commentCount} comments</p>
             </div>
           </div>
           <div className="pet__page__pet__seller"></div>
@@ -213,7 +238,6 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
                   key={comment.id}
                   comment={comment as any}
                   setReplyTo={setReplyTo}
-                  refetchPet={refetchPet}
                 />
               ))
             )}
