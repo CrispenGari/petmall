@@ -1,9 +1,20 @@
 import React from "react";
 import { TOKEN_KEY, url } from "../constants";
-import { createClient, Provider, makeOperation } from "urql";
+import {
+  createClient,
+  Provider,
+  makeOperation,
+  subscriptionExchange,
+} from "urql";
 import { authExchange } from "@urql/exchange-auth";
 import { multipartFetchExchange } from "@urql/exchange-multipart-fetch";
 import { retrieve } from "../utils";
+
+import { createClient as createWSClient } from "graphql-ws";
+
+const wsClient = createWSClient({
+  url: "ws://localhost:3001/graphql",
+});
 
 export const client = createClient({
   url,
@@ -36,6 +47,16 @@ export const client = createClient({
       },
     }),
     multipartFetchExchange,
+    subscriptionExchange({
+      forwardSubscription: (operation) => ({
+        subscribe: (sink) => ({
+          unsubscribe: wsClient.subscribe(
+            { query: operation.query, variables: operation.variables },
+            sink
+          ),
+        }),
+      }),
+    }),
   ],
 });
 

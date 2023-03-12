@@ -10,10 +10,14 @@ import { PrismaClient } from "@prisma/client";
 import cors from "@fastify/cors";
 import cookie from "@fastify/cookie";
 import { tokenRoute } from "./routes/token";
+import fastifyWebsocket from "@fastify/websocket";
 import fastifyStatic from "@fastify/static";
 import path from "path";
+import { PubSub } from "graphql-subscriptions";
 import MercuriusGQLUpload from "mercurius-upload";
 _();
+
+const pubsub = new PubSub();
 
 const PORT: any = process.env.PORT || 3001;
 const HOST =
@@ -31,6 +35,12 @@ const HOST =
   const schema = await buildSchema({
     resolvers,
     validate: false,
+  });
+
+  fastify.register(fastifyWebsocket, {
+    options: {
+      maxPayload: 1048576,
+    },
   });
 
   fastify.register(cors, {
@@ -57,6 +67,7 @@ const HOST =
   });
   fastify.register(tokenRoute);
   fastify.register(mercurius, {
+    subscription: true,
     context: (request, reply): CtxType => {
       return {
         request,

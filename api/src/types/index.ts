@@ -1,6 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { PrismaClient, Prisma } from "@prisma/client";
-
 export type CtxType = {
   request: FastifyRequest;
   reply: FastifyReply;

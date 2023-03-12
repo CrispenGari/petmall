@@ -34,6 +34,7 @@
     "argon2": "^0.30.3",
     "class-validator": "^0.14.0",
     "fastify": "^4.13.0",
+    "graphql-subscriptions": "^2.0.0",
     "jsonwebtoken": "^9.0.0",
     "mercurius": "^12.1.0",
     "mercurius-upload": "^6.0.1",

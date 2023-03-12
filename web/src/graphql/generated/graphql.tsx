@@ -96,6 +96,8 @@ export type Mutation = {
   reactToPet: PetObjectType;
   register: RegisterObjectType;
   replyToComment: PetObjectType;
+  sayHello: Scalars['String'];
+  sayHi: Scalars['String'];
 };
 
 
@@ -136,6 +138,16 @@ export type MutationRegisterArgs = {
 
 export type MutationReplyToCommentArgs = {
   input: ReplyToCommentInput;
+};
+
+
+export type MutationSayHelloArgs = {
+  message: Scalars['String'];
+};
+
+
+export type MutationSayHiArgs = {
+  message: Scalars['String'];
 };
 
 export type NewPetInputType = {
@@ -241,6 +253,11 @@ export type ReplyToCommentInput = {
   id: Scalars['String'];
 };
 
+export type Subscription = {
+  __typename?: 'Subscription';
+  notify: Scalars['String'];
+};
+
 export type UserType = {
   __typename?: 'UserType';
   createAt?: Maybe<Scalars['String']>;
@@ -270,6 +287,13 @@ export type CommentToPetMutationVariables = Exact<{
 
 
 export type CommentToPetMutation = { __typename?: 'Mutation', commentToPet: { __typename?: 'PetObjectType', success: boolean } };
+
+export type SayHelloMutationVariables = Exact<{
+  message: Scalars['String'];
+}>;
+
+
+export type SayHelloMutation = { __typename?: 'Mutation', sayHello: string };
 
 export type LoginMutationVariables = Exact<{
   input: LoginInput;
@@ -343,6 +367,11 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'MeObjectType', id: string, email: string, createdAt: string, updatedAt: string } | null };
+
+export type NotificationsSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type NotificationsSubscription = { __typename?: 'Subscription', notify: string };
 
 
       export interface PossibleTypesResultData {
@@ -480,6 +509,15 @@ export const CommentToPetDocument = gql`
 export function useCommentToPetMutation() {
   return Urql.useMutation<CommentToPetMutation, CommentToPetMutationVariables>(CommentToPetDocument);
 };
+export const SayHelloDocument = gql`
+    mutation SayHello($message: String!) {
+  sayHello(message: $message)
+}
+    `;
+
+export function useSayHelloMutation() {
+  return Urql.useMutation<SayHelloMutation, SayHelloMutationVariables>(SayHelloDocument);
+};
 export const LoginDocument = gql`
     mutation Login($input: LoginInput!) {
   login(input: $input) {
@@ -616,4 +654,13 @@ export const MeDocument = gql`
 
 export function useMeQuery(options?: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'>) {
   return Urql.useQuery<MeQuery, MeQueryVariables>({ query: MeDocument, ...options });
+};
+export const NotificationsDocument = gql`
+    subscription Notifications {
+  notify
+}
+    `;
+
+export function useNotificationsSubscription<TData = NotificationsSubscription>(options: Omit<Urql.UseSubscriptionArgs<NotificationsSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<NotificationsSubscription, TData>) {
+  return Urql.useSubscription<NotificationsSubscription, TData, NotificationsSubscriptionVariables>({ query: NotificationsDocument, ...options }, handler);
 };

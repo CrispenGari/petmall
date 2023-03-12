@@ -30,9 +30,11 @@ const Home: React.FC<Props> = () => {
   if (fetching) {
     return <Loading />;
   }
+
   return (
     <div className="home">
       <Header />
+
       <Banner />
       {PETS_CATEGORIES.map((category) => (
         <FlatList

@@ -8,14 +8,13 @@ interface Props {
   subtitle: string;
 }
 const FlatList: React.FC<Props> = ({ title, subtitle }) => {
-  const [{ data, fetching }] = useGetPetsByCategoryQuery({
+  const [{ data }] = useGetPetsByCategoryQuery({
     variables: {
       input: {
         category: title.toUpperCase(),
       },
     },
   });
-  console.log({ data, fetching });
   return (
     <div className="flatlist">
       <h1>{title}</h1>
