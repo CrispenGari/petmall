@@ -49,7 +49,13 @@ class Header extends React.Component<PropsType, StateType> {
           />
           {!!user ? (
             <div className="">
-              <HeaderButton iconName="home" title="home" onClick={() => {}} />
+              <HeaderButton
+                iconName="home"
+                title="home"
+                onClick={() => {
+                  navigate("/");
+                }}
+              />
             </div>
           ) : (
             <div>
@@ -73,7 +79,13 @@ class Header extends React.Component<PropsType, StateType> {
                 navigate("/app/pet/new");
               }}
             />
-            <HeaderButton iconName="user" title="profile" onClick={() => {}} />
+            <HeaderButton
+              iconName="user"
+              title="profile"
+              onClick={() => {
+                navigate(`/app/profile/${user.id}`);
+              }}
+            />
           </div>
         ) : (
           <div className="app__header__right">

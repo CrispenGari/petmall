@@ -1,5 +1,27 @@
 import { Field, ObjectType } from "type-graphql";
 import { ErrorType } from "../../common/objects/ErrorType";
+import { PetType } from "../../common/objects/PetType";
+
+@ObjectType()
+export class UserObjectType {
+  @Field(() => String)
+  id: string;
+
+  @Field(() => String)
+  email: string;
+
+  @Field(() => String, { nullable: true })
+  avatar?: string;
+
+  @Field(() => String)
+  createdAt: Date;
+
+  @Field(() => String)
+  updatedAt: Date;
+
+  @Field(() => [PetType])
+  pets?: PetType[];
+}
 
 @ObjectType()
 export class MeObjectType {

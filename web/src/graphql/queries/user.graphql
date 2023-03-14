@@ -1,0 +1,12 @@
+query GetUser($input: GetUserByIdInput!) {
+  user(input: $input) {
+    id
+    email
+    avatar
+    createdAt
+    updatedAt
+    pets {
+      ...PetFragment
+    }
+  }
+}

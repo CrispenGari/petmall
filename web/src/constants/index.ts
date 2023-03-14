@@ -4,6 +4,15 @@ export const constants = {
 };
 export const url = "http://127.0.0.1:3001/graphql";
 
+export const COLORS = {
+  main: "#082032",
+  primary: "#2c394b",
+  secondary: "#334756",
+  tertiary: "#ff4c29",
+  white: "white",
+  red: "#FF3953",
+};
+
 export const REACTIONS = [
   "LIKE",
   "LOVE",

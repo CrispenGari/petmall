@@ -46,6 +46,10 @@ export type GetPetByIdInput = {
   id: Scalars['String'];
 };
 
+export type GetUserByIdInput = {
+  id: Scalars['String'];
+};
+
 export type LocationInput = {
   lat: Scalars['Float'];
   lon: Scalars['Float'];
@@ -203,6 +207,7 @@ export type Query = {
   getPetById?: Maybe<PetObjectType>;
   hello: Scalars['String'];
   me?: Maybe<MeObjectType>;
+  user: UserObjectType;
 };
 
 
@@ -218,6 +223,11 @@ export type QueryGetPetByIdArgs = {
 
 export type QueryHelloArgs = {
   name: Scalars['String'];
+};
+
+
+export type QueryUserArgs = {
+  input: GetUserByIdInput;
 };
 
 export type ReactToCommentInput = {
@@ -262,6 +272,16 @@ export type Subscription = {
   __typename?: 'Subscription';
   notify: Scalars['String'];
   petInteraction: PetInteractionType;
+};
+
+export type UserObjectType = {
+  __typename?: 'UserObjectType';
+  avatar?: Maybe<Scalars['String']>;
+  createdAt: Scalars['String'];
+  email: Scalars['String'];
+  id: Scalars['String'];
+  pets: Array<PetType>;
+  updatedAt: Scalars['String'];
 };
 
 export type UserType = {
@@ -373,6 +393,13 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'MeObjectType', id: string, email: string, createdAt: string, updatedAt: string } | null };
+
+export type GetUserQueryVariables = Exact<{
+  input: GetUserByIdInput;
+}>;
+
+
+export type GetUserQuery = { __typename?: 'Query', user: { __typename?: 'UserObjectType', id: string, email: string, avatar?: string | null, createdAt: string, updatedAt: string, pets: Array<{ __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, userId: string, user?: { __typename?: 'UserType', id: string, email?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', email?: string | null, id: string } | null }> | null, replies?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', email?: string | null, id: string } | null }> | null, user?: { __typename?: 'UserType', id: string, email?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email?: string | null } | null }> | null }> } };
 
 export type NotificationsSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
@@ -665,6 +692,24 @@ export const MeDocument = gql`
 
 export function useMeQuery(options?: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'>) {
   return Urql.useQuery<MeQuery, MeQueryVariables>({ query: MeDocument, ...options });
+};
+export const GetUserDocument = gql`
+    query GetUser($input: GetUserByIdInput!) {
+  user(input: $input) {
+    id
+    email
+    avatar
+    createdAt
+    updatedAt
+    pets {
+      ...PetFragment
+    }
+  }
+}
+    ${PetFragmentFragmentDoc}`;
+
+export function useGetUserQuery(options: Omit<Urql.UseQueryArgs<GetUserQueryVariables>, 'query'>) {
+  return Urql.useQuery<GetUserQuery, GetUserQueryVariables>({ query: GetUserDocument, ...options });
 };
 export const NotificationsDocument = gql`
     subscription Notifications {

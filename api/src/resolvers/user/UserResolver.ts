@@ -1,17 +1,43 @@
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { CtxType } from "../../types";
-import { LoginInput, RegisterInput } from "./inputs/inputTypes";
+import {
+  GetUserByIdInput,
+  LoginInput,
+  RegisterInput,
+} from "./inputs/inputTypes";
 import {
   LoginObjectType,
   MeObjectType,
   RegisterObjectType,
+  UserObjectType,
 } from "./objects/objectTypes";
 import argon2 from "argon2";
 import { isValidEmail, isValidPassword } from "@crispengari/regex-validator";
 import { signJwt, storeCookie, verifyJwt } from "../../utils";
-import { User } from "@prisma/client";
 @Resolver()
 export class UserResolver {
+  @Query(() => UserObjectType, { nullable: false })
+  async user(
+    @Arg("input", () => GetUserByIdInput) { id }: GetUserByIdInput,
+    @Ctx() { prisma }: CtxType
+  ): Promise<UserObjectType | undefined> {
+    const user = await prisma.user.findFirst({
+      where: { id },
+      include: {
+        pets: true,
+      },
+    });
+    if (!!!user) return undefined;
+    return {
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      avatar: user.avatar || undefined,
+      email: user.email,
+      id: user.id,
+      pets: [...user.pets.map((pet) => pet)],
+    };
+  }
+
   @Query(() => MeObjectType, { nullable: true })
   async me(
     @Ctx() { prisma, request }: CtxType

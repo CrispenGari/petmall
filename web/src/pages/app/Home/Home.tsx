@@ -34,7 +34,6 @@ const Home: React.FC<Props> = () => {
   return (
     <div className="home">
       <Header />
-
       <Banner />
       {PETS_CATEGORIES.map((category) => (
         <FlatList
