@@ -1,0 +1,45 @@
+.profile__pets__flatlist,
+.profile__pets__flatlist__not__pets {
+  background-color: var(--main);
+  padding: 20px;
+  margin: 0px auto;
+  user-select: none;
+  user-zoom: none;
+  width: 100%;
+  max-width: 1000px;
+}
+.profile__pets__flatlist__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0px 5px;
+}
+.profile__pets__flatlist__not__pets {
+  height: 40vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+.profile__pets__flatlist > h1,
+.profile__pets__flatlist__header__left > h1 {
+  text-transform: capitalize;
+  color: white;
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  margin-bottom: 0;
+}
+.profile__pets__flatlist > p,
+.profile__pets__flatlist__header__left > p {
+  font-size: 1rem;
+}
+.profile__pets__flatlist__items {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.profile__pets__flatlist__items::-webkit-scrollbar {
+  display: none !important;
+}

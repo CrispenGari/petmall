@@ -230,7 +230,7 @@ const NewPet: React.FC<Props> = () => {
             options={PETS_CATEGORIES.map((category) => ({
               key: category,
               value: category,
-              text: category,
+              text: category.replace(/_/g, " "),
             }))}
             value={category}
             onChange={(e, { value }) =>

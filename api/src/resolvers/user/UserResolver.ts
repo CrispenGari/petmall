@@ -1,9 +1,20 @@
-import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Ctx,
+  Mutation,
+  PubSub,
+  PubSubEngine,
+  Query,
+  Resolver,
+  Root,
+  Subscription,
+} from "type-graphql";
 import { CtxType } from "../../types";
 import {
   GetUserByIdInput,
   LoginInput,
   RegisterInput,
+  UpdateAvatarInputType,
 } from "./inputs/inputTypes";
 import {
   LoginObjectType,
@@ -13,9 +24,84 @@ import {
 } from "./objects/objectTypes";
 import argon2 from "argon2";
 import { isValidEmail, isValidPassword } from "@crispengari/regex-validator";
-import { signJwt, storeCookie, verifyJwt } from "../../utils";
+import { signJwt, verifyJwt } from "../../utils";
+import client from "@prisma/client";
+import path from "path";
+import util from "util";
+import stream from "stream";
+import fs from "fs";
+import { Events, __storageBaseURL__ } from "../../constants";
+const storageDir = path.join(
+  __dirname.replace("dist\\resolvers\\user", ""),
+  "storage"
+);
+const pipeline = util.promisify(stream.pipeline);
 @Resolver()
 export class UserResolver {
+  @Subscription(() => Boolean, {
+    topics: [Events.ON_USER_STATE_CHANGED, Events.ON_USER_AUTH_STATE_CHANGED],
+    nullable: true,
+  })
+  async onUserStateChange(
+    @Root() { userId }: { userId: string },
+    @Arg("userId", () => String) id: string
+  ): Promise<Boolean> {
+    return id === userId;
+  }
+  @Mutation(() => Boolean)
+  async updateAvatar(
+    @Ctx() { prisma, request }: CtxType,
+    @PubSub() pubsub: PubSubEngine,
+    @Arg("input", () => UpdateAvatarInputType) { avatar }: UpdateAvatarInputType
+  ): Promise<Boolean> {
+    // console.log({ prisma });
+    const jwt = request.headers.authorization?.split(" ")[1];
+    if (!!!jwt) return false;
+    const payload = await verifyJwt(jwt);
+    if (!!!payload) return false;
+    const user = await prisma.user.findFirst({ where: { id: payload.id } });
+    if (!!!user) return false;
+    try {
+      const { filename, createReadStream } = await avatar;
+      const fileName: string = `${user.id}.${
+        filename.split(".")[filename.split(".").length - 1]
+      }`;
+      const avatarImage: string = __storageBaseURL__ + `/avatars/${fileName}`;
+      const rs = createReadStream();
+      const ws = fs.createWriteStream(
+        path.join(storageDir, "avatars", fileName)
+      );
+      await pipeline(rs, ws);
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          avatar: avatarImage,
+        },
+      });
+      await pubsub.publish(Events.ON_USER_STATE_CHANGED, {
+        userId: user.id,
+      });
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+    return true;
+  }
+  @Mutation(() => Boolean)
+  async updateUserInfo(
+    @Ctx() { prisma, request }: CtxType,
+    @PubSub() pubsub: PubSubEngine
+  ): Promise<Boolean> {
+    const jwt = request.headers.authorization?.split(" ")[1];
+    if (!!!jwt) return false;
+    const payload = await verifyJwt(jwt);
+    if (!!!payload) return false;
+    const user = await prisma.user.findFirst({ where: { id: payload.id } });
+    if (!!!user) return false;
+
+    return true;
+  }
+
   @Query(() => UserObjectType, { nullable: false })
   async user(
     @Arg("input", () => GetUserByIdInput) { id }: GetUserByIdInput,
@@ -49,17 +135,32 @@ export class UserResolver {
     const user = await prisma.user.findFirst({ where: { id: payload.id } });
     if (!!!user) return undefined;
     return {
-      ...user,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      avatar: user.avatar || "",
+      email: user.email,
+      id: user.id,
     };
   }
 
   @Mutation(() => Boolean)
-  async logout(@Ctx() {}: CtxType): Promise<Boolean> {
+  async logout(
+    @Ctx() { prisma, request }: CtxType,
+    @PubSub() pubsub: PubSubEngine
+  ): Promise<Boolean> {
+    const jwt = request.headers.authorization?.split(" ")[1];
+    if (!!!jwt) return false;
+    const payload = await verifyJwt(jwt);
+    if (!!!payload) return false;
+    await pubsub.publish(Events.ON_USER_AUTH_STATE_CHANGED, {
+      userId: payload.id,
+    });
     return true;
   }
 
   @Mutation(() => LoginObjectType)
   async login(
+    @PubSub() pubsub: PubSubEngine,
     @Arg("input", () => LoginInput, { nullable: false })
     { email, password }: LoginInput,
     @Ctx() { prisma, reply }: CtxType
@@ -88,15 +189,19 @@ export class UserResolver {
       };
     }
     const jwt: string = await signJwt(user);
+    await pubsub.publish(Events.ON_USER_AUTH_STATE_CHANGED, {
+      userId: user.id,
+    });
     return {
       jwt,
-      me: user,
+      me: { ...user, avatar: user.avatar || "" },
     };
   }
   @Mutation(() => RegisterObjectType)
   async register(
     @Arg("input", () => RegisterInput, { nullable: false })
     { confirmPassword, email, password }: RegisterInput,
+    @PubSub() pubsub: PubSubEngine,
     @Ctx() { prisma }: CtxType
   ): Promise<RegisterObjectType> {
     const _user = await prisma.user.findFirst({
@@ -145,10 +250,17 @@ export class UserResolver {
         password: hash,
       },
     });
+
     const jwt: string = await signJwt(user);
+    await pubsub.publish(Events.ON_USER_AUTH_STATE_CHANGED, {
+      userId: user.id,
+    });
     return {
       jwt,
-      me: user,
+      me: {
+        ...user,
+        avatar: user.avatar || "",
+      },
     };
   }
 }

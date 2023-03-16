@@ -31,6 +31,9 @@ export class MeObjectType {
   @Field(() => String)
   email: string;
 
+  @Field(() => String, { nullable: true })
+  avatar?: string;
+
   @Field(() => String)
   createdAt: Date;
 

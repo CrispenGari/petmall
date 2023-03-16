@@ -10,3 +10,5 @@ export { default as ReactionsSummary } from "./ReactionsSummary/ReactionsSummary
 export { default as Reactions } from "./Reactions/Reactions";
 export { default as HeaderButton } from "./HeaderButton/HeaderButton";
 export { default as ProfileCard } from "./ProfileCard/ProfileCard";
+export { default as ProfilePetsFlatList } from "./ProfilePetsFlatList/ProfilePetsFlatList";
+export { default as ProfileLogoutButton } from "./ProfileLogoutButton/ProfileLogoutButton";

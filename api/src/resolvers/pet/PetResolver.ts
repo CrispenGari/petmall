@@ -25,7 +25,8 @@ import {
   PetObjectType,
   PetsObjectType,
 } from "./objects/objectTypes";
-export const storageDir = path.join(
+
+const storageDir = path.join(
   __dirname.replace("dist\\resolvers\\pet", ""),
   "storage"
 );

@@ -1,0 +1,23 @@
+.profile__logout__button {
+  display: flex;
+  margin: 10px auto;
+  background-color: var(--main);
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  flex-direction: column;
+  user-select: none;
+  user-zoom: none;
+  max-width: 1000px;
+  margin: 10px auto;
+}
+.profile__logout__button > button {
+  width: 200px;
+  transition: all 1s;
+  background-color: var(--tertiary) !important;
+}
+.profile__logout__button > h1 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  color: white;
+}

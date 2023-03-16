@@ -83,6 +83,7 @@ export type MarkAsSoldInput = {
 
 export type MeObjectType = {
   __typename?: 'MeObjectType';
+  avatar?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
   email: Scalars['String'];
   id: Scalars['String'];
@@ -102,6 +103,8 @@ export type Mutation = {
   replyToComment: PetObjectType;
   sayHello: Scalars['String'];
   sayHi: Scalars['String'];
+  updateAvatar: Scalars['Boolean'];
+  updateUserInfo: Scalars['Boolean'];
 };
 
 
@@ -152,6 +155,11 @@ export type MutationSayHelloArgs = {
 
 export type MutationSayHiArgs = {
   message: Scalars['String'];
+};
+
+
+export type MutationUpdateAvatarArgs = {
+  input: UpdateAvatarInputType;
 };
 
 export type NewPetInputType = {
@@ -271,7 +279,17 @@ export type ReplyToCommentInput = {
 export type Subscription = {
   __typename?: 'Subscription';
   notify: Scalars['String'];
+  onUserStateChange?: Maybe<Scalars['Boolean']>;
   petInteraction: PetInteractionType;
+};
+
+
+export type SubscriptionOnUserStateChangeArgs = {
+  userId: Scalars['String'];
+};
+
+export type UpdateAvatarInputType = {
+  avatar: Scalars['Upload'];
 };
 
 export type UserObjectType = {
@@ -368,6 +386,13 @@ export type ReplyCommentMutationVariables = Exact<{
 
 export type ReplyCommentMutation = { __typename?: 'Mutation', replyToComment: { __typename?: 'PetObjectType', success: boolean } };
 
+export type UpdateProfileAvatarMutationVariables = Exact<{
+  input: UpdateAvatarInputType;
+}>;
+
+
+export type UpdateProfileAvatarMutation = { __typename?: 'Mutation', updateAvatar: boolean };
+
 export type GetPetByIdQueryVariables = Exact<{
   input: GetPetByIdInput;
 }>;
@@ -410,6 +435,13 @@ export type PetInteractionSubscriptionVariables = Exact<{ [key: string]: never; 
 
 
 export type PetInteractionSubscription = { __typename?: 'Subscription', petInteraction: { __typename?: 'PetInteractionType', petId: string } };
+
+export type OnUserStateChangeSubscriptionVariables = Exact<{
+  userId: Scalars['String'];
+}>;
+
+
+export type OnUserStateChangeSubscription = { __typename?: 'Subscription', onUserStateChange?: boolean | null };
 
 
       export interface PossibleTypesResultData {
@@ -645,6 +677,15 @@ export const ReplyCommentDocument = gql`
 export function useReplyCommentMutation() {
   return Urql.useMutation<ReplyCommentMutation, ReplyCommentMutationVariables>(ReplyCommentDocument);
 };
+export const UpdateProfileAvatarDocument = gql`
+    mutation UpdateProfileAvatar($input: UpdateAvatarInputType!) {
+  updateAvatar(input: $input)
+}
+    `;
+
+export function useUpdateProfileAvatarMutation() {
+  return Urql.useMutation<UpdateProfileAvatarMutation, UpdateProfileAvatarMutationVariables>(UpdateProfileAvatarDocument);
+};
 export const GetPetByIdDocument = gql`
     query GetPetById($input: GetPetByIdInput!) {
   getPetById(input: $input) {
@@ -730,4 +771,13 @@ export const PetInteractionDocument = gql`
 
 export function usePetInteractionSubscription<TData = PetInteractionSubscription>(options: Omit<Urql.UseSubscriptionArgs<PetInteractionSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<PetInteractionSubscription, TData>) {
   return Urql.useSubscription<PetInteractionSubscription, TData, PetInteractionSubscriptionVariables>({ query: PetInteractionDocument, ...options }, handler);
+};
+export const OnUserStateChangeDocument = gql`
+    subscription OnUserStateChange($userId: String!) {
+  onUserStateChange(userId: $userId)
+}
+    `;
+
+export function useOnUserStateChangeSubscription<TData = OnUserStateChangeSubscription>(options: Omit<Urql.UseSubscriptionArgs<OnUserStateChangeSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<OnUserStateChangeSubscription, TData>) {
+  return Urql.useSubscription<OnUserStateChangeSubscription, TData, OnUserStateChangeSubscriptionVariables>({ query: OnUserStateChangeDocument, ...options }, handler);
 };

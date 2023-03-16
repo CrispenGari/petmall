@@ -1,0 +1,3 @@
+subscription OnUserStateChange($userId: String!) {
+  onUserStateChange(userId: $userId)
+}

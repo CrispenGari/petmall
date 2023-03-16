@@ -4,7 +4,13 @@
   overflow-x: hidden;
   overflow-y: scroll;
   background-color: var(--primary);
+  position: relative;
 }
 .profile::-webkit-scrollbar {
   display: none;
+}
+.profile__footer {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
 }

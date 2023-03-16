@@ -4,7 +4,10 @@ import { useSelector } from "react-redux";
 
 import { Button, Icon, Input, Form, Card, Message } from "semantic-ui-react";
 import { COLORS, PETS_CATEGORIES } from "../../constants";
-import { useGetUserQuery } from "../../graphql/generated/graphql";
+import {
+  useGetUserQuery,
+  useUpdateProfileAvatarMutation,
+} from "../../graphql/generated/graphql";
 
 import { ErrorType, StateType } from "../../types";
 
@@ -12,10 +15,20 @@ import "./ProfileCard.css";
 
 interface Props {
   userId: string;
+  category: string;
+  setCategory: React.Dispatch<React.SetStateAction<string>>;
 }
-const ProfileCard: React.FC<Props> = ({ userId: id }) => {
+const ProfileCard: React.FC<Props> = ({
+  userId: id,
+  category,
+  setCategory,
+}) => {
   const { user: me } = useSelector((state: StateType) => state);
-  const [{ data, fetching }] = useGetUserQuery({
+  const [
+    { fetching: updatingAvatar, data: updatedAvatarResult },
+    updateAvatar,
+  ] = useUpdateProfileAvatarMutation();
+  const [{ data, fetching }, refetchUser] = useGetUserQuery({
     variables: { input: { id } },
   });
   const [{ email, image }, setForm] = React.useState<{
@@ -70,7 +83,19 @@ const ProfileCard: React.FC<Props> = ({ userId: id }) => {
     }));
   };
 
-  const updateProfileAvatar = async () => {};
+  const updateProfileAvatar = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!!!image) {
+      setPreviewImage(data?.user.avatar || "");
+      return;
+    }
+    await updateAvatar({ input: { avatar: image } });
+    if (updatedAvatarResult?.updateAvatar) {
+      await refetchUser();
+    }
+  };
+
+  console.log({ updatedAvatarResult });
 
   const handleChange = (file: any) => {
     const reader = new FileReader();
@@ -81,10 +106,16 @@ const ProfileCard: React.FC<Props> = ({ userId: id }) => {
     setForm((state) => ({ ...state, image: file }));
   };
 
-  const updateProfileInfo = async () => {};
+  const updateProfileInfo = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  };
   return (
     <div className="profile__card">
-      <Form className="profile__card__image">
+      <Form
+        className="profile__card__image"
+        loading={fetching || updatingAvatar}
+        onSubmit={updateProfileAvatar}
+      >
         <img src={previewImage ? previewImage : "/profile.png"} alt="profile" />
         {readonly ? (
           <></>
@@ -126,8 +157,7 @@ const ProfileCard: React.FC<Props> = ({ userId: id }) => {
             <Button
               primary
               fluid
-              type="button"
-              onClick={updateProfileAvatar}
+              type="submit"
               style={{ backgroundColor: COLORS.primary }}
             >
               UPDATE
@@ -156,8 +186,8 @@ const ProfileCard: React.FC<Props> = ({ userId: id }) => {
         )}
       </Form>
       <Form
-        //   loading={loading}
-        //   onSubmit={onSubmit}
+        loading={fetching}
+        onSubmit={updateProfileInfo}
         className="profile__card__info"
       >
         <h1>Profile</h1>
@@ -192,7 +222,7 @@ const ProfileCard: React.FC<Props> = ({ userId: id }) => {
             >
               {enableEdit ? "done" : "edit"}
             </Button>
-            <Button secondary onClick={updateProfileInfo}>
+            <Button secondary type="submit">
               update
             </Button>
           </div>
@@ -200,14 +230,20 @@ const ProfileCard: React.FC<Props> = ({ userId: id }) => {
         <Card fluid className="profile__card__summary">
           <h1>Pet Market Summary</h1>
           <Card.Content extra className="profile__card__pet__summary">
-            {PETS_CATEGORIES.map((category) => (
-              <div key={category} className="profile__card__pet__category">
+            {PETS_CATEGORIES.map((cate) => (
+              <div
+                key={cate}
+                style={{
+                  color: cate === category ? COLORS.tertiary : COLORS.white,
+                }}
+                className="profile__card__pet__category"
+                onClick={() => setCategory(cate)}
+              >
                 <Icon name="paw" />
                 {
-                  data?.user.pets.filter((pet) => pet.category === category)
-                    .length
+                  data?.user.pets.filter((pet) => pet.category === cate).length
                 }{" "}
-                {category.replace(/_/g, "")}
+                {cate.replace(/_/g, " ")}
               </div>
             ))}
           </Card.Content>

@@ -1,0 +1,3 @@
+mutation UpdateProfileAvatar($input: UpdateAvatarInputType!) {
+  updateAvatar(input: $input)
+}

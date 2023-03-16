@@ -3,7 +3,7 @@
   min-width: 180px;
   height: 250px;
   cursor: pointer;
-  margin-right: 10px;
+  margin: 5px;
   padding: 5px;
   background-color: var(--primary);
   border-radius: 5px;
