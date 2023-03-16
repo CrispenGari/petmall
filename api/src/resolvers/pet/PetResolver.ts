@@ -175,7 +175,11 @@ export class PetResolver {
         comments: {
           include: {
             user: true,
-            reactions: true,
+            reactions: {
+              include: {
+                user: true,
+              },
+            },
             replies: {
               include: { user: true, reactions: true },
             },
@@ -213,6 +217,7 @@ export class PetResolver {
         },
         seller: {
           ...pet.seller,
+          avatar: pet.seller.avatar || "",
         },
         reactions: pet.reactions,
         comments: pet.comments,

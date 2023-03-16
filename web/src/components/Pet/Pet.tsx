@@ -67,7 +67,7 @@ class Pet extends React.Component<PropsType, StateType> {
           </div>
           <div className="pet__details__seller">
             <Image
-              src="/profile.png"
+              src={!!pet.seller?.avatar ? pet.seller.avatar : "/profile.png"}
               size="small"
               title={pet.seller?.email}
               circular

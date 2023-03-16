@@ -10,6 +10,7 @@ fragment CommentFragment on CommentType {
     user {
       email
       id
+      avatar
     }
   }
   replies {
@@ -19,11 +20,13 @@ fragment CommentFragment on CommentType {
       userId
       user {
         email
+        avatar
         id
       }
     }
     user {
       id
+      avatar
       email
     }
     id
@@ -34,5 +37,6 @@ fragment CommentFragment on CommentType {
   user {
     id
     email
+    avatar
   }
 }
