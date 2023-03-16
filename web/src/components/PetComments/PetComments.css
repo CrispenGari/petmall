@@ -1,0 +1,37 @@
+.pet__comments {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
+}
+.pet__comments > form {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+.pet__comments__input {
+  flex: 1;
+  resize: none !important;
+}
+.pet__comments__btn {
+  margin-left: 10px !important;
+  background-color: var(--main) !important;
+}
+.pet__comments > h1 {
+  color: white;
+  font-size: 1.2rem;
+  margin-bottom: 0;
+}
+.pet__comments__comments {
+  flex: 1;
+  background-color: var(--secondary);
+  margin: 10px 0;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  display: flex;
+  padding: 10px;
+}
+.pet__comments__comments::-webkit-scrollbar {
+  display: none;
+}
