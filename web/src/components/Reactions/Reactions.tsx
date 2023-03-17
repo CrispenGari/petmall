@@ -7,10 +7,16 @@ interface Props {
   setReaction: React.Dispatch<React.SetStateAction<string>>;
   reaction?: string;
   petId: string;
+  sold: boolean;
 }
 
 interface Props {}
-const Reactions: React.FC<Props> = ({ reaction, setReaction, petId: id }) => {
+const Reactions: React.FC<Props> = ({
+  reaction,
+  setReaction,
+  petId: id,
+  sold,
+}) => {
   const [, reactToPet] = useReactToPetMutation();
 
   return (
@@ -20,6 +26,7 @@ const Reactions: React.FC<Props> = ({ reaction, setReaction, petId: id }) => {
           reaction === "LIKE" ? "reaction__button--active" : ""
         }`}
         onClick={async () => {
+          if (sold) return;
           await reactToPet({
             input: {
               id,
@@ -36,6 +43,7 @@ const Reactions: React.FC<Props> = ({ reaction, setReaction, petId: id }) => {
           reaction === "LOVE" ? "reaction__button--active" : ""
         }`}
         onClick={async () => {
+          if (sold) return;
           await reactToPet({
             input: {
               id,
@@ -52,6 +60,7 @@ const Reactions: React.FC<Props> = ({ reaction, setReaction, petId: id }) => {
           reaction === "OFFER_LOVE" ? "reaction__button--active" : ""
         }`}
         onClick={async () => {
+          if (sold) return;
           await reactToPet({
             input: {
               id,
@@ -68,6 +77,7 @@ const Reactions: React.FC<Props> = ({ reaction, setReaction, petId: id }) => {
           reaction === "OFFER_MONEY" ? "reaction__button--active" : ""
         }`}
         onClick={async () => {
+          if (sold) return;
           await reactToPet({
             input: {
               id,
@@ -84,6 +94,7 @@ const Reactions: React.FC<Props> = ({ reaction, setReaction, petId: id }) => {
           reaction === "DISLIKE" ? "reaction__button--active" : ""
         }`}
         onClick={async () => {
+          if (sold) return;
           await reactToPet({
             input: {
               id,

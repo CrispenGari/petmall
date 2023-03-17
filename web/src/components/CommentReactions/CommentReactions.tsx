@@ -8,12 +8,14 @@ interface Props {
   setReaction: React.Dispatch<React.SetStateAction<string>>;
   reaction?: string;
   commentId: string;
+  sold: boolean;
 }
 
 const CommentReactions: React.FC<Props> = ({
   setReaction,
   reaction,
   commentId: id,
+  sold,
 }) => {
   const [, reactToComment] = useReactToCommentMutation();
 
@@ -24,6 +26,7 @@ const CommentReactions: React.FC<Props> = ({
           reaction === "LIKE" ? "comment__reactions__button--active" : ""
         }`}
         onClick={async () => {
+          if (sold) return;
           await reactToComment({
             input: {
               id,
@@ -40,6 +43,7 @@ const CommentReactions: React.FC<Props> = ({
           reaction === "LOVE" ? "comment__reactions__button--active" : ""
         }`}
         onClick={async () => {
+          if (sold) return;
           await reactToComment({
             input: {
               id,
@@ -56,6 +60,7 @@ const CommentReactions: React.FC<Props> = ({
           reaction === "OFFER_LOVE" ? "comment__reactions__button--active" : ""
         }`}
         onClick={async () => {
+          if (sold) return;
           await reactToComment({
             input: {
               id,
@@ -72,6 +77,7 @@ const CommentReactions: React.FC<Props> = ({
           reaction === "OFFER_MONEY" ? "reaction__button--active" : ""
         }`}
         onClick={async () => {
+          if (sold) return;
           await reactToComment({
             input: {
               id,
@@ -88,6 +94,7 @@ const CommentReactions: React.FC<Props> = ({
           reaction === "DISLIKE" ? "comment__reactions__button--active" : ""
         }`}
         onClick={async () => {
+          if (sold) return;
           await reactToComment({
             input: {
               id,

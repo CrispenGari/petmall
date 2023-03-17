@@ -2,6 +2,8 @@ import {
   Arg,
   Ctx,
   Mutation,
+  PubSub,
+  PubSubEngine,
   Query,
   Resolver,
   Root,
@@ -70,6 +72,7 @@ export class PetResolver {
   async deletePet(
     @Arg("input", () => DeletePetInputType)
     { id }: DeletePetInputType,
+    @PubSub() pubsub: PubSubEngine,
     @Ctx() { prisma, request }: CtxType
   ): Promise<PetObjectType> {
     const jwt = request.headers.authorization?.split(" ")[1];
@@ -109,6 +112,9 @@ export class PetResolver {
       await prisma.pet.delete({
         where: { id: pet.id },
       });
+      await pubsub.publish(Events.DELETE_PET, {
+        petId: pet.id,
+      });
       return {
         success: true,
       };
@@ -123,7 +129,8 @@ export class PetResolver {
   async update(
     @Arg("input", () => UpdatePetInputType)
     input: UpdatePetInputType,
-    @Ctx() { prisma, request }: CtxType
+    @Ctx() { prisma, request }: CtxType,
+    @PubSub() pubsub: PubSubEngine
   ): Promise<PetObjectType> {
     const jwt = request.headers.authorization?.split(" ")[1];
     if (!!!jwt)
@@ -208,6 +215,9 @@ export class PetResolver {
           description: input.description,
           price: input.price,
         },
+      });
+      await pubsub.publish(Events.NEW_PET_UPDATE, {
+        petId: pet.id,
       });
       return {
         success: true,
@@ -383,7 +393,8 @@ export class PetResolver {
   @Mutation(() => PetObjectType, { nullable: false })
   async markAsSold(
     @Arg("input", () => MarkAsSoldInput) { id }: MarkAsSoldInput,
-    @Ctx() { prisma, request }: CtxType
+    @Ctx() { prisma, request }: CtxType,
+    @PubSub() pubsub: PubSubEngine
   ): Promise<PetObjectType> {
     const jwt = request.headers.authorization?.split(" ")[1];
     if (!!!jwt)
@@ -401,13 +412,23 @@ export class PetResolver {
         success: false,
       };
     try {
+      const pet = await prisma.pet.findFirst({ where: { id } });
+      if (!!!pet) {
+        return { success: false };
+      }
+      if (pet.sellerId !== user.id) {
+        return { success: false };
+      }
       await prisma.pet.update({
         where: {
-          id: id as string,
+          id: pet.id,
         },
         data: {
           sold: true,
         },
+      });
+      await pubsub.publish(Events.NEW_PET_UPDATE, {
+        petId: pet.id,
       });
     } catch (error) {
       console.log({ error });
@@ -427,6 +448,7 @@ export class PetResolver {
       Events.NEW_REACTION_TO_PET,
       Events.NEW_REACTION_TO_COMMENT,
       Events.NEW_PET_UPDATE,
+      Events.DELETE_PET,
     ],
     nullable: false,
   })

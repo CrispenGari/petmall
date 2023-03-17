@@ -2,7 +2,10 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Button, Form, TextArea } from "semantic-ui-react";
-import { PetType } from "../../graphql/generated/graphql";
+import {
+  PetType,
+  useMarkAsSoldMutation,
+} from "../../graphql/generated/graphql";
 import { StateType } from "../../types";
 import { encodeId } from "../../utils";
 import "./PetButtons.css";
@@ -12,6 +15,8 @@ interface Props {
 const PetButtons: React.FC<Props> = ({ pet }) => {
   const { user } = useSelector((state: StateType) => state);
 
+  const [{ fetching: marking }, markAsSold] = useMarkAsSoldMutation();
+
   const navigate = useNavigate();
   const [message, setMessage] = React.useState<string>(
     `Hey ${pet.seller?.email}, is this still available?`
@@ -20,6 +25,10 @@ const PetButtons: React.FC<Props> = ({ pet }) => {
     e.preventDefault();
     if (!!!message.trim()) return;
     setMessage("");
+  };
+
+  const markAsSoldHandler = async () => {
+    await markAsSold({ input: { id: pet.id } });
   };
 
   return (
@@ -43,7 +52,7 @@ const PetButtons: React.FC<Props> = ({ pet }) => {
           </Button>
         </Form>
       ) : (
-        <Form loading={false}>
+        <Form loading={marking}>
           <Button
             color="green"
             type="button"
@@ -58,6 +67,8 @@ const PetButtons: React.FC<Props> = ({ pet }) => {
             type="button"
             fluid
             className="pet__buttons__send__btn__tertiary"
+            onClick={markAsSoldHandler}
+            disabled={pet.sold}
           >
             SOLD
           </Button>

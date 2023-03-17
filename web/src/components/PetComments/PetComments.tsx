@@ -65,6 +65,7 @@ const PetComments: React.FC<Props> = ({ pet, setReplyTo, replyTo, petId }) => {
               key={comment.id}
               comment={comment as any}
               setReplyTo={setReplyTo}
+              sold={pet.sold}
             />
           ))
         )}
@@ -94,7 +95,12 @@ const PetComments: React.FC<Props> = ({ pet, setReplyTo, replyTo, petId }) => {
           name="comment"
         />
 
-        <Button color="green" type="submit" className="pet__comments__btn">
+        <Button
+          disabled={pet.sold}
+          color="green"
+          type="submit"
+          className="pet__comments__btn"
+        >
           COMMENT
         </Button>
       </Form>

@@ -77,5 +77,5 @@ export class GetPetByIdInput {
 @InputType()
 export class MarkAsSoldInput {
   @Field(() => String, { nullable: false })
-  id: String;
+  id: string;
 }

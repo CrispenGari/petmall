@@ -14,7 +14,7 @@ import { decodeId } from "../../../utils";
 interface Props {
   globalProps: GlobalPropsType;
 }
-const Pet: React.FC<Props> = ({ globalProps: { params, location } }) => {
+const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
   const petId: string = decodeId(params.petId as string);
   const [{ data }, refetchPet] = useGetPetByIdQuery({
     variables: { input: { id: petId } },

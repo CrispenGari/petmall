@@ -18,8 +18,9 @@ interface Props {
       | undefined
     >
   >;
+  sold: boolean;
 }
-const Comment: React.FC<Props> = ({ comment, setReplyTo }) => {
+const Comment: React.FC<Props> = ({ comment, setReplyTo, sold }) => {
   return (
     <div className="comment__main">
       <CommentChild
@@ -27,6 +28,7 @@ const Comment: React.FC<Props> = ({ comment, setReplyTo }) => {
         comment={comment}
         withReply
         setReplyTo={setReplyTo}
+        sold={sold}
       />
       <div className="comment__responses">
         {comment.replies?.map((reply, index) => (
@@ -36,6 +38,7 @@ const Comment: React.FC<Props> = ({ comment, setReplyTo }) => {
             key={index}
             withReply
             setReplyTo={setReplyTo}
+            sold={sold}
           />
         ))}
       </div>
@@ -57,7 +60,8 @@ const CommentChild: React.FunctionComponent<{
       | undefined
     >
   >;
-}> = ({ comment, withReply, setReplyTo, parentCommentId }) => {
+  sold: boolean;
+}> = ({ comment, withReply, setReplyTo, parentCommentId, sold }) => {
   const [reaction, setReaction] = React.useState<string>("");
   const { user } = useSelector((state: StateType) => state);
 
@@ -94,6 +98,7 @@ const CommentChild: React.FunctionComponent<{
             className="comment__details__reply__button"
             title="reply"
             onClick={() => {
+              if (sold) return;
               setReplyTo!({
                 ...comment,
                 parentCommentId,
@@ -107,6 +112,7 @@ const CommentChild: React.FunctionComponent<{
           <Popup
             content={
               <CommentReactions
+                sold={sold}
                 commentId={comment.id}
                 reaction={reaction}
                 setReaction={setReaction}

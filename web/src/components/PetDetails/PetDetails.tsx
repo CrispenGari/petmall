@@ -58,6 +58,7 @@ class PetDetails extends React.Component<PropsType, StateType> {
                 <Reactions
                   petId={pet.id || ""}
                   reaction={reaction}
+                  sold={pet.sold}
                   setReaction={setReaction}
                 />
               }

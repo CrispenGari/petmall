@@ -387,6 +387,13 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
 
+export type MarkAsSoldMutationVariables = Exact<{
+  input: MarkAsSoldInput;
+}>;
+
+
+export type MarkAsSoldMutation = { __typename?: 'Mutation', markAsSold: { __typename?: 'PetObjectType', success: boolean } };
+
 export type NewPetMutationVariables = Exact<{
   input: NewPetInputType;
 }>;
@@ -673,6 +680,17 @@ export const LogoutDocument = gql`
 
 export function useLogoutMutation() {
   return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
+};
+export const MarkAsSoldDocument = gql`
+    mutation MarkAsSold($input: MarkAsSoldInput!) {
+  markAsSold(input: $input) {
+    success
+  }
+}
+    `;
+
+export function useMarkAsSoldMutation() {
+  return Urql.useMutation<MarkAsSoldMutation, MarkAsSoldMutationVariables>(MarkAsSoldDocument);
 };
 export const NewPetDocument = gql`
     mutation NewPet($input: NewPetInputType!) {
