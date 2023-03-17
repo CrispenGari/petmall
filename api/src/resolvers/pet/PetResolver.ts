@@ -8,6 +8,7 @@ import {
   Subscription,
 } from "type-graphql";
 import {
+  DeletePetInputType,
   GetCategoryPetsInput,
   GetPetByIdInput,
   MarkAsSoldInput,
@@ -65,7 +66,59 @@ export class PetResolver {
       pets: pets ?? [],
     };
   }
+  @Mutation(() => PetObjectType, { nullable: false })
+  async deletePet(
+    @Arg("input", () => DeletePetInputType)
+    { id }: DeletePetInputType,
+    @Ctx() { prisma, request }: CtxType
+  ): Promise<PetObjectType> {
+    const jwt = request.headers.authorization?.split(" ")[1];
+    if (!!!jwt)
+      return {
+        success: false,
+      };
+    const payload = await verifyJwt(jwt);
+    if (!!!payload)
+      return {
+        success: false,
+      };
+    const user = await prisma.user.findFirst({ where: { id: payload.id } });
+    if (!!!user)
+      return {
+        success: false,
+      };
+    try {
+      const pet = await prisma.pet.findFirst({
+        where: { id },
+        include: { location: true },
+      });
 
+      if (!!!pet) return { success: false };
+
+      if (pet.sellerId !== user.id) {
+        return { success: false };
+      }
+      const urlParts = pet.image.split("/");
+      const imageName: string = urlParts[urlParts.length - 1];
+      const absoluteImagePath: string = path.join(
+        storageDir,
+        "pets",
+        imageName
+      );
+      await fs.unlinkSync(absoluteImagePath);
+      await prisma.pet.delete({
+        where: { id: pet.id },
+      });
+      return {
+        success: true,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        success: false,
+      };
+    }
+  }
   @Mutation(() => PetObjectType, { nullable: false })
   async update(
     @Arg("input", () => UpdatePetInputType)
@@ -93,7 +146,9 @@ export class PetResolver {
         include: { location: true },
       });
       if (!!!pet) return { success: false };
-
+      if (pet.sellerId !== user.id) {
+        return { success: false };
+      }
       let petImage: string = "";
       if (!!input.image) {
         const { filename, createReadStream } = await input.image;
@@ -135,9 +190,11 @@ export class PetResolver {
         }
       } else {
         if (!!pet.location) {
-          // location disabled
-          await prisma.location.delete({
-            where: { id: pet.location.id },
+          await prisma.location.update({
+            where: {
+              id: pet.location.id,
+            },
+            data: { lat: 0, lon: 0 },
           });
         }
       }

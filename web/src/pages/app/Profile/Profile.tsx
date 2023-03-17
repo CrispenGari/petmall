@@ -7,24 +7,27 @@ import {
   ProfileLogoutButton,
   ProfilePetsFlatList,
 } from "../../../components";
+import { decodeId } from "../../../utils";
 
 import "./Profile.css";
 
 interface Props {}
 const Profile: React.FC<Props> = () => {
   const params = useParams();
+
+  const userId: string = decodeId(params.userId as string);
   const [category, setCategory] = React.useState<string>("ALL PETS");
 
   return (
     <div className="profile">
       <Header />
       <ProfileCard
-        userId={params.userId || ""}
+        userId={userId}
         setCategory={setCategory}
         category={category}
       />
       <ProfilePetsFlatList
-        userId={params.userId || ""}
+        userId={userId}
         category={category}
         subtitle={`Pet in the market.`}
         setCategory={setCategory}

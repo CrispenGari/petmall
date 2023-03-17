@@ -32,6 +32,10 @@ export type CommentType = {
   user?: Maybe<UserType>;
 };
 
+export type DeletePetInputType = {
+  id: Scalars['String'];
+};
+
 export type ErrorType = {
   __typename?: 'ErrorType';
   field: Scalars['String'];
@@ -94,6 +98,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   add: PetObjectType;
   commentToPet: PetObjectType;
+  deletePet: PetObjectType;
   login: LoginObjectType;
   logout: Scalars['Boolean'];
   markAsSold: PetObjectType;
@@ -116,6 +121,11 @@ export type MutationAddArgs = {
 
 export type MutationCommentToPetArgs = {
   input: CommentToPetInput;
+};
+
+
+export type MutationDeletePetArgs = {
+  input: DeletePetInputType;
 };
 
 
@@ -350,6 +360,13 @@ export type CommentToPetMutationVariables = Exact<{
 
 
 export type CommentToPetMutation = { __typename?: 'Mutation', commentToPet: { __typename?: 'PetObjectType', success: boolean } };
+
+export type DeletePetMutationVariables = Exact<{
+  input: DeletePetInputType;
+}>;
+
+
+export type DeletePetMutation = { __typename?: 'Mutation', deletePet: { __typename?: 'PetObjectType', success: boolean } };
 
 export type SayHelloMutationVariables = Exact<{
   message: Scalars['String'];
@@ -609,6 +626,17 @@ export const CommentToPetDocument = gql`
 
 export function useCommentToPetMutation() {
   return Urql.useMutation<CommentToPetMutation, CommentToPetMutationVariables>(CommentToPetDocument);
+};
+export const DeletePetDocument = gql`
+    mutation DeletePet($input: DeletePetInputType!) {
+  deletePet(input: $input) {
+    success
+  }
+}
+    `;
+
+export function useDeletePetMutation() {
+  return Urql.useMutation<DeletePetMutation, DeletePetMutationVariables>(DeletePetDocument);
 };
 export const SayHelloDocument = gql`
     mutation SayHello($message: String!) {

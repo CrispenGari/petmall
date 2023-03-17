@@ -10,6 +10,7 @@ import updateLocal from "dayjs/plugin/updateLocale";
 import { relativeTimeObject } from "../../constants";
 import { withGlobalProps } from "../../hoc";
 import { GlobalPropsType } from "../../types";
+import { encodeId } from "../../utils";
 dayjs.extend(relativeTime);
 dayjs.extend(updateLocal);
 
@@ -20,6 +21,7 @@ interface StateType {}
 interface PropsType {
   pet: PetType;
   globalProps: GlobalPropsType;
+  next?: string;
 }
 class Pet extends React.Component<PropsType, StateType> {
   constructor(props: PropsType) {
@@ -29,16 +31,23 @@ class Pet extends React.Component<PropsType, StateType> {
   render() {
     const {
       pet,
+      next,
       globalProps: { navigate },
     } = this.props;
-    console.log({ pet });
     const repliesCount: number =
       pet.comments
         ?.map((cmt) => cmt.replies?.length || 0)
         .reduce((a, b) => a + b, 0) || 0;
     const commentCount: number = pet.comments?.length || 0;
     return (
-      <div className="pet" onClick={() => navigate(`/app/pet/${pet.id}`)}>
+      <div
+        className="pet"
+        onClick={() =>
+          navigate(
+            `/app/pet/${encodeId(pet.id)}?next=${!!next ? next : "pets"}`
+          )
+        }
+      >
         <h1>{pet.name}</h1>
         <p>
           {pet.age} weeks • {pet.gender.toLowerCase()}

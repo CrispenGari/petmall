@@ -46,12 +46,11 @@ const ProfilePetsFlatList: React.FC<Props> = ({
           onChange={(e, { value }) => setCategory(value as any)}
         />
       </div>
-
       <div className="profile__pets__flatlist__items">
         {category === "ALL PETS" ? (
           data?.user.pets
             .filter(Boolean)
-            .map((pet) => <Pet key={pet.id} pet={pet} />)
+            .map((pet) => <Pet key={pet.id} pet={pet} next={"profile"} />)
         ) : data?.user.pets.filter((pet) => pet.category === category)
             .length === 0 ? (
           <NoPets category={category} />

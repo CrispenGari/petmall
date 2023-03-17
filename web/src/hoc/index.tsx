@@ -1,4 +1,9 @@
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { StateType } from "../types";
 import React from "react";
@@ -11,6 +16,7 @@ export const withGlobalProps = (Component: any) => {
     const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const searchParams = useSearchParams();
 
     React.useEffect(() => {
       let mounted: boolean = true;
@@ -32,6 +38,7 @@ export const withGlobalProps = (Component: any) => {
           params,
           user,
           dispatch,
+          searchParams,
         }}
       />
     );

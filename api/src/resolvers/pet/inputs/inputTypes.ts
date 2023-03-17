@@ -32,6 +32,11 @@ export class NewPetInputType {
 }
 
 @InputType()
+export class DeletePetInputType {
+  @Field(() => String, { nullable: false })
+  id: string;
+}
+@InputType()
 export class UpdatePetInputType {
   @Field(() => String, { nullable: false })
   id: string;

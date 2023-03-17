@@ -208,6 +208,7 @@ const NewPet: React.FC<Props> = () => {
             value={description}
             name="description"
             error={error?.field === "description"}
+            style={{ resize: "none" }}
           />
           <Select
             className={"new__pet__form__input"}

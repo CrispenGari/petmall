@@ -7,7 +7,7 @@ import { LogoutDocument } from "../../graphql/generated/graphql";
 import { withGlobalProps } from "../../hoc";
 import { client } from "../../providers/UrqlProvider";
 import { GlobalPropsType } from "../../types";
-import { del } from "../../utils";
+import { del, encodeId } from "../../utils";
 import "./Header.css";
 interface PropsType {
   globalProps: GlobalPropsType;
@@ -71,7 +71,7 @@ class Header extends React.Component<PropsType, StateType> {
               iconName="wechat"
               title="messages"
               onClick={() => {
-                navigate(`/app/chats/${user.id}`);
+                navigate(`/app/chats/${encodeId(user.id)}`);
               }}
             />
             <HeaderButton
@@ -90,7 +90,7 @@ class Header extends React.Component<PropsType, StateType> {
               iconName="user"
               title="profile"
               onClick={() => {
-                navigate(`/app/profile/${user.id}`);
+                navigate(`/app/profile/${encodeId(user.id)}`);
               }}
             />
           </div>

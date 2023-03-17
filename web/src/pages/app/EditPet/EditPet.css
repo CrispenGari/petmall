@@ -64,3 +64,7 @@
   font-size: 1.2rem;
   color: var(--main);
 }
+.edit__pet__buttons {
+  display: flex;
+  justify-content: space-between;
+}

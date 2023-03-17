@@ -10,13 +10,16 @@ import { withGlobalProps } from "../../../hoc";
 import { GlobalPropsType, StateType } from "../../../types";
 import "./Pet.css";
 import { useSelector } from "react-redux";
+import { decodeId } from "../../../utils";
 interface Props {
   globalProps: GlobalPropsType;
 }
-const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
+const Pet: React.FC<Props> = ({ globalProps: { params, location } }) => {
+  const petId: string = decodeId(params.petId as string);
   const [{ data }, refetchPet] = useGetPetByIdQuery({
-    variables: { input: { id: params.petId as string } },
+    variables: { input: { id: petId } },
   });
+
   const [{ data: petModification }] = usePetInteractionSubscription();
   const { user } = useSelector((state: StateType) => state);
   const [reaction, setReaction] = React.useState<string>("");
@@ -31,7 +34,7 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
     let mounted: boolean = true;
     if (mounted && !!petModification?.petInteraction.petId) {
       (async () => {
-        if (petModification.petInteraction.petId === (params.petId as string)) {
+        if (petModification.petInteraction.petId === petId) {
           await refetchPet();
         }
       })();
@@ -39,7 +42,7 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
     return () => {
       mounted = false;
     };
-  }, [refetchPet, petModification, params]);
+  }, [refetchPet, petModification, petId]);
 
   React.useEffect(() => {
     let mounted: boolean = true;
@@ -73,7 +76,7 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
           <PetComments
             pet={data.getPetById.pet as any}
             setReplyTo={setReplyTo}
-            petId={params.petId || ""}
+            petId={petId}
             replyTo={replyTo}
           />
         )}

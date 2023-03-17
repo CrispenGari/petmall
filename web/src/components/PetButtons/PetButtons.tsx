@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, Form, TextArea } from "semantic-ui-react";
 import { PetType } from "../../graphql/generated/graphql";
 import { StateType } from "../../types";
+import { encodeId } from "../../utils";
 import "./PetButtons.css";
 interface Props {
   pet: PetType;
@@ -48,7 +49,7 @@ const PetButtons: React.FC<Props> = ({ pet }) => {
             type="button"
             fluid
             className="pet__buttons__send__btn"
-            onClick={() => navigate(`/app/pet/edit/${pet.id}`)}
+            onClick={() => navigate(`/app/pet/edit/${encodeId(pet.id)}`)}
           >
             EDIT
           </Button>

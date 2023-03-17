@@ -26,6 +26,7 @@ export interface GlobalPropsType {
   params: Readonly<Params<string>>;
   dispatch: Dispatch<AnyAction>;
   user: User | null;
+  searchParams: URLSearchParams;
 }
 
 export type ErrorType = {

@@ -18,18 +18,24 @@ import { ErrorType, StateType } from "../../../types";
 import "./EditPet.css";
 import { useSelector } from "react-redux";
 import {
+  useDeletePetMutation,
   useGetPetByIdQuery,
   useUpdatePetMutation,
 } from "../../../graphql/generated/graphql";
+import { decodeId, encodeId } from "../../../utils";
 interface Props {}
 
 const EditPet: React.FC<Props> = () => {
   const { coords } = useGeolocation();
-
-  const [{ fetching, data: updateData }, updatePet] = useUpdatePetMutation();
   const params = useParams();
-  const [{ data }] = useGetPetByIdQuery({
-    variables: { input: { id: params.petId as string } },
+  const petId = decodeId(params.petId || "");
+  const [{ fetching: updating, data: updateData }, updatePet] =
+    useUpdatePetMutation();
+  const [{ fetching: deleting, data: deleteData }, deletePet] =
+    useDeletePetMutation();
+
+  const [{ data, fetching }] = useGetPetByIdQuery({
+    variables: { input: { id: petId } },
   });
   const { user } = useSelector((state: StateType) => state);
   const navigator = useNavigate();
@@ -38,14 +44,27 @@ const EditPet: React.FC<Props> = () => {
     let mounted: boolean = true;
     if (mounted && !!updateData) {
       if (!!updateData?.update?.success) {
-        navigator(`/app/pet/${params.petId}`, { replace: true });
+        navigator(`/app/pet/${encodeId(petId)}`, {
+          replace: true,
+        });
       }
     }
     return () => {
       mounted = false;
     };
-  }, [updateData, navigator, params]);
-  console.log({ updateData });
+  }, [updateData, navigator, petId]);
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!deleteData) {
+      if (!!deleteData?.deletePet?.success) {
+        navigator(`/`, { replace: true });
+      }
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [deleteData, navigator]);
 
   React.useEffect(() => {
     let mounted: boolean = true;
@@ -109,7 +128,9 @@ const EditPet: React.FC<Props> = () => {
         gender,
         image: null,
         name,
-        enableLocation: !!location,
+        enableLocation: !!!location
+          ? false
+          : location.lat !== 0 && location.lon !== 0,
       }));
       setPreviewImage(image);
     }
@@ -124,6 +145,10 @@ const EditPet: React.FC<Props> = () => {
       ...state,
       [name]: value,
     }));
+  };
+
+  const deletePetHandler = async () => {
+    await deletePet({ input: { id: petId } });
   };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -161,7 +186,7 @@ const EditPet: React.FC<Props> = () => {
     });
     await updatePet({
       input: {
-        id: params.petId ?? "",
+        id: petId,
         age: Number(age.toString()),
         category,
         gender,
@@ -185,7 +210,7 @@ const EditPet: React.FC<Props> = () => {
       <div className="edit__pet__form">
         <h1>EDIT PET</h1>
         <Form
-          loading={fetching}
+          loading={fetching || deleting || updating}
           className={"edit__pet__form"}
           onSubmit={onSubmit}
         >
@@ -324,13 +349,23 @@ const EditPet: React.FC<Props> = () => {
             </Message>
           )}
 
-          <Button
-            type="submit"
-            fluid
-            style={{ color: "white", backgroundColor: COLORS.tertiary }}
-          >
-            UPDATE PET
-          </Button>
+          <div className="edit__pet__buttons">
+            <Button
+              type="submit"
+              fluid
+              style={{ color: "white", backgroundColor: COLORS.main }}
+            >
+              UPDATE PET
+            </Button>
+            <Button
+              type="button"
+              fluid
+              style={{ color: "white", backgroundColor: COLORS.tertiary }}
+              onClick={deletePetHandler}
+            >
+              DELETE PET
+            </Button>
+          </div>
         </Form>
       </div>
     </div>
