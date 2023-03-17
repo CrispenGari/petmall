@@ -8,6 +8,7 @@ import { Icon, Popup } from "semantic-ui-react";
 import ReactionsSummary from "../ReactionsSummary/ReactionsSummary";
 import SellerCard from "../SellerCard/SellerCard";
 import "./PetDetails.css";
+import PetButtons from "../PetButtons/PetButtons";
 interface PropsType {
   pet: PetType;
   reaction: string;
@@ -48,6 +49,8 @@ class PetDetails extends React.Component<PropsType, StateType> {
         />
         {pet.sold ? <div className="pet__details__badge">SOLD</div> : null}
         <p style={{ color: "white", fontSize: "1rem" }}>{pet.description}</p>
+
+        <PetButtons pet={pet} />
         <div className="pet__details__reaction">
           <div>
             <Popup

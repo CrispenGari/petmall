@@ -1,0 +1,21 @@
+.pet__buttons {
+  width: 100%;
+  margin: 10px 0;
+}
+.pet__buttons > form {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: flex-start;
+}
+.pet__buttons__input {
+  flex: 1;
+  margin-right: 10px !important;
+  resize: none !important;
+}
+.pet__buttons__send__btn {
+  background-color: var(--main) !important;
+}
+.pet__buttons__send__btn__tertiary {
+  background-color: var(--tertiary) !important;
+}

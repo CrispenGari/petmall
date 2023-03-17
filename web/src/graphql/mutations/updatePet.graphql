@@ -1,0 +1,5 @@
+mutation UpdatePet($input: UpdatePetInputType!) {
+  update(input: $input) {
+    success
+  }
+}

@@ -7,7 +7,7 @@ import {
   useMeQuery,
   useOnUserStateChangeSubscription,
 } from "../graphql/generated/graphql";
-import { Home, NewPet, Pet, Profile } from "../pages/app";
+import { Chat, Chats, EditPet, Home, NewPet, Pet, Profile } from "../pages/app";
 import { Login, Register } from "../pages/auth";
 import { NotFound } from "../pages/common";
 import { StateType } from "../types";
@@ -42,7 +42,14 @@ const Routes: React.FC<Props> = () => {
         <Route path="/auth/login" caseSensitive element={<Login />} />
         <Route path="/auth/register" caseSensitive element={<Register />} />
         <Route path="/app/pet/:petId" caseSensitive element={<Pet />} />
+        <Route path="/app/chats/:userId" caseSensitive element={<Chats />} />
+        <Route path="/app/chat/:chatId" caseSensitive element={<Chat />} />
         <Route path="/app/pet/new" caseSensitive element={<NewPet />} />
+        <Route
+          path="/app/pet/edit/:petId"
+          caseSensitive
+          element={<EditPet />}
+        />
         <Route
           path="/app/profile/:userId"
           caseSensitive

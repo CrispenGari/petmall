@@ -32,6 +32,32 @@ export class NewPetInputType {
 }
 
 @InputType()
+export class UpdatePetInputType {
+  @Field(() => String, { nullable: false })
+  id: string;
+
+  @Field(() => GraphQLUpload, { nullable: true })
+  image?: FileUpload;
+
+  @Field(() => LocationInput, { nullable: true })
+  location?: LocationInput;
+
+  @Field(() => String, { nullable: false })
+  description: string;
+
+  @Field(() => String, { nullable: false })
+  category: string;
+  @Field(() => String, { nullable: false })
+  gender: string;
+  @Field(() => Float, { nullable: false })
+  price: number;
+  @Field(() => Int, { nullable: false })
+  age: number;
+  @Field(() => String, { nullable: false })
+  name: string;
+}
+
+@InputType()
 export class GetCategoryPetsInput {
   @Field(() => String, { nullable: false })
   category: string;

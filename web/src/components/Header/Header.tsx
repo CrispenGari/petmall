@@ -68,6 +68,13 @@ class Header extends React.Component<PropsType, StateType> {
         {!!user ? (
           <div className="app__header__right">
             <HeaderButton
+              iconName="wechat"
+              title="messages"
+              onClick={() => {
+                navigate(`/app/chats/${user.id}`);
+              }}
+            />
+            <HeaderButton
               iconName="log out"
               title="signout"
               onClick={signOut}

@@ -12,6 +12,7 @@ import {
   GetPetByIdInput,
   MarkAsSoldInput,
   NewPetInputType,
+  UpdatePetInputType,
 } from "./inputs/inputTypes";
 import stream from "stream";
 import util from "util";
@@ -63,6 +64,103 @@ export class PetResolver {
       count: pets.length,
       pets: pets ?? [],
     };
+  }
+
+  @Mutation(() => PetObjectType, { nullable: false })
+  async update(
+    @Arg("input", () => UpdatePetInputType)
+    input: UpdatePetInputType,
+    @Ctx() { prisma, request }: CtxType
+  ): Promise<PetObjectType> {
+    const jwt = request.headers.authorization?.split(" ")[1];
+    if (!!!jwt)
+      return {
+        success: false,
+      };
+    const payload = await verifyJwt(jwt);
+    if (!!!payload)
+      return {
+        success: false,
+      };
+    const user = await prisma.user.findFirst({ where: { id: payload.id } });
+    if (!!!user)
+      return {
+        success: false,
+      };
+    try {
+      const pet = await prisma.pet.findFirst({
+        where: { id: input.id },
+        include: { location: true },
+      });
+      if (!!!pet) return { success: false };
+
+      let petImage: string = "";
+      if (!!input.image) {
+        const { filename, createReadStream } = await input.image;
+        const fileName: string = `${pet.id}.${
+          filename.split(".")[filename.split(".").length - 1]
+        }`;
+        petImage = __storageBaseURL__ + `/pets/${fileName}`;
+        const rs = createReadStream();
+        const ws = fs.createWriteStream(
+          path.join(storageDir, "pets", fileName)
+        );
+        await pipeline(rs, ws);
+      }
+
+      if (!!input.location) {
+        if (!!pet.location) {
+          // update the one that exist on pet
+          await prisma.location.update({
+            where: { id: pet.location.id },
+            data: {
+              lat: input.location.lat,
+              lon: input.location.lon,
+              pet: {
+                connect: { id: pet.id },
+              },
+            },
+          });
+        } else {
+          // create one for that pet
+          await prisma.location.create({
+            data: {
+              lat: input.location.lat,
+              lon: input.location.lon,
+              pet: {
+                connect: { id: pet.id },
+              },
+            },
+          });
+        }
+      } else {
+        if (!!pet.location) {
+          // location disabled
+          await prisma.location.delete({
+            where: { id: pet.location.id },
+          });
+        }
+      }
+      await prisma.pet.update({
+        where: { id: pet.id },
+        data: {
+          image: !!petImage ? petImage : pet.image,
+          age: input.age,
+          name: input.name,
+          gender: input.gender,
+          description: input.description,
+          price: input.price,
+        },
+      });
+      return {
+        success: true,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        success: false,
+      };
+    }
   }
 
   @Mutation(() => PetObjectType, { nullable: false })
@@ -271,6 +369,7 @@ export class PetResolver {
       Events.NEW_COMMENT_REPLY,
       Events.NEW_REACTION_TO_PET,
       Events.NEW_REACTION_TO_COMMENT,
+      Events.NEW_PET_UPDATE,
     ],
     nullable: false,
   })

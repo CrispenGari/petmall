@@ -103,6 +103,7 @@ export type Mutation = {
   replyToComment: PetObjectType;
   sayHello: Scalars['String'];
   sayHi: Scalars['String'];
+  update: PetObjectType;
   updateAvatar: Scalars['Boolean'];
   updateUserInfo: Scalars['Boolean'];
 };
@@ -155,6 +156,11 @@ export type MutationSayHelloArgs = {
 
 export type MutationSayHiArgs = {
   message: Scalars['String'];
+};
+
+
+export type MutationUpdateArgs = {
+  input: UpdatePetInputType;
 };
 
 
@@ -292,6 +298,18 @@ export type UpdateAvatarInputType = {
   avatar: Scalars['Upload'];
 };
 
+export type UpdatePetInputType = {
+  age: Scalars['Int'];
+  category: Scalars['String'];
+  description: Scalars['String'];
+  gender: Scalars['String'];
+  id: Scalars['String'];
+  image?: InputMaybe<Scalars['Upload']>;
+  location?: InputMaybe<LocationInput>;
+  name: Scalars['String'];
+  price: Scalars['Float'];
+};
+
 export type UserObjectType = {
   __typename?: 'UserObjectType';
   avatar?: Maybe<Scalars['String']>;
@@ -393,6 +411,13 @@ export type UpdateProfileAvatarMutationVariables = Exact<{
 
 
 export type UpdateProfileAvatarMutation = { __typename?: 'Mutation', updateAvatar: boolean };
+
+export type UpdatePetMutationVariables = Exact<{
+  input: UpdatePetInputType;
+}>;
+
+
+export type UpdatePetMutation = { __typename?: 'Mutation', update: { __typename?: 'PetObjectType', success: boolean } };
 
 export type GetPetByIdQueryVariables = Exact<{
   input: GetPetByIdInput;
@@ -691,6 +716,17 @@ export const UpdateProfileAvatarDocument = gql`
 
 export function useUpdateProfileAvatarMutation() {
   return Urql.useMutation<UpdateProfileAvatarMutation, UpdateProfileAvatarMutationVariables>(UpdateProfileAvatarDocument);
+};
+export const UpdatePetDocument = gql`
+    mutation UpdatePet($input: UpdatePetInputType!) {
+  update(input: $input) {
+    success
+  }
+}
+    `;
+
+export function useUpdatePetMutation() {
+  return Urql.useMutation<UpdatePetMutation, UpdatePetMutationVariables>(UpdatePetDocument);
 };
 export const GetPetByIdDocument = gql`
     query GetPetById($input: GetPetByIdInput!) {

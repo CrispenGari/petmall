@@ -10,8 +10,11 @@ datasource db {
 model User {
   id       String @unique @default(uuid())
   email    String @unique
-  password String
+  // firstName String
+  // lastName String
+  // verified Boolean @default(false)
   avatar String?
+  password String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -20,6 +23,48 @@ model User {
   pets     Pet[]
   comments Comment[]
   reactions Reaction[]
+  chats ChatOnUser[]
+  messages Message[]
+}
+model Chat{
+  id       String @unique @default(uuid())
+  userIds    String[]
+
+  messages Message[]
+
+  users  ChatOnUser[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model ChatOnUser {
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId     String
+
+  chat   Chat @relation(fields: [chatId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  chatId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([userId, chatId])
+}
+model Message{
+  id       String @unique @default(uuid())
+  message    String
+
+
+  sender   User @relation(fields: [senderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  senderId String
+
+  chat   Chat @relation(fields: [chatId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  chatId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Pet {
@@ -40,7 +85,7 @@ model Pet {
   seller   User   @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   sellerId String
 
-  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  location   Location @relation(fields: [locationId], references: [id], onDelete: NoAction, onUpdate: Cascade)
   locationId String   @unique
 
   createdAt DateTime @default(now())
