@@ -21,10 +21,23 @@ model User {
 
  // relations
   pets     Pet[]
+  notifications Notification[]
   comments Comment[]
   reactions Reaction[]
   chats ChatOnUser[]
   messages Message[]
+}
+
+model Notification{
+  id       String @unique @default(uuid())
+  notification String
+  read Boolean @default(false)
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 model Chat{
   id       String @unique @default(uuid())

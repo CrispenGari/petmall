@@ -5,9 +5,19 @@ import { Routes as R, Route, BrowserRouter as Router } from "react-router-dom";
 import { setUser } from "../actions";
 import {
   useMeQuery,
+  useNewNotificationSubscription,
   useOnUserStateChangeSubscription,
 } from "../graphql/generated/graphql";
-import { Chat, Chats, EditPet, Home, NewPet, Pet, Profile } from "../pages/app";
+import {
+  Chat,
+  Chats,
+  EditPet,
+  Home,
+  NewPet,
+  Notifications,
+  Pet,
+  Profile,
+} from "../pages/app";
 import { Login, Register } from "../pages/auth";
 import { NotFound } from "../pages/common";
 import { StateType } from "../types";
@@ -54,6 +64,11 @@ const Routes: React.FC<Props> = () => {
           path="/app/profile/:userId"
           caseSensitive
           element={<Profile />}
+        />
+        <Route
+          path="/app/notifications/:userId"
+          caseSensitive
+          element={<Notifications />}
         />
         <Route path="*" caseSensitive element={<NotFound />} />
       </R>

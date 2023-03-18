@@ -1,0 +1,15 @@
+.divider {
+  display: flex;
+  margin: 5px 0;
+  width: 100%;
+  align-items: center !important;
+  justify-content: space-between;
+}
+.divider > span {
+  border-top: 0.5px solid lightgray;
+  flex: 1;
+  margin-left: 10px;
+}
+.divider > p {
+  margin: 0;
+}

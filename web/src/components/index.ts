@@ -5,6 +5,8 @@ export { default as Footer } from "./Footer/Footer";
 export { default as Pet } from "./Pet/Pet";
 export { default as Comment } from "./Comment/Comment";
 export { default as NoPets } from "./NoPets/NoPets";
+export { default as Notification } from "./Notification/Notification";
+export { default as Divider } from "./Divider/Divider";
 export { default as Loading } from "./Loading/Loading";
 export { default as SellerCard } from "./SellerCard/SellerCard";
 export { default as PetDetails } from "./PetDetails/PetDetails";

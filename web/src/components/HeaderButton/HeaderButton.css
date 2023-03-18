@@ -7,6 +7,17 @@
   padding: 20px;
   justify-content: center;
   transition: all 1s;
+  position: relative;
+}
+.header__button__dot {
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: var(--tertiary);
+  z-index: 10;
+  border-radius: 50%;
 }
 
 .header__button:hover {

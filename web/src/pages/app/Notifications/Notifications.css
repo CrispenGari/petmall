@@ -1,0 +1,38 @@
+.notifications {
+  width: 100vw;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--primary);
+  position: relative;
+}
+.notifications::-webkit-scrollbar,
+.notifications__main::-webkit-scrollbar {
+  display: none;
+}
+
+.notifications__main {
+  flex: 1;
+  width: 100%;
+  max-width: 1000px;
+  background-color: var(--main);
+  margin: 0px auto;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll !important;
+}
+.notifications__main__header {
+  padding: 10px;
+  background-color: var(--primary);
+  position: sticky;
+  top: 0;
+  width: 100%;
+}
+.notifications__main__header__input {
+  max-width: 300px;
+}
+.notifications__main__lists {
+  padding: 10px;
+}

@@ -16,6 +16,16 @@ export type Scalars = {
   Upload: any;
 };
 
+export type ChatType = {
+  __typename?: 'ChatType';
+  chatId: Scalars['String'];
+  createdAt: Scalars['String'];
+  id: Scalars['String'];
+  messages?: Maybe<Array<MessageType>>;
+  updatedAt: Scalars['String'];
+  userIds: Array<Scalars['String']>;
+};
+
 export type CommentToPetInput = {
   comment: Scalars['String'];
   id: Scalars['String'];
@@ -91,6 +101,18 @@ export type MeObjectType = {
   createdAt: Scalars['String'];
   email: Scalars['String'];
   id: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
+export type MessageType = {
+  __typename?: 'MessageType';
+  chat?: Maybe<ChatType>;
+  chatId: Scalars['String'];
+  createdAt: Scalars['String'];
+  id: Scalars['String'];
+  message: Scalars['String'];
+  sender?: Maybe<UserType>;
+  senderId: Scalars['String'];
   updatedAt: Scalars['String'];
 };
 
@@ -178,6 +200,16 @@ export type MutationUpdateAvatarArgs = {
   input: UpdateAvatarInputType;
 };
 
+export type NewNotificationSubscriptionInput = {
+  userId: Scalars['String'];
+};
+
+export type NewNotificationType = {
+  __typename?: 'NewNotificationType';
+  notification?: Maybe<NotificationType>;
+  userId: Scalars['String'];
+};
+
 export type NewPetInputType = {
   age: Scalars['Int'];
   category: Scalars['String'];
@@ -187,6 +219,24 @@ export type NewPetInputType = {
   location?: InputMaybe<LocationInput>;
   name: Scalars['String'];
   price: Scalars['Float'];
+};
+
+export type NotificationObjectType = {
+  __typename?: 'NotificationObjectType';
+  notifications: Array<NotificationType>;
+  total: Scalars['Int'];
+  unread: Scalars['Int'];
+};
+
+export type NotificationType = {
+  __typename?: 'NotificationType';
+  createdAt: Scalars['String'];
+  id: Scalars['String'];
+  notification: Scalars['String'];
+  read: Scalars['Boolean'];
+  updatedAt: Scalars['String'];
+  user?: Maybe<UserType>;
+  userId: Scalars['String'];
 };
 
 export type PetInteractionType = {
@@ -231,6 +281,7 @@ export type Query = {
   getPetById?: Maybe<PetObjectType>;
   hello: Scalars['String'];
   me?: Maybe<MeObjectType>;
+  notifications: NotificationObjectType;
   user: UserObjectType;
 };
 
@@ -294,9 +345,15 @@ export type ReplyToCommentInput = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  newNotification: NewNotificationType;
   notify: Scalars['String'];
   onUserStateChange?: Maybe<Scalars['Boolean']>;
   petInteraction: PetInteractionType;
+};
+
+
+export type SubscriptionNewNotificationArgs = {
+  input: NewNotificationSubscriptionInput;
 };
 
 
@@ -333,9 +390,11 @@ export type UserObjectType = {
 export type UserType = {
   __typename?: 'UserType';
   avatar?: Maybe<Scalars['String']>;
+  chats?: Maybe<Array<ChatType>>;
   createAt?: Maybe<Scalars['String']>;
   email?: Maybe<Scalars['String']>;
   id: Scalars['String'];
+  notifications?: Maybe<Array<NotificationType>>;
   pets?: Maybe<Array<PetType>>;
   updateAt?: Maybe<Scalars['String']>;
 };
@@ -347,6 +406,10 @@ export type ErrorFragmentFragment = { __typename?: 'ErrorType', field: string, m
 export type LocationFragmentFragment = { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null };
 
 export type MeFragmentFragment = { __typename?: 'MeObjectType', id: string, email: string, createdAt: string, updatedAt: string };
+
+export type NewNotificationFragmentFragment = { __typename?: 'NotificationType', id: string, notification: string, userId: string, read: boolean, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', email?: string | null, id: string, avatar?: string | null, createAt?: string | null, updateAt?: string | null } | null };
+
+export type NotificationFragmentFragment = { __typename?: 'NotificationType', id: string, notification: string, userId: string, read: boolean, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', email?: string | null, id: string, avatar?: string | null, createAt?: string | null, updateAt?: string | null } | null };
 
 export type PetFragmentFragment = { __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, avatar?: string | null, email?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, userId: string, user?: { __typename?: 'UserType', id: string, email?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', email?: string | null, id: string, avatar?: string | null } | null }> | null, replies?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', email?: string | null, avatar?: string | null, id: string } | null }> | null, user?: { __typename?: 'UserType', id: string, avatar?: string | null, email?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email?: string | null, avatar?: string | null } | null }> | null };
 
@@ -469,6 +532,11 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'MeObjectType', id: string, email: string, createdAt: string, updatedAt: string } | null };
 
+export type NotificationsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type NotificationsQuery = { __typename?: 'Query', notifications: { __typename?: 'NotificationObjectType', total: number, unread: number, notifications: Array<{ __typename?: 'NotificationType', id: string, notification: string, userId: string, read: boolean, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', email?: string | null, id: string, avatar?: string | null, createAt?: string | null, updateAt?: string | null } | null }> } };
+
 export type GetUserQueryVariables = Exact<{
   input: GetUserByIdInput;
 }>;
@@ -476,10 +544,12 @@ export type GetUserQueryVariables = Exact<{
 
 export type GetUserQuery = { __typename?: 'Query', user: { __typename?: 'UserObjectType', id: string, email: string, avatar?: string | null, createdAt: string, updatedAt: string, pets: Array<{ __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, avatar?: string | null, email?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, userId: string, user?: { __typename?: 'UserType', id: string, email?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', email?: string | null, id: string, avatar?: string | null } | null }> | null, replies?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', email?: string | null, avatar?: string | null, id: string } | null }> | null, user?: { __typename?: 'UserType', id: string, avatar?: string | null, email?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email?: string | null, avatar?: string | null } | null }> | null }> } };
 
-export type NotificationsSubscriptionVariables = Exact<{ [key: string]: never; }>;
+export type NewNotificationSubscriptionVariables = Exact<{
+  input: NewNotificationSubscriptionInput;
+}>;
 
 
-export type NotificationsSubscription = { __typename?: 'Subscription', notify: string };
+export type NewNotificationSubscription = { __typename?: 'Subscription', newNotification: { __typename?: 'NewNotificationType', userId: string, notification?: { __typename?: 'NotificationType', id: string, notification: string, userId: string, read: boolean, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', email?: string | null, id: string, avatar?: string | null, createAt?: string | null, updateAt?: string | null } | null } | null } };
 
 export type PetInteractionSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
@@ -516,6 +586,40 @@ export const MeFragmentFragmentDoc = gql`
   email
   createdAt
   updatedAt
+}
+    `;
+export const NewNotificationFragmentFragmentDoc = gql`
+    fragment NewNotificationFragment on NotificationType {
+  id
+  notification
+  userId
+  read
+  createdAt
+  updatedAt
+  user {
+    email
+    id
+    avatar
+    createAt
+    updateAt
+  }
+}
+    `;
+export const NotificationFragmentFragmentDoc = gql`
+    fragment NotificationFragment on NotificationType {
+  id
+  notification
+  userId
+  read
+  createdAt
+  updatedAt
+  user {
+    email
+    id
+    avatar
+    createAt
+    updateAt
+  }
 }
     `;
 export const LocationFragmentFragmentDoc = gql`
@@ -822,6 +926,21 @@ export const MeDocument = gql`
 export function useMeQuery(options?: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'>) {
   return Urql.useQuery<MeQuery, MeQueryVariables>({ query: MeDocument, ...options });
 };
+export const NotificationsDocument = gql`
+    query Notifications {
+  notifications {
+    total
+    unread
+    notifications {
+      ...NotificationFragment
+    }
+  }
+}
+    ${NotificationFragmentFragmentDoc}`;
+
+export function useNotificationsQuery(options?: Omit<Urql.UseQueryArgs<NotificationsQueryVariables>, 'query'>) {
+  return Urql.useQuery<NotificationsQuery, NotificationsQueryVariables>({ query: NotificationsDocument, ...options });
+};
 export const GetUserDocument = gql`
     query GetUser($input: GetUserByIdInput!) {
   user(input: $input) {
@@ -840,14 +959,19 @@ export const GetUserDocument = gql`
 export function useGetUserQuery(options: Omit<Urql.UseQueryArgs<GetUserQueryVariables>, 'query'>) {
   return Urql.useQuery<GetUserQuery, GetUserQueryVariables>({ query: GetUserDocument, ...options });
 };
-export const NotificationsDocument = gql`
-    subscription Notifications {
-  notify
+export const NewNotificationDocument = gql`
+    subscription NewNotification($input: NewNotificationSubscriptionInput!) {
+  newNotification(input: $input) {
+    notification {
+      ...NewNotificationFragment
+    }
+    userId
+  }
 }
-    `;
+    ${NewNotificationFragmentFragmentDoc}`;
 
-export function useNotificationsSubscription<TData = NotificationsSubscription>(options: Omit<Urql.UseSubscriptionArgs<NotificationsSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<NotificationsSubscription, TData>) {
-  return Urql.useSubscription<NotificationsSubscription, TData, NotificationsSubscriptionVariables>({ query: NotificationsDocument, ...options }, handler);
+export function useNewNotificationSubscription<TData = NewNotificationSubscription>(options: Omit<Urql.UseSubscriptionArgs<NewNotificationSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<NewNotificationSubscription, TData>) {
+  return Urql.useSubscription<NewNotificationSubscription, TData, NewNotificationSubscriptionVariables>({ query: NewNotificationDocument, ...options }, handler);
 };
 export const PetInteractionDocument = gql`
     subscription PetInteraction {

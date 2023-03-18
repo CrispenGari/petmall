@@ -4,4 +4,5 @@ export { default as Chat } from "./Chat/Chat";
 export { default as EditPet } from "./EditPet/EditPet";
 export { default as Pet } from "./Pet/Pet";
 export { default as NewPet } from "./NewPet/NewPet";
+export { default as Notifications } from "./Notifications/Notifications";
 export { default as Profile } from "./Profile/Profile";

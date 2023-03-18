@@ -1,6 +1,7 @@
 import { Dispatch } from "react";
 import { NavigateFunction, Params } from "react-router-dom";
 import { AnyAction } from "redux";
+import { NotificationObjectType } from "../graphql/generated/graphql";
 
 export type User = {
   id: string;
@@ -12,6 +13,7 @@ export type User = {
 export interface StateType {
   user: User | null;
   location: any | null;
+  notifications: NotificationObjectType;
 }
 
 export interface ActionType<T> {

@@ -64,9 +64,7 @@ export class ReactionResolver {
       });
       petId = _parentComment!.petId;
     }
-    await pubsub.publish(Events.NEW_REACTION_TO_COMMENT, {
-      petId,
-    });
+
     // if you don't want to react to your own comment?
     // if (pet.sellerId === user.id) {
     //   return { success: false };
@@ -81,9 +79,6 @@ export class ReactionResolver {
           id: _reaction.id,
         },
       });
-      return {
-        success: true,
-      };
     }
 
     try {
@@ -99,6 +94,9 @@ export class ReactionResolver {
             connect: { id: comment.id },
           },
         },
+      });
+      await pubsub.publish(Events.NEW_REACTION_TO_COMMENT, {
+        petId,
       });
     } catch (error) {
       console.log({ error });
@@ -137,6 +135,7 @@ export class ReactionResolver {
       },
       include: {
         reactions: true,
+        seller: true,
       },
     });
 
@@ -145,9 +144,7 @@ export class ReactionResolver {
         success: false,
       };
     }
-    await pubsub.publish(Events.NEW_REACTION_TO_PET, {
-      petId: pet.id,
-    });
+
     // if you don't want to react to your own pet?
     // if (pet.sellerId === user.id) {
     //   return { success: false };
@@ -162,12 +159,9 @@ export class ReactionResolver {
           id: _reaction.id,
         },
       });
-      return {
-        success: true,
-      };
     }
     try {
-      await prisma.reaction.create({
+      const _reaction = await prisma.reaction.create({
         data: {
           reaction,
           user: {
@@ -182,6 +176,27 @@ export class ReactionResolver {
           },
         },
       });
+      await pubsub.publish(Events.NEW_REACTION_TO_PET, {
+        petId: pet.id,
+      });
+
+      console.log({ eq: pet.sellerId !== user.id });
+      if (pet.sellerId !== user.id) {
+        const notification = await prisma.notification.create({
+          data: {
+            notification: `${user.email} reacted <${_reaction.reaction}> to the pet ${pet.name}.`,
+            user: {
+              connect: {
+                id: user.id,
+              },
+            },
+          },
+        });
+        await pubsub.publish(Events.NEW_REACTION_TO_PET_NOTIFICATION, {
+          notification,
+          userId: pet.sellerId,
+        });
+      }
     } catch (error) {
       console.log({ error });
       return {

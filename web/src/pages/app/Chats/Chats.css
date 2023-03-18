@@ -1,0 +1,23 @@
+.chats {
+  width: 100vw;
+  height: 100vh;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  background-color: var(--primary);
+  position: relative;
+}
+.chats::-webkit-scrollbar {
+  display: none;
+}
+
+.chat__main {
+  flex: 1;
+  width: 100%;
+  max-width: 1000px;
+  background-color: var(--main);
+  margin: 0px auto;
+  display: flex;
+  flex-direction: column;
+}

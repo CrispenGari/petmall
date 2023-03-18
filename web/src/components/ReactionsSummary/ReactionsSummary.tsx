@@ -12,7 +12,11 @@ const ReactionsSummary: React.FC<Props> = ({ reactions }) => {
   return (
     <div className="reactions__summary">
       {REACTIONS.map((reaction) => (
-        <GetReactionIconCount reaction={reaction} reactions={reactions} />
+        <GetReactionIconCount
+          key={reaction}
+          reaction={reaction}
+          reactions={reactions}
+        />
       ))}
     </div>
   );

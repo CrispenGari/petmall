@@ -229,7 +229,7 @@ const EditPet: React.FC<Props> = () => {
           />
           <Input
             fluid
-            className={"login__form__input"}
+            className={"edit__pet__form__input"}
             iconPosition="left"
             type={"number"}
             onChange={onChange}

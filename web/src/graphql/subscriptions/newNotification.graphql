@@ -1,0 +1,8 @@
+subscription NewNotification($input: NewNotificationSubscriptionInput!) {
+  newNotification(input: $input) {
+    notification {
+      ...NewNotificationFragment
+    }
+    userId
+  }
+}

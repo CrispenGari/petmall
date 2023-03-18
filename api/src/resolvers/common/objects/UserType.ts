@@ -1,4 +1,6 @@
 import { Field, ObjectType } from "type-graphql";
+import { ChatType } from "./ChatType";
+import { NotificationType } from "./NotificationType";
 import { PetType } from "./PetType";
 @ObjectType()
 export class UserType {
@@ -13,6 +15,12 @@ export class UserType {
 
   @Field(() => [PetType], { nullable: true })
   pets?: PetType[];
+
+  @Field(() => [NotificationType], { nullable: true })
+  notifications?: NotificationType[];
+
+  @Field(() => [ChatType], { nullable: true })
+  chats?: ChatType[];
 
   @Field(() => String, { nullable: true })
   createAt?: Date;
