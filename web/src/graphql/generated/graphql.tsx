@@ -95,6 +95,15 @@ export type MarkAsSoldInput = {
   id: Scalars['String'];
 };
 
+export type MarkNotificationAsReadInputType = {
+  id: Scalars['String'];
+};
+
+export type MarkNotificationAsReadObjectType = {
+  __typename?: 'MarkNotificationAsReadObjectType';
+  success: Scalars['Boolean'];
+};
+
 export type MeObjectType = {
   __typename?: 'MeObjectType';
   avatar?: Maybe<Scalars['String']>;
@@ -124,6 +133,7 @@ export type Mutation = {
   login: LoginObjectType;
   logout: Scalars['Boolean'];
   markAsSold: PetObjectType;
+  markNotificationAsRead: MarkNotificationAsReadObjectType;
   reactToComment: PetObjectType;
   reactToPet: PetObjectType;
   register: RegisterObjectType;
@@ -158,6 +168,11 @@ export type MutationLoginArgs = {
 
 export type MutationMarkAsSoldArgs = {
   input: MarkAsSoldInput;
+};
+
+
+export type MutationMarkNotificationAsReadArgs = {
+  input: MarkNotificationAsReadInputType;
 };
 
 
@@ -233,6 +248,7 @@ export type NotificationType = {
   createdAt: Scalars['String'];
   id: Scalars['String'];
   notification: Scalars['String'];
+  petId?: Maybe<Scalars['String']>;
   read: Scalars['Boolean'];
   updatedAt: Scalars['String'];
   user?: Maybe<UserType>;
@@ -409,7 +425,7 @@ export type MeFragmentFragment = { __typename?: 'MeObjectType', id: string, emai
 
 export type NewNotificationFragmentFragment = { __typename?: 'NotificationType', id: string, notification: string, userId: string, read: boolean, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', email?: string | null, id: string, avatar?: string | null, createAt?: string | null, updateAt?: string | null } | null };
 
-export type NotificationFragmentFragment = { __typename?: 'NotificationType', id: string, notification: string, userId: string, read: boolean, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', email?: string | null, id: string, avatar?: string | null, createAt?: string | null, updateAt?: string | null } | null };
+export type NotificationFragmentFragment = { __typename?: 'NotificationType', id: string, notification: string, userId: string, read: boolean, petId?: string | null, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', email?: string | null, id: string, avatar?: string | null, createAt?: string | null, updateAt?: string | null } | null };
 
 export type PetFragmentFragment = { __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, avatar?: string | null, email?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, userId: string, user?: { __typename?: 'UserType', id: string, email?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', email?: string | null, id: string, avatar?: string | null } | null }> | null, replies?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', email?: string | null, avatar?: string | null, id: string } | null }> | null, user?: { __typename?: 'UserType', id: string, avatar?: string | null, email?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email?: string | null, avatar?: string | null } | null }> | null };
 
@@ -456,6 +472,13 @@ export type MarkAsSoldMutationVariables = Exact<{
 
 
 export type MarkAsSoldMutation = { __typename?: 'Mutation', markAsSold: { __typename?: 'PetObjectType', success: boolean } };
+
+export type MarkNotificationAsReadMutationVariables = Exact<{
+  input: MarkNotificationAsReadInputType;
+}>;
+
+
+export type MarkNotificationAsReadMutation = { __typename?: 'Mutation', markNotificationAsRead: { __typename?: 'MarkNotificationAsReadObjectType', success: boolean } };
 
 export type NewPetMutationVariables = Exact<{
   input: NewPetInputType;
@@ -535,7 +558,7 @@ export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'MeObjectType'
 export type NotificationsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type NotificationsQuery = { __typename?: 'Query', notifications: { __typename?: 'NotificationObjectType', total: number, unread: number, notifications: Array<{ __typename?: 'NotificationType', id: string, notification: string, userId: string, read: boolean, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', email?: string | null, id: string, avatar?: string | null, createAt?: string | null, updateAt?: string | null } | null }> } };
+export type NotificationsQuery = { __typename?: 'Query', notifications: { __typename?: 'NotificationObjectType', total: number, unread: number, notifications: Array<{ __typename?: 'NotificationType', id: string, notification: string, userId: string, read: boolean, petId?: string | null, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', email?: string | null, id: string, avatar?: string | null, createAt?: string | null, updateAt?: string | null } | null }> } };
 
 export type GetUserQueryVariables = Exact<{
   input: GetUserByIdInput;
@@ -611,6 +634,7 @@ export const NotificationFragmentFragmentDoc = gql`
   notification
   userId
   read
+  petId
   createdAt
   updatedAt
   user {
@@ -795,6 +819,17 @@ export const MarkAsSoldDocument = gql`
 
 export function useMarkAsSoldMutation() {
   return Urql.useMutation<MarkAsSoldMutation, MarkAsSoldMutationVariables>(MarkAsSoldDocument);
+};
+export const MarkNotificationAsReadDocument = gql`
+    mutation MarkNotificationAsRead($input: MarkNotificationAsReadInputType!) {
+  markNotificationAsRead(input: $input) {
+    success
+  }
+}
+    `;
+
+export function useMarkNotificationAsReadMutation() {
+  return Urql.useMutation<MarkNotificationAsReadMutation, MarkNotificationAsReadMutationVariables>(MarkNotificationAsReadDocument);
 };
 export const NewPetDocument = gql`
     mutation NewPet($input: NewPetInputType!) {

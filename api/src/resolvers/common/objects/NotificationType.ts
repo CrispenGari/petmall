@@ -11,6 +11,10 @@ export class NotificationType {
   @Field(() => String)
   userId: string;
 
+  // which pet did this notification belongs to.
+  @Field(() => String, { nullable: true })
+  petId?: string | null | undefined;
+
   @Field(() => Boolean)
   read: boolean;
 

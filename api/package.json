@@ -10,7 +10,8 @@
     "start": "ts-node src/server.ts",
     "dev": "nodemon dist/server.js",
     "prisma:format": "npx prisma format",
-    "prisma:migrate": "npx prisma migrate dev"
+    "prisma:migrate": "npx prisma migrate dev",
+    "prisma:studio": "npx prisma studio -p 3002"
   },
   "devDependencies": {
     "@types/argon2": "^0.15.0",

@@ -3,6 +3,7 @@ fragment NotificationFragment on NotificationType {
   notification
   userId
   read
+  petId
   createdAt
   updatedAt
   user {

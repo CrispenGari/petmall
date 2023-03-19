@@ -21,3 +21,9 @@ export class NotificationObjectType {
   @Field(() => Int, { nullable: false })
   unread: number;
 }
+
+@ObjectType()
+export class MarkNotificationAsReadObjectType {
+  @Field(() => Boolean, { nullable: false })
+  success: boolean;
+}

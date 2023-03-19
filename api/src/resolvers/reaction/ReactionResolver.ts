@@ -82,7 +82,7 @@ export class ReactionResolver {
     }
 
     try {
-      await prisma.reaction.create({
+      const _reaction = await prisma.reaction.create({
         data: {
           reaction,
           user: {
@@ -98,6 +98,25 @@ export class ReactionResolver {
       await pubsub.publish(Events.NEW_REACTION_TO_COMMENT, {
         petId,
       });
+      if (comment.userId !== user.id) {
+        const notification = await prisma.notification.create({
+          data: {
+            notification: `${user.email} reacted "${_reaction.reaction
+              .replace("_", " ")
+              .toLowerCase()}" to your comment "${comment.comment}".`,
+            user: {
+              connect: {
+                id: comment.userId,
+              },
+            },
+            petId,
+          },
+        });
+        await pubsub.publish(Events.NEW_REACTION_TO_COMMENT_NOTIFICATION, {
+          notification,
+          userId: comment.userId,
+        });
+      }
     } catch (error) {
       console.log({ error });
       return {
@@ -179,17 +198,18 @@ export class ReactionResolver {
       await pubsub.publish(Events.NEW_REACTION_TO_PET, {
         petId: pet.id,
       });
-
-      console.log({ eq: pet.sellerId !== user.id });
       if (pet.sellerId !== user.id) {
         const notification = await prisma.notification.create({
           data: {
-            notification: `${user.email} reacted <${_reaction.reaction}> to the pet ${pet.name}.`,
+            notification: `${user.email} reacted "${_reaction.reaction
+              .replace("_", " ")
+              .toLowerCase()}" to the pet ${pet.name}.`,
             user: {
               connect: {
-                id: user.id,
+                id: pet.sellerId,
               },
             },
+            petId: pet.id,
           },
         });
         await pubsub.publish(Events.NEW_REACTION_TO_PET_NOTIFICATION, {
