@@ -1,9 +1,10 @@
 import { constants } from "../../../constants";
-import { ActionType, User } from "../../../types";
+import { UserType } from "../../../graphql/generated/graphql";
+import { ActionType } from "../../../types";
 
 export const userReducer = (
-  state: User | null = null,
-  { payload, type }: ActionType<User | null>
+  state: UserType | null = null,
+  { payload, type }: ActionType<UserType | null>
 ) => {
   switch (type) {
     case constants.SET_USER:

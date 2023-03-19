@@ -13,14 +13,7 @@ const Home: React.FC<Props> = () => {
   React.useEffect(() => {
     let mounted: boolean = true;
     if (mounted && !!data?.me) {
-      dispatch(
-        setUser({
-          createdAt: data.me.createdAt,
-          email: data.me.email,
-          id: data.me.id,
-          updatedAt: data.me.updatedAt,
-        })
-      );
+      dispatch(setUser(data.me));
     }
     return () => {
       mounted = false;

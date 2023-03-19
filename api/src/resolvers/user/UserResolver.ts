@@ -16,21 +16,17 @@ import {
   RegisterInput,
   UpdateAvatarInputType,
 } from "./inputs/inputTypes";
-import {
-  LoginObjectType,
-  MeObjectType,
-  RegisterObjectType,
-  UserObjectType,
-} from "./objects/objectTypes";
+import { LoginObjectType, RegisterObjectType } from "./objects/objectTypes";
 import argon2 from "argon2";
 import { isValidEmail, isValidPassword } from "@crispengari/regex-validator";
-import { signJwt, verifyJwt } from "../../utils";
+import { modifyName, signJwt, verifyJwt } from "../../utils";
 import client from "@prisma/client";
 import path from "path";
 import util from "util";
 import stream from "stream";
 import fs from "fs";
 import { Events, __storageBaseURL__ } from "../../constants";
+import { UserType } from "../common/objects/UserType";
 const storageDir = path.join(
   __dirname.replace("dist\\resolvers\\user", ""),
   "storage"
@@ -102,11 +98,11 @@ export class UserResolver {
     return true;
   }
 
-  @Query(() => UserObjectType, { nullable: false })
+  @Query(() => UserType, { nullable: false })
   async user(
     @Arg("input", () => GetUserByIdInput) { id }: GetUserByIdInput,
     @Ctx() { prisma }: CtxType
-  ): Promise<UserObjectType | undefined> {
+  ): Promise<UserType | undefined> {
     const user = await prisma.user.findFirst({
       where: { id },
       include: {
@@ -114,44 +110,34 @@ export class UserResolver {
       },
     });
     if (!!!user) return undefined;
-    return {
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-      avatar: user.avatar || undefined,
-      email: user.email,
-      id: user.id,
-      pets: [...user.pets.map((pet) => pet)],
-    };
+    return user;
   }
 
-  @Query(() => MeObjectType, { nullable: true })
-  async me(
-    @Ctx() { prisma, request }: CtxType
-  ): Promise<MeObjectType | undefined> {
+  @Query(() => UserType, { nullable: true })
+  async me(@Ctx() { prisma, request }: CtxType): Promise<UserType | undefined> {
     const jwt = request.headers.authorization?.split(" ")[1];
     if (!!!jwt) return undefined;
     const payload = await verifyJwt(jwt);
     if (!!!payload) return undefined;
     const user = await prisma.user.findFirst({ where: { id: payload.id } });
     if (!!!user) return undefined;
-    return {
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-      avatar: user.avatar || "",
-      email: user.email,
-      id: user.id,
-    };
+    return user;
   }
 
   @Mutation(() => Boolean)
   async logout(
-    @Ctx() { prisma, request }: CtxType,
+    @Ctx() { request, prisma }: CtxType,
     @PubSub() pubsub: PubSubEngine
   ): Promise<Boolean> {
     const jwt = request.headers.authorization?.split(" ")[1];
     if (!!!jwt) return false;
     const payload = await verifyJwt(jwt);
     if (!!!payload) return false;
+
+    await prisma.user.update({
+      where: { id: payload.id },
+      data: { isLoggedIn: false },
+    });
     await pubsub.publish(Events.ON_USER_AUTH_STATE_CHANGED, {
       userId: payload.id,
     });
@@ -163,7 +149,7 @@ export class UserResolver {
     @PubSub() pubsub: PubSubEngine,
     @Arg("input", () => LoginInput, { nullable: false })
     { email, password }: LoginInput,
-    @Ctx() { prisma, reply }: CtxType
+    @Ctx() { prisma }: CtxType
   ): Promise<LoginObjectType> {
     const user = await prisma.user.findFirst({
       where: { email: email.toLowerCase().trim() },
@@ -189,6 +175,10 @@ export class UserResolver {
       };
     }
     const jwt: string = await signJwt(user);
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { isLoggedIn: true },
+    });
     await pubsub.publish(Events.ON_USER_AUTH_STATE_CHANGED, {
       userId: user.id,
     });
@@ -200,7 +190,7 @@ export class UserResolver {
   @Mutation(() => RegisterObjectType)
   async register(
     @Arg("input", () => RegisterInput, { nullable: false })
-    { confirmPassword, email, password }: RegisterInput,
+    { confirmPassword, email, password, firstName, lastName }: RegisterInput,
     @PubSub() pubsub: PubSubEngine,
     @Ctx() { prisma }: CtxType
   ): Promise<RegisterObjectType> {
@@ -242,16 +232,38 @@ export class UserResolver {
         },
       };
     }
+    if (firstName.trim().length < 3) {
+      return {
+        error: {
+          field: "firstName",
+          message: "first name must be at least 3 characters long.",
+        },
+      };
+    }
+    if (lastName.trim().length < 3) {
+      return {
+        error: {
+          field: "lastName",
+          message: "last name must be at least 3 characters long.",
+        },
+      };
+    }
 
     const hash = await argon2.hash(password.trim());
     const user = await prisma.user.create({
       data: {
         email: email.trim(),
         password: hash,
+        firstName: modifyName(firstName.trim()),
+        lastName: modifyName(lastName.trim()),
       },
     });
 
     const jwt: string = await signJwt(user);
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { isLoggedIn: true },
+    });
     await pubsub.publish(Events.ON_USER_AUTH_STATE_CHANGED, {
       userId: user.id,
     });

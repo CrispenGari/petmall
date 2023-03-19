@@ -72,6 +72,24 @@ export class CommentResolver {
       await pubsub.publish(Events.NEW_COMMENT, {
         petId: pet.id,
       });
+
+      if (pet.sellerId !== user.id) {
+        const notification = await prisma.notification.create({
+          data: {
+            notification: `${user.firstName} commented "${cmt.comment}" to the pet ${pet.name}.`,
+            user: {
+              connect: {
+                id: pet.sellerId,
+              },
+            },
+            petId: pet.id,
+          },
+        });
+        await pubsub.publish(Events.NEW_COMMENT_NOTIFICATION, {
+          notification,
+          userId: pet.sellerId,
+        });
+      }
     } catch (error) {
       console.log({ error });
       return {
@@ -115,9 +133,14 @@ export class CommentResolver {
         success: false,
       };
     }
-    await pubsub.publish(Events.NEW_COMMENT_REPLY, {
-      petId: _comment.petId,
+
+    const pet = await prisma.pet.findFirst({
+      where: { id: _comment.petId as string },
+      include: {
+        seller: true,
+      },
     });
+
     try {
       const cmt = await prisma.comment.create({
         data: {
@@ -137,6 +160,26 @@ export class CommentResolver {
           },
         },
       });
+      await pubsub.publish(Events.NEW_COMMENT_REPLY, {
+        petId: _comment.petId,
+      });
+      if (pet?.sellerId !== user.id) {
+        const notification = await prisma.notification.create({
+          data: {
+            notification: `${user.firstName} reply "${cmt.comment}" to the comment "${_comment.comment} on pet ${pet?.name}".`,
+            user: {
+              connect: {
+                id: pet?.sellerId,
+              },
+            },
+            petId: _comment.petId as string,
+          },
+        });
+        await pubsub.publish(Events.NEW_COMMENT_NOTIFICATION, {
+          notification,
+          userId: pet?.sellerId,
+        });
+      }
     } catch (error) {
       console.log({ error });
       return {

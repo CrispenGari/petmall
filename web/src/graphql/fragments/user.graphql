@@ -1,6 +1,11 @@
 fragment UserFragment on UserType {
   id
   email
+  avatar
+  firstName
+  lastName
+  verified
+  isLoggedIn
   createAt
   updateAt
 }

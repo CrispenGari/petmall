@@ -1,17 +1,10 @@
 import { Dispatch } from "react";
 import { NavigateFunction, Params } from "react-router-dom";
 import { AnyAction } from "redux";
-import { NotificationObjectType } from "../graphql/generated/graphql";
-
-export type User = {
-  id: string;
-  email: string;
-  createdAt: string;
-  updatedAt: string;
-};
+import { NotificationObjectType, UserType } from "../graphql/generated/graphql";
 
 export interface StateType {
-  user: User | null;
+  user: UserType | null;
   location: any | null;
   notifications: NotificationObjectType;
 }
@@ -27,7 +20,7 @@ export interface GlobalPropsType {
   navigate: NavigateFunction;
   params: Readonly<Params<string>>;
   dispatch: Dispatch<AnyAction>;
-  user: User | null;
+  user: UserType | null;
   searchParams: URLSearchParams;
 }
 

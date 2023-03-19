@@ -1,4 +1,0 @@
-fragment ErrorFragment on ErrorType {
-  field
-  message
-}

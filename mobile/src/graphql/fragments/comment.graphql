@@ -1,9 +1,0 @@
-fragment CommentFragment on CommentType {
-  id
-  comment
-  createdAt
-  updatedAt
-  user {
-    ...UserFragment
-  }
-}

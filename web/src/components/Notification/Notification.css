@@ -17,6 +17,10 @@
 }
 .notification > p {
   margin: 0;
+  text-overflow: ellipsis !important;
+  overflow: hidden;
+  min-width: 0;
+  white-space: nowrap;
 }
 .notification__info > p {
   margin: 0;

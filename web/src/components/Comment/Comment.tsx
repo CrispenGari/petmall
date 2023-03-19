@@ -84,7 +84,9 @@ const CommentChild: React.FunctionComponent<{
 
   return (
     <div className="comment">
-      <h1>{comment.user?.email}</h1>
+      <h1>
+        {comment.user?.firstName} {comment.user?.lastName}
+      </h1>
       <div className="comment__body">
         <img
           src={comment.user?.avatar ? comment.user.avatar : "/profile.png"}

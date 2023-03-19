@@ -128,25 +128,4 @@ export class NotificationResolver {
       notification,
     };
   }
-
-  // @Subscription(() => NewNotificationType, {
-  //   topics: [
-
-  //     Events.REFETCH_NOTIFICATIONS,
-  //   ],
-  //   nullable: false,
-  // })
-  // async onNotificationUpdate(
-  //   @Arg("input", () => NewNotificationSubscriptionInput)
-  //   { userId: uid }: NewNotificationSubscriptionInput,
-  //   @Root()
-  //   { userId, notification }: { userId: string; notification: Notification }
-  // ): Promise<NewNotificationType | undefined> {
-  //   // the notification does not belong to you
-  //   if (userId !== uid) return undefined;
-  //   return {
-  //     userId,
-  //     notification,
-  //   };
-  // }
 }

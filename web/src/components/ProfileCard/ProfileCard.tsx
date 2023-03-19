@@ -31,12 +31,16 @@ const ProfileCard: React.FC<Props> = ({
   const [{ data, fetching }, refetchUser] = useGetUserQuery({
     variables: { input: { id } },
   });
-  const [{ email, image }, setForm] = React.useState<{
+  const [{ email, image, firstName, lastName }, setForm] = React.useState<{
     email: string;
     image: any;
+    firstName: string;
+    lastName: string;
   }>({
     image: null,
     email: "",
+    firstName: "",
+    lastName: "",
   });
   const [readonly, setReadonly] = React.useState<boolean>(true);
   const [error, setError] = React.useState<ErrorType>({
@@ -59,7 +63,8 @@ const ProfileCard: React.FC<Props> = ({
   React.useEffect(() => {
     let mounted: boolean = true;
     if (mounted && !!data?.user) {
-      setForm((state) => ({ ...state, email: data.user.email }));
+      const { firstName, lastName, email } = data.user;
+      setForm((state) => ({ ...state, email, firstName, lastName }));
     }
     return () => {
       mounted = false;
@@ -94,8 +99,6 @@ const ProfileCard: React.FC<Props> = ({
       await refetchUser();
     }
   };
-
-  console.log({ updatedAvatarResult });
 
   const handleChange = (file: any) => {
     const reader = new FileReader();
@@ -206,6 +209,36 @@ const ProfileCard: React.FC<Props> = ({
             disabled={!enableEdit}
           />
         </div>
+        <div className="profile__card__info__inputs">
+          <Input
+            fluid
+            className={"profile__card__info__input"}
+            iconPosition="left"
+            type={"text"}
+            onChange={onChange}
+            placeholder="first name(s)"
+            icon={<Icon name="user" />}
+            key={"firstName"}
+            value={firstName}
+            name="firstName"
+            error={error?.field === "firstName"}
+            disabled={!enableEdit}
+          />
+          <Input
+            fluid
+            className={"profile__card__info__input"}
+            iconPosition="left"
+            type={"text"}
+            onChange={onChange}
+            placeholder="last name"
+            icon={<Icon name="user" />}
+            key={"lastName"}
+            value={lastName}
+            name="lastName"
+            error={error?.field === "lastName"}
+            disabled={!enableEdit}
+          />
+        </div>
         {error?.message && (
           <Message negative>
             <p>{error ? error.message : ""}</p>
@@ -240,15 +273,15 @@ const ProfileCard: React.FC<Props> = ({
                 onClick={() => setCategory(cate)}
               >
                 <Icon name="paw" />
-                {
-                  data?.user.pets.filter((pet) => pet.category === cate).length
-                }{" "}
+                {data?.user.pets
+                  ? data.user.pets.filter((pet) => pet.category === cate).length
+                  : 0}
                 {cate.replace(/_/g, " ")}
               </div>
             ))}
           </Card.Content>
         </Card>{" "}
-        <p>{data?.user.pets.length ?? 0} total pets in the market</p>
+        <p>{data?.user.pets!.length ?? 0} total pets in the market</p>
       </Form>
     </div>
   );

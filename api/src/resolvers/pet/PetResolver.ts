@@ -63,6 +63,7 @@ export class PetResolver {
         },
       },
     });
+    console.log(pets);
     return {
       count: pets.length,
       pets: pets ?? [],

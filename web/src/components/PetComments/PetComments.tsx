@@ -80,12 +80,12 @@ const PetComments: React.FC<Props> = ({ pet, setReplyTo, replyTo, petId }) => {
           />
         </p>
       ) : null}
-      <Form loading={fetching || loading} onSubmit={onSubmit}>
+      <Form onSubmit={onSubmit}>
         <TextArea
           placeholder={
             !!!replyTo
               ? "Write a comment about this pet..."
-              : `replying to: @${replyTo.user?.email} on "${replyTo.comment}"`
+              : `replying to: @${replyTo.user?.firstName} ${replyTo.user?.lastName} on "${replyTo.comment}"`
           }
           fluid
           className={"pet__comments__input"}
@@ -96,7 +96,7 @@ const PetComments: React.FC<Props> = ({ pet, setReplyTo, replyTo, petId }) => {
         />
 
         <Button
-          disabled={pet.sold}
+          disabled={pet.sold || loading || fetching}
           color="green"
           type="submit"
           className="pet__comments__btn"

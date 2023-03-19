@@ -8,9 +8,15 @@ fragment CommentFragment on CommentType {
     reaction
     userId
     user {
-      email
       id
+      email
       avatar
+      firstName
+      lastName
+      verified
+      isLoggedIn
+      createAt
+      updateAt
     }
   }
   replies {
@@ -19,15 +25,27 @@ fragment CommentFragment on CommentType {
       reaction
       userId
       user {
+        id
         email
         avatar
-        id
+        firstName
+        lastName
+        verified
+        isLoggedIn
+        createAt
+        updateAt
       }
     }
     user {
       id
-      avatar
       email
+      avatar
+      firstName
+      lastName
+      verified
+      isLoggedIn
+      createAt
+      updateAt
     }
     id
     comment
@@ -38,5 +56,11 @@ fragment CommentFragment on CommentType {
     id
     email
     avatar
+    firstName
+    lastName
+    verified
+    isLoggedIn
+    createAt
+    updateAt
   }
 }

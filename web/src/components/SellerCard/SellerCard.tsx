@@ -16,7 +16,9 @@ class SellerCard extends React.Component<PropsType, StateType> {
       <div className="seller__card">
         <div className="seller__card__top">
           <div className="seller__card__top__left">
-            <h1>Steve Sanders</h1>
+            <h1>
+              {seller.firstName} {seller.lastName}
+            </h1>
             <p>{seller.email}</p>
           </div>{" "}
           <img

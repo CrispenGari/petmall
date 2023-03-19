@@ -11,8 +11,11 @@
 .profile__pets__flatlist__header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: flex-start !important;
   padding: 0px 5px;
+}
+.profile__pets__flatlist__header__left__select {
+  padding: 5px 10px !important;
 }
 .profile__pets__flatlist__not__pets {
   height: 40vh;

@@ -1,7 +1,6 @@
 import { constants } from "../constants";
-import { NotificationObjectType } from "../graphql/generated/graphql";
-import { User } from "../types";
-export const setUser = (payload: User | null) => {
+import { NotificationObjectType, UserType } from "../graphql/generated/graphql";
+export const setUser = (payload: UserType | null) => {
   return {
     type: constants.SET_USER,
     payload,

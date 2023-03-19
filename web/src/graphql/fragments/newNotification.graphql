@@ -6,10 +6,6 @@ fragment NewNotificationFragment on NotificationType {
   createdAt
   updatedAt
   user {
-    email
-    id
-    avatar
-    createAt
-    updateAt
+    ...UserFragment
   }
 }

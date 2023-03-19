@@ -2,8 +2,50 @@
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
+    "firstName" TEXT NOT NULL,
+    "lastName" TEXT NOT NULL,
+    "verified" BOOLEAN NOT NULL DEFAULT false,
     "avatar" TEXT,
+    "password" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "Notification" (
+    "id" TEXT NOT NULL,
+    "notification" TEXT NOT NULL,
+    "read" BOOLEAN NOT NULL DEFAULT false,
+    "petId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "Chat" (
+    "id" TEXT NOT NULL,
+    "userIds" TEXT[],
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "ChatOnUser" (
+    "userId" TEXT NOT NULL,
+    "chatId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "ChatOnUser_pkey" PRIMARY KEY ("userId","chatId")
+);
+
+-- CreateTable
+CREATE TABLE "Message" (
+    "id" TEXT NOT NULL,
+    "message" TEXT NOT NULL,
+    "senderId" TEXT NOT NULL,
+    "chatId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL
 );
@@ -39,6 +81,7 @@ CREATE TABLE "Comment" (
     "id" TEXT NOT NULL,
     "comment" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
+    "commentId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "petId" TEXT
@@ -62,6 +105,15 @@ CREATE UNIQUE INDEX "User_id_key" ON "User"("id");
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Notification_id_key" ON "Notification"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Chat_id_key" ON "Chat"("id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Message_id_key" ON "Message"("id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Pet_id_key" ON "Pet"("id");
 
 -- CreateIndex
@@ -74,22 +126,34 @@ CREATE UNIQUE INDEX "Location_id_key" ON "Location"("id");
 CREATE UNIQUE INDEX "Comment_id_key" ON "Comment"("id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Comment_userId_key" ON "Comment"("userId");
-
--- CreateIndex
 CREATE UNIQUE INDEX "Reaction_id_key" ON "Reaction"("id");
 
--- CreateIndex
-CREATE UNIQUE INDEX "Reaction_userId_key" ON "Reaction"("userId");
+-- AddForeignKey
+ALTER TABLE "Notification" ADD CONSTRAINT "Notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ChatOnUser" ADD CONSTRAINT "ChatOnUser_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ChatOnUser" ADD CONSTRAINT "ChatOnUser_chatId_fkey" FOREIGN KEY ("chatId") REFERENCES "Chat"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Message" ADD CONSTRAINT "Message_senderId_fkey" FOREIGN KEY ("senderId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Message" ADD CONSTRAINT "Message_chatId_fkey" FOREIGN KEY ("chatId") REFERENCES "Chat"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Pet" ADD CONSTRAINT "Pet_sellerId_fkey" FOREIGN KEY ("sellerId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Pet" ADD CONSTRAINT "Pet_locationId_fkey" FOREIGN KEY ("locationId") REFERENCES "Location"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Pet" ADD CONSTRAINT "Pet_locationId_fkey" FOREIGN KEY ("locationId") REFERENCES "Location"("id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Comment" ADD CONSTRAINT "Comment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "Comment" ADD CONSTRAINT "Comment_commentId_fkey" FOREIGN KEY ("commentId") REFERENCES "Comment"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Comment" ADD CONSTRAINT "Comment_petId_fkey" FOREIGN KEY ("petId") REFERENCES "Pet"("id") ON DELETE SET NULL ON UPDATE CASCADE;

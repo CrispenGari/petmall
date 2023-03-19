@@ -14,15 +14,20 @@ const Register: React.FC<Props> = () => {
   const navigator = useNavigate();
   const [{ fetching, data }, register] = useRegisterMutation();
   const dispatch = useDispatch();
-  const [{ email, password, confirmPassword }, setForm] = React.useState<{
-    email: string;
-    password: string;
-    confirmPassword: string;
-  }>({
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
+  const [{ email, password, confirmPassword, firstName, lastName }, setForm] =
+    React.useState<{
+      email: string;
+      password: string;
+      confirmPassword: string;
+      firstName: string;
+      lastName: string;
+    }>({
+      email: "",
+      password: "",
+      confirmPassword: "",
+      firstName: "",
+      lastName: "",
+    });
   const [error, setError] = React.useState<ErrorType>({
     field: "",
     message: "",
@@ -36,7 +41,9 @@ const Register: React.FC<Props> = () => {
   };
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await register({ input: { confirmPassword, email, password } });
+    await register({
+      input: { confirmPassword, email, password, firstName, lastName },
+    });
   };
 
   React.useEffect(() => {
@@ -72,7 +79,13 @@ const Register: React.FC<Props> = () => {
     let mounted: boolean = true;
     if (mounted && !!data?.register.jwt) {
       setError({ field: "", message: "" });
-      setForm({ email: "", password: "", confirmPassword: "" });
+      setForm({
+        email: "",
+        password: "",
+        confirmPassword: "",
+        firstName: "",
+        lastName: "",
+      });
       navigator("/app/pets", { replace: true });
     }
     return () => {
@@ -109,6 +122,32 @@ const Register: React.FC<Props> = () => {
               value={email}
               name="email"
               error={error?.field === "email"}
+            />
+            <Input
+              fluid
+              className={"register__form__input"}
+              iconPosition="left"
+              type={"text"}
+              onChange={onChange}
+              placeholder="first name(s)"
+              icon={<Icon name="user" />}
+              key={"firstName"}
+              value={firstName}
+              name="firstName"
+              error={error?.field === "firstName"}
+            />
+            <Input
+              fluid
+              className={"register__form__input"}
+              iconPosition="left"
+              type={"text"}
+              onChange={onChange}
+              placeholder="last name"
+              icon={<Icon name="user" />}
+              key={"lastName"}
+              value={lastName}
+              name="lastName"
+              error={error?.field === "lastName"}
             />
 
             <Input

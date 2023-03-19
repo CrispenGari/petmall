@@ -7,5 +7,12 @@ fragment ReactionFragment on ReactionType {
   user {
     id
     email
+    avatar
+    firstName
+    lastName
+    verified
+    isLoggedIn
+    createAt
+    updateAt
   }
 }

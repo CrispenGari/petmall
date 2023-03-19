@@ -3,8 +3,12 @@ query GetUser($input: GetUserByIdInput!) {
     id
     email
     avatar
-    createdAt
-    updatedAt
+    firstName
+    lastName
+    verified
+    isLoggedIn
+    createAt
+    updateAt
     pets {
       ...PetFragment
     }

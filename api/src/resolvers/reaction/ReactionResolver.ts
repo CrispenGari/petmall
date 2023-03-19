@@ -101,7 +101,7 @@ export class ReactionResolver {
       if (comment.userId !== user.id) {
         const notification = await prisma.notification.create({
           data: {
-            notification: `${user.email} reacted "${_reaction.reaction
+            notification: `${user.firstName} reacted "${_reaction.reaction
               .replace("_", " ")
               .toLowerCase()}" to your comment "${comment.comment}".`,
             user: {
@@ -109,7 +109,7 @@ export class ReactionResolver {
                 id: comment.userId,
               },
             },
-            petId,
+            petId: petId!,
           },
         });
         await pubsub.publish(Events.NEW_REACTION_TO_COMMENT_NOTIFICATION, {
@@ -201,7 +201,7 @@ export class ReactionResolver {
       if (pet.sellerId !== user.id) {
         const notification = await prisma.notification.create({
           data: {
-            notification: `${user.email} reacted "${_reaction.reaction
+            notification: `${user.firstName} reacted "${_reaction.reaction
               .replace("_", " ")
               .toLowerCase()}" to the pet ${pet.name}.`,
             user: {

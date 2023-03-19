@@ -3,6 +3,13 @@ import { FastifyReply } from "fastify";
 import jwt from "jsonwebtoken";
 import { __cookieName__ } from "../constants";
 
+export const modifyName = (name: string): string => {
+  return name
+    .split(" ")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+};
+
 export const storeCookie = (reply: FastifyReply, value: string) => {
   reply.setCookie(__cookieName__, value, {
     httpOnly: true,

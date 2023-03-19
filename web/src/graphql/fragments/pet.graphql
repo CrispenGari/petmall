@@ -10,8 +10,14 @@ fragment PetFragment on PetType {
   price
   seller {
     id
-    avatar
     email
+    avatar
+    firstName
+    lastName
+    verified
+    isLoggedIn
+    createAt
+    updateAt
   }
   location {
     ...LocationFragment

@@ -21,7 +21,7 @@ const ProfilePetsFlatList: React.FC<Props> = ({
     variables: { input: { id } },
   });
 
-  if (data?.user.pets.length === 0)
+  if (!!!data?.user.pets || data.user.pets.length === 0)
     return (
       <div className="profile__pets__flatlist__not__pets">
         <p>No pets in the market.</p>
@@ -35,7 +35,7 @@ const ProfilePetsFlatList: React.FC<Props> = ({
           <p>{subtitle.replace(/_/g, " ")}</p>
         </div>
         <Select
-          className={"new__pet__form__input"}
+          className={"profile__pets__flatlist__header__left__select"}
           placeholder="Filter Category"
           options={["ALL PETS", ...PETS_CATEGORIES].map((category) => ({
             key: category,
@@ -48,15 +48,15 @@ const ProfilePetsFlatList: React.FC<Props> = ({
       </div>
       <div className="profile__pets__flatlist__items">
         {category === "ALL PETS" ? (
-          data?.user.pets
-            .filter(Boolean)
+          data?.user
+            .pets!.filter(Boolean)
             .map((pet) => <Pet key={pet.id} pet={pet} next={"profile"} />)
-        ) : data?.user.pets.filter((pet) => pet.category === category)
+        ) : data?.user.pets!.filter((pet) => pet.category === category)
             .length === 0 ? (
           <NoPets category={category} />
         ) : (
-          data?.user.pets
-            .filter((pet) => pet.category === category)
+          data?.user
+            .pets!.filter((pet) => pet.category === category)
             .map((pet) => <Pet key={pet.id} pet={pet} />)
         )}
       </div>

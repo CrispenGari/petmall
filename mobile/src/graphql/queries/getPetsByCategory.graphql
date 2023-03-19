@@ -1,8 +1,0 @@
-query GetPetsByCategory($input: GetCategoryPetsInput!) {
-  getCategoryPets(input: $input) {
-    pets {
-      ...PetFragment
-    }
-    count
-  }
-}

@@ -7,8 +7,20 @@ export class UserType {
   @Field(() => String)
   id: string;
 
-  @Field(() => String, { nullable: true })
+  @Field(() => String, { nullable: false })
   email: string;
+
+  @Field(() => String, { nullable: false })
+  firstName: string;
+
+  @Field(() => String, { nullable: false })
+  lastName: string;
+
+  @Field(() => Boolean, { nullable: false })
+  isLoggedIn: boolean;
+
+  @Field(() => Boolean, { nullable: false })
+  verified: boolean;
 
   @Field(() => String, { nullable: true })
   avatar?: string | undefined | null;
