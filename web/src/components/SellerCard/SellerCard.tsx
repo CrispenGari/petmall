@@ -1,8 +1,12 @@
 import React from "react";
 import { UserType } from "../../graphql/generated/graphql";
+import { withGlobalProps } from "../../hoc";
+import { GlobalPropsType } from "../../types";
+import { encodeId } from "../../utils";
 import "./SellerCard.css";
 interface PropsType {
   seller: UserType;
+  globalProps: GlobalPropsType;
 }
 interface StateType {}
 class SellerCard extends React.Component<PropsType, StateType> {
@@ -11,17 +15,23 @@ class SellerCard extends React.Component<PropsType, StateType> {
     this.state = {};
   }
   render() {
-    const { seller } = this.props;
+    const {
+      seller,
+      globalProps: { navigate },
+    } = this.props;
     return (
       <div className="seller__card">
         <div className="seller__card__top">
           <div className="seller__card__top__left">
-            <h1>
+            <h1 onClick={() => navigate(`/app/profile/${encodeId(seller.id)}`)}>
               {seller.firstName} {seller.lastName}
             </h1>
-            <p>{seller.email}</p>
+            <p onClick={() => navigate(`/app/profile/${encodeId(seller.id)}`)}>
+              {seller.email}
+            </p>
           </div>{" "}
           <img
+            onClick={() => navigate(`/app/profile/${encodeId(seller.id)}`)}
             alt="profile"
             src={!!seller?.avatar ? seller.avatar : "/profile.png"}
           />
@@ -32,4 +42,4 @@ class SellerCard extends React.Component<PropsType, StateType> {
   }
 }
 
-export default SellerCard;
+export default withGlobalProps(SellerCard);

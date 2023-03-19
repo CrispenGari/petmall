@@ -2,9 +2,11 @@ import React from "react";
 import { AiFillLike, AiFillDislike, AiFillHeart } from "react-icons/ai";
 import { FaHandHoldingHeart, FaHandHoldingUsd, FaReply } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { Popup } from "semantic-ui-react";
 import { CommentType } from "../../graphql/generated/graphql";
 import { StateType } from "../../types";
+import { encodeId } from "../../utils";
 import CommentReactions from "../CommentReactions/CommentReactions";
 import ReactionsSummary from "../ReactionsSummary/ReactionsSummary";
 import "./Comment.css";
@@ -65,6 +67,8 @@ const CommentChild: React.FunctionComponent<{
   const [reaction, setReaction] = React.useState<string>("");
   const { user } = useSelector((state: StateType) => state);
 
+  const navigate = useNavigate();
+
   React.useEffect(() => {
     let mounted: boolean = true;
     if (mounted && !!comment.reactions) {
@@ -84,18 +88,25 @@ const CommentChild: React.FunctionComponent<{
 
   return (
     <div className="comment">
-      <h1>
+      <h1
+        onClick={() =>
+          navigate(`/app/profile/${encodeId(comment.user?.id || "")}`)
+        }
+      >
         {comment.user?.firstName} {comment.user?.lastName}
       </h1>
       <div className="comment__body">
         <img
+          onClick={() =>
+            navigate(`/app/profile/${encodeId(comment.user?.id || "")}`)
+          }
           src={comment.user?.avatar ? comment.user.avatar : "/profile.png"}
           alt="user"
         />
         <p>{comment.comment}</p>
       </div>
       <div className="comment__details">
-        {withReply ? (
+        {withReply && comment.user?.id !== user?.id ? (
           <div
             className="comment__details__reply__button"
             title="reply"

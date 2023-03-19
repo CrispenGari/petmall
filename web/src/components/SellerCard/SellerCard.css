@@ -17,14 +17,20 @@
   user-zoom: none;
   margin: 0 !important;
   object-fit: cover;
+  cursor: pointer;
 }
 .seller__card__top__left > h1 {
   color: white;
   margin: 0 !important;
+  cursor: pointer;
   font-size: 1.3rem;
+}
+.seller__card__top__left > h1:hover {
+  text-decoration: underline;
 }
 .seller__card__top__left > p {
   margin-top: 0 !important;
+  cursor: pointer;
 }
 .seller__card__top__left {
   flex: 1;

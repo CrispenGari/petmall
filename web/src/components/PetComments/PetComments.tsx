@@ -40,6 +40,7 @@ const PetComments: React.FC<Props> = ({ pet, setReplyTo, replyTo, petId }) => {
         input: {
           comment,
           id: replyTo.parentCommentId,
+          userId: replyTo.user?.id || "",
         },
       });
     } else {
@@ -72,7 +73,7 @@ const PetComments: React.FC<Props> = ({ pet, setReplyTo, replyTo, petId }) => {
       </div>
       {!!replyTo ? (
         <p style={{ display: "flex", alignItems: "center" }}>
-          replying to: @{replyTo.user?.email} on "{replyTo.comment}"
+          replying to: @{replyTo.user?.firstName} on "{replyTo.comment}"
           <GiCancel
             style={{ marginLeft: 5, color: "#ff3953", fontSize: "1.2rem" }}
             title={"cancel reply"}
@@ -85,7 +86,7 @@ const PetComments: React.FC<Props> = ({ pet, setReplyTo, replyTo, petId }) => {
           placeholder={
             !!!replyTo
               ? "Write a comment about this pet..."
-              : `replying to: @${replyTo.user?.firstName} ${replyTo.user?.lastName} on "${replyTo.comment}"`
+              : `replying to: @${replyTo.user?.firstName} on "${replyTo.comment}"`
           }
           fluid
           className={"pet__comments__input"}

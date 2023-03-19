@@ -2,17 +2,18 @@
   width: 100vw;
   height: 100vh;
   overflow-x: hidden;
+  overflow-y: hidden;
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
   background-color: var(--primary);
   position: relative;
 }
-.chats::-webkit-scrollbar {
+.chats::-webkit-scrollbar,
+.chats__main::-webkit-scrollbar {
   display: none;
 }
 
-.chat__main {
+.chats__main {
   flex: 1;
   width: 100%;
   max-width: 1000px;
@@ -20,4 +21,26 @@
   margin: 0px auto;
   display: flex;
   flex-direction: column;
+  overflow-y: scroll !important;
+}
+.chats__main__header {
+  padding: 10px;
+  background-color: var(--primary);
+  position: sticky;
+  top: 0;
+  width: 100%;
+}
+.chats__main__header__input {
+  max-width: 300px;
+}
+.chats__main__lists {
+  padding: 10px;
+}
+.chats__main__empty {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
 }

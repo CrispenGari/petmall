@@ -97,6 +97,9 @@ export class NotificationResolver {
       where: {
         userId: user.id,
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
     return {
       total: notifications.length,

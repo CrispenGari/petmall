@@ -350,6 +350,7 @@ export type RegisterObjectType = {
 export type ReplyToCommentInput = {
   comment: Scalars['String'];
   id: Scalars['String'];
+  userId: Scalars['String'];
 };
 
 export type Subscription = {

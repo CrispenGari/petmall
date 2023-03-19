@@ -25,17 +25,40 @@ const Notifications: React.FC<Props> = () => {
         </div>
         <div className="notifications__main__lists">
           <Divider title="Unread" />
-          {notifications.notifications
-            .filter((notification) => !notification.read)
-            .map((notification) => (
-              <Notification key={notification.id} notification={notification} />
-            ))}
+
+          {notifications.notifications.filter(
+            (notification) => !notification.read
+          ).length === 0 ? (
+            <div className="notifications__main__empty">
+              <p>No new notifications.</p>
+            </div>
+          ) : (
+            notifications.notifications
+              .filter((notification) => !notification.read)
+              .map((notification) => (
+                <Notification
+                  key={notification.id}
+                  notification={notification}
+                />
+              ))
+          )}
           <Divider title="Read" />
-          {notifications.notifications
-            .filter((notification) => notification.read)
-            .map((notification) => (
-              <Notification key={notification.id} notification={notification} />
-            ))}
+          {notifications.notifications.filter(
+            (notification) => notification.read
+          ).length === 0 ? (
+            <div className="notifications__main__empty">
+              <p>No old notifications.</p>
+            </div>
+          ) : (
+            notifications.notifications
+              .filter((notification) => notification.read)
+              .map((notification) => (
+                <Notification
+                  key={notification.id}
+                  notification={notification}
+                />
+              ))
+          )}
         </div>
       </div>
       <Footer />

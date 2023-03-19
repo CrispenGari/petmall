@@ -103,7 +103,7 @@ export class CommentResolver {
   @Mutation(() => PetObjectType, { nullable: false })
   async replyToComment(
     @Arg("input", () => ReplyToCommentInput)
-    { id, comment }: ReplyToCommentInput,
+    { id, comment, userId }: ReplyToCommentInput,
     @Ctx() { prisma, request }: CtxType,
     @PubSub() pubsub: PubSubEngine
   ): Promise<PetObjectType> {
@@ -124,7 +124,7 @@ export class CommentResolver {
       };
     const _comment = await prisma.comment.findFirst({
       where: {
-        id: id as string,
+        id,
       },
     });
 
@@ -132,6 +132,10 @@ export class CommentResolver {
       return {
         success: false,
       };
+    }
+    const friend = await prisma.user.findFirst({ where: { id: userId } });
+    if (!!!friend) {
+      return { success: false };
     }
 
     const pet = await prisma.pet.findFirst({
@@ -163,21 +167,21 @@ export class CommentResolver {
       await pubsub.publish(Events.NEW_COMMENT_REPLY, {
         petId: _comment.petId,
       });
-      if (pet?.sellerId !== user.id) {
+      if (friend.id !== user.id) {
         const notification = await prisma.notification.create({
           data: {
-            notification: `${user.firstName} reply "${cmt.comment}" to the comment "${_comment.comment} on pet ${pet?.name}".`,
+            notification: `${user.firstName} replied "${cmt.comment}" to the comment "${_comment.comment} on pet ${pet?.name}".`,
             user: {
               connect: {
-                id: pet?.sellerId,
+                id: friend.id,
               },
             },
             petId: _comment.petId as string,
           },
         });
-        await pubsub.publish(Events.NEW_COMMENT_NOTIFICATION, {
+        await pubsub.publish(Events.NEW_COMMENT_REPLY_NOTIFICATION, {
           notification,
-          userId: pet?.sellerId,
+          userId: friend.id,
         });
       }
     } catch (error) {

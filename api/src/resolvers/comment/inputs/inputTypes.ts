@@ -6,6 +6,9 @@ export class ReplyToCommentInput {
   id: string;
 
   @Field(() => String, { nullable: false })
+  userId: string;
+
+  @Field(() => String, { nullable: false })
   comment: string;
 }
 

@@ -48,6 +48,9 @@ export class PetResolver {
       where: {
         category: category as any,
       },
+      orderBy: {
+        createdAt: "desc",
+      },
       include: {
         seller: true,
         reactions: true,
@@ -63,7 +66,6 @@ export class PetResolver {
         },
       },
     });
-    console.log(pets);
     return {
       count: pets.length,
       pets: pets ?? [],
@@ -330,6 +332,7 @@ export class PetResolver {
       where: {
         id,
       },
+
       include: {
         location: true,
         seller: true,
@@ -337,16 +340,22 @@ export class PetResolver {
           include: {
             user: true,
           },
+          orderBy: {
+            createdAt: "asc",
+          },
         },
         comments: {
+          orderBy: { createdAt: "asc" },
           include: {
             user: true,
             reactions: {
+              orderBy: { createdAt: "asc" },
               include: {
                 user: true,
               },
             },
             replies: {
+              orderBy: { createdAt: "asc" },
               include: { user: true, reactions: true },
             },
           },

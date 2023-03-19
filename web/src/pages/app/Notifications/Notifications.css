@@ -36,3 +36,11 @@
 .notifications__main__lists {
   padding: 10px;
 }
+.notifications__main__empty {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}

@@ -275,7 +275,7 @@ const ProfileCard: React.FC<Props> = ({
                 <Icon name="paw" />
                 {data?.user.pets
                   ? data.user.pets.filter((pet) => pet.category === cate).length
-                  : 0}
+                  : 0}{" "}
                 {cate.replace(/_/g, " ")}
               </div>
             ))}
