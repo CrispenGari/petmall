@@ -4,12 +4,23 @@ import { FaHandHoldingHeart, FaHandHoldingUsd, FaReply } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Popup } from "semantic-ui-react";
+
 import { CommentType } from "../../graphql/generated/graphql";
 import { StateType } from "../../types";
 import { encodeId } from "../../utils";
 import CommentReactions from "../CommentReactions/CommentReactions";
 import ReactionsSummary from "../ReactionsSummary/ReactionsSummary";
 import "./Comment.css";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import updateLocale from "dayjs/plugin/updateLocale";
+import { relativeTimeObject } from "../../constants";
+dayjs.extend(relativeTime);
+dayjs.extend(updateLocale);
+
+dayjs.updateLocale("en", {
+  relativeTime: relativeTimeObject,
+});
 interface Props {
   comment: CommentType;
   setReplyTo: React.Dispatch<
@@ -203,6 +214,9 @@ const CommentChild: React.FunctionComponent<{
               </p>
             }
           />
+          <p>{" • "}</p>
+
+          <p>{dayjs(new Date(Number(comment.createdAt))).fromNow()} ago</p>
         </div>
       </div>
     </div>

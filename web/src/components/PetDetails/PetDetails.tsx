@@ -9,6 +9,16 @@ import ReactionsSummary from "../ReactionsSummary/ReactionsSummary";
 import SellerCard from "../SellerCard/SellerCard";
 import "./PetDetails.css";
 import PetButtons from "../PetButtons/PetButtons";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import updateLocale from "dayjs/plugin/updateLocale";
+import { relativeTimeObject } from "../../constants";
+dayjs.extend(relativeTime);
+dayjs.extend(updateLocale);
+
+dayjs.updateLocale("en", {
+  relativeTime: relativeTimeObject,
+});
 interface PropsType {
   pet: PetType;
   reaction: string;
@@ -34,7 +44,8 @@ class PetDetails extends React.Component<PropsType, StateType> {
       <div className="pet__details">
         <h1>{pet.name}</h1>
         <p>
-          {pet.age} weeks • {pet.gender.toLowerCase()}
+          {pet.age} weeks • {pet.gender.toLowerCase()} • listed{" "}
+          {dayjs(new Date(Number(pet.createdAt))).fromNow()} ago
         </p>
         <img alt={pet.name} src={pet.image} />
         <CountUp

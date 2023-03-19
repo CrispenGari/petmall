@@ -1,15 +1,18 @@
 import React from "react";
 import { FileUploader } from "react-drag-drop-files";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Button, Icon, Input, Form, Card, Message } from "semantic-ui-react";
-import { COLORS, PETS_CATEGORIES } from "../../constants";
+import { setUser } from "../../actions";
+import { COLORS, PETS_CATEGORIES, TOKEN_KEY } from "../../constants";
 import {
   useGetUserQuery,
   useUpdateProfileAvatarMutation,
+  useUpdateUserInfoMutation,
 } from "../../graphql/generated/graphql";
 
 import { ErrorType, StateType } from "../../types";
+import { store } from "../../utils";
 
 import "./ProfileCard.css";
 
@@ -28,6 +31,8 @@ const ProfileCard: React.FC<Props> = ({
     { fetching: updatingAvatar, data: updatedAvatarResult },
     updateAvatar,
   ] = useUpdateProfileAvatarMutation();
+  const [{ fetching: updatingInfo, data: updatedUserInfo }, updateUserInfo] =
+    useUpdateUserInfoMutation();
   const [{ data, fetching }, refetchUser] = useGetUserQuery({
     variables: { input: { id } },
   });
@@ -49,16 +54,7 @@ const ProfileCard: React.FC<Props> = ({
   });
   const [previewImage, setPreviewImage] = React.useState("");
   const [enableEdit, setEnableEdit] = React.useState<boolean>(false);
-
-  React.useEffect(() => {
-    let mounted: boolean = true;
-    if (mounted && !!data?.user.avatar) {
-      setPreviewImage(data.user.avatar || "");
-    }
-    return () => {
-      mounted = false;
-    };
-  }, [data]);
+  const dispatch = useDispatch();
 
   React.useEffect(() => {
     let mounted: boolean = true;
@@ -91,13 +87,11 @@ const ProfileCard: React.FC<Props> = ({
   const updateProfileAvatar = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!!!image) {
-      setPreviewImage(data?.user.avatar || "");
+      setPreviewImage(me?.avatar || "");
       return;
     }
     await updateAvatar({ input: { avatar: image } });
-    if (updatedAvatarResult?.updateAvatar) {
-      await refetchUser();
-    }
+    setPreviewImage(me?.avatar || "");
   };
 
   const handleChange = (file: any) => {
@@ -111,7 +105,64 @@ const ProfileCard: React.FC<Props> = ({
 
   const updateProfileInfo = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    await updateUserInfo({ input: { email, firstName, lastName } });
+    setEnableEdit(false);
   };
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!updatedUserInfo?.updateUserInfo) {
+      if (updatedUserInfo.updateUserInfo.error) {
+        setError(updatedUserInfo.updateUserInfo.error);
+      } else {
+        setError({ field: "", message: "" });
+      }
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [updatedUserInfo]);
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!updatedUserInfo?.updateUserInfo.jwt) {
+      (async () => {
+        const value = await store(
+          TOKEN_KEY,
+          updatedUserInfo.updateUserInfo.jwt as any
+        );
+        if (value) {
+          dispatch(setUser(updatedUserInfo.updateUserInfo.me as any));
+        }
+      })();
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [updatedUserInfo, dispatch]);
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted) {
+      if (!!updatedAvatarResult?.updateAvatar) {
+        (async () => {
+          await refetchUser();
+        })();
+      }
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [updatedAvatarResult, refetchUser]);
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!me) {
+      setPreviewImage(me.avatar || "");
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [me]);
+
   return (
     <div className="profile__card">
       <Form
@@ -148,7 +199,7 @@ const ProfileCard: React.FC<Props> = ({
               fluid
               type="button"
               onClick={() => {
-                setPreviewImage(data?.user.avatar || "");
+                setPreviewImage(me?.avatar || "");
               }}
               style={{
                 marginBottom: 5,
@@ -189,7 +240,7 @@ const ProfileCard: React.FC<Props> = ({
         )}
       </Form>
       <Form
-        loading={fetching}
+        loading={fetching || updatingInfo}
         onSubmit={updateProfileInfo}
         className="profile__card__info"
       >

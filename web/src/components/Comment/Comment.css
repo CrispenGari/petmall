@@ -80,3 +80,6 @@
   display: flex;
   align-items: center;
 }
+.comment__details__reactions > p {
+  margin-bottom: 0;
+}

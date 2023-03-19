@@ -133,7 +133,7 @@ export type Mutation = {
   sayHi: Scalars['String'];
   update: PetObjectType;
   updateAvatar: Scalars['Boolean'];
-  updateUserInfo: Scalars['Boolean'];
+  updateUserInfo: UpdateUserInfoObjectType;
 };
 
 
@@ -206,6 +206,11 @@ export type MutationUpdateAvatarArgs = {
   input: UpdateAvatarInputType;
 };
 
+
+export type MutationUpdateUserInfoArgs = {
+  input: UpdateUserInfoInputType;
+};
+
 export type NewNotificationSubscriptionInput = {
   userId: Scalars['String'];
 };
@@ -241,6 +246,7 @@ export type NotificationType = {
   notification: Scalars['String'];
   petId?: Maybe<Scalars['String']>;
   read: Scalars['Boolean'];
+  title: Scalars['String'];
   updatedAt: Scalars['String'];
   user?: Maybe<UserType>;
   userId: Scalars['String'];
@@ -387,6 +393,19 @@ export type UpdatePetInputType = {
   price: Scalars['Float'];
 };
 
+export type UpdateUserInfoInputType = {
+  email: Scalars['String'];
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+};
+
+export type UpdateUserInfoObjectType = {
+  __typename?: 'UpdateUserInfoObjectType';
+  error?: Maybe<ErrorType>;
+  jwt?: Maybe<Scalars['String']>;
+  me?: Maybe<UserType>;
+};
+
 export type UserType = {
   __typename?: 'UserType';
   avatar?: Maybe<Scalars['String']>;
@@ -411,7 +430,7 @@ export type LocationFragmentFragment = { __typename?: 'LocationType', id: string
 
 export type NewNotificationFragmentFragment = { __typename?: 'NotificationType', id: string, notification: string, userId: string, read: boolean, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null };
 
-export type NotificationFragmentFragment = { __typename?: 'NotificationType', id: string, notification: string, userId: string, read: boolean, petId?: string | null, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null };
+export type NotificationFragmentFragment = { __typename?: 'NotificationType', id: string, notification: string, title: string, userId: string, read: boolean, petId?: string | null, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null };
 
 export type PetFragmentFragment = { __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, replies?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null };
 
@@ -515,6 +534,13 @@ export type UpdatePetMutationVariables = Exact<{
 
 export type UpdatePetMutation = { __typename?: 'Mutation', update: { __typename?: 'PetObjectType', success: boolean } };
 
+export type UpdateUserInfoMutationVariables = Exact<{
+  input: UpdateUserInfoInputType;
+}>;
+
+
+export type UpdateUserInfoMutation = { __typename?: 'Mutation', updateUserInfo: { __typename?: 'UpdateUserInfoObjectType', jwt?: string | null, error?: { __typename?: 'ErrorType', field: string, message: string } | null, me?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null } };
+
 export type GetPetByIdQueryVariables = Exact<{
   input: GetPetByIdInput;
 }>;
@@ -544,7 +570,7 @@ export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'UserType', id
 export type NotificationsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type NotificationsQuery = { __typename?: 'Query', notifications: { __typename?: 'NotificationObjectType', total: number, unread: number, notifications: Array<{ __typename?: 'NotificationType', id: string, notification: string, userId: string, read: boolean, petId?: string | null, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> } };
+export type NotificationsQuery = { __typename?: 'Query', notifications: { __typename?: 'NotificationObjectType', total: number, unread: number, notifications: Array<{ __typename?: 'NotificationType', id: string, notification: string, title: string, userId: string, read: boolean, petId?: string | null, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> } };
 
 export type GetUserQueryVariables = Exact<{
   input: GetUserByIdInput;
@@ -619,6 +645,7 @@ export const NotificationFragmentFragmentDoc = gql`
     fragment NotificationFragment on NotificationType {
   id
   notification
+  title
   userId
   read
   petId
@@ -924,6 +951,24 @@ export const UpdatePetDocument = gql`
 
 export function useUpdatePetMutation() {
   return Urql.useMutation<UpdatePetMutation, UpdatePetMutationVariables>(UpdatePetDocument);
+};
+export const UpdateUserInfoDocument = gql`
+    mutation UpdateUserInfo($input: UpdateUserInfoInputType!) {
+  updateUserInfo(input: $input) {
+    error {
+      ...ErrorFragment
+    }
+    jwt
+    me {
+      ...UserFragment
+    }
+  }
+}
+    ${ErrorFragmentFragmentDoc}
+${UserFragmentFragmentDoc}`;
+
+export function useUpdateUserInfoMutation() {
+  return Urql.useMutation<UpdateUserInfoMutation, UpdateUserInfoMutationVariables>(UpdateUserInfoDocument);
 };
 export const GetPetByIdDocument = gql`
     query GetPetById($input: GetPetByIdInput!) {

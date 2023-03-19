@@ -5,7 +5,6 @@ import { Routes as R, Route, BrowserRouter as Router } from "react-router-dom";
 import { setUser } from "../actions";
 import {
   useMeQuery,
-  useNewNotificationSubscription,
   useOnUserStateChangeSubscription,
 } from "../graphql/generated/graphql";
 import {
@@ -28,21 +27,29 @@ const Routes: React.FC<Props> = () => {
   const [{ data }] = useOnUserStateChangeSubscription({
     variables: { userId: me?.id || "" },
   });
-
-  console.log({ data });
-
-  console.log({ me: data?.onUserStateChange });
   const dispatch = useDispatch();
 
   React.useEffect(() => {
     let mounted: boolean = true;
     if (mounted && !!data?.onUserStateChange) {
-      refetchUser();
+      (async () => {
+        await refetchUser();
+      })();
     }
     return () => {
       mounted = false;
     };
   }, [refetchUser, data]);
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!newUser?.me) {
+      dispatch(setUser(newUser.me));
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [newUser, dispatch]);
 
   return (
     <Router>

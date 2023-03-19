@@ -5,6 +5,7 @@ CREATE TABLE "User" (
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
     "verified" BOOLEAN NOT NULL DEFAULT false,
+    "isLoggedIn" BOOLEAN NOT NULL DEFAULT false,
     "avatar" TEXT,
     "password" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -17,6 +18,7 @@ CREATE TABLE "Notification" (
     "notification" TEXT NOT NULL,
     "read" BOOLEAN NOT NULL DEFAULT false,
     "petId" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL

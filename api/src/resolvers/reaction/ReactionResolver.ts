@@ -110,6 +110,7 @@ export class ReactionResolver {
               },
             },
             petId: petId!,
+            title: `Comment Reaction • ${user.firstName}`,
           },
         });
         await pubsub.publish(Events.NEW_REACTION_TO_COMMENT_NOTIFICATION, {
@@ -201,6 +202,7 @@ export class ReactionResolver {
       if (pet.sellerId !== user.id) {
         const notification = await prisma.notification.create({
           data: {
+            title: `Pet Reaction • ${user.firstName}`,
             notification: `${user.firstName} reacted "${_reaction.reaction
               .replace("_", " ")
               .toLowerCase()}" to the pet ${pet.name}.`,

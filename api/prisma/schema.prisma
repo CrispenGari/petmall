@@ -36,6 +36,7 @@ model Notification{
   notification String
   read Boolean @default(false)
   petId String
+  title String
 
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String

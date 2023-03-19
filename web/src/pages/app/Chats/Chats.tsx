@@ -3,7 +3,7 @@ import { Icon, Input } from "semantic-ui-react";
 import { Footer, Header } from "../../../components";
 import "./Chats.css";
 interface Props {}
-const Chats: React.FC<Props> = ({}) => {
+const Chats: React.FC<Props> = () => {
   const [filter, setFilter] = React.useState<string>("");
   return (
     <div className="chats">

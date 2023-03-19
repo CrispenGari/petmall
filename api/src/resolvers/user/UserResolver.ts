@@ -15,8 +15,13 @@ import {
   LoginInput,
   RegisterInput,
   UpdateAvatarInputType,
+  UpdateUserInfoInputType,
 } from "./inputs/inputTypes";
-import { LoginObjectType, RegisterObjectType } from "./objects/objectTypes";
+import {
+  LoginObjectType,
+  RegisterObjectType,
+  UpdateUserInfoObjectType,
+} from "./objects/objectTypes";
 import argon2 from "argon2";
 import { isValidEmail, isValidPassword } from "@crispengari/regex-validator";
 import { modifyName, signJwt, verifyJwt } from "../../utils";
@@ -83,19 +88,95 @@ export class UserResolver {
     }
     return true;
   }
-  @Mutation(() => Boolean)
+  @Mutation(() => UpdateUserInfoObjectType)
   async updateUserInfo(
     @Ctx() { prisma, request }: CtxType,
-    @PubSub() pubsub: PubSubEngine
-  ): Promise<Boolean> {
+    @PubSub() pubsub: PubSubEngine,
+    @Arg("input", () => UpdateUserInfoInputType)
+    { email, firstName, lastName }: UpdateUserInfoInputType
+  ): Promise<UpdateUserInfoObjectType> {
     const jwt = request.headers.authorization?.split(" ")[1];
-    if (!!!jwt) return false;
+    if (!!!jwt)
+      return {
+        error: {
+          field: "token",
+          message: "You are not authenticated.",
+        },
+      };
     const payload = await verifyJwt(jwt);
-    if (!!!payload) return false;
+    if (!!!payload)
+      return {
+        error: {
+          field: "token",
+          message: "Invalid auth token try to reauthenticate again as user.",
+        },
+      };
     const user = await prisma.user.findFirst({ where: { id: payload.id } });
-    if (!!!user) return false;
+    if (!!!user)
+      return {
+        error: {
+          field: "user",
+          message: "Could not found the user for whatever reason.",
+        },
+      };
 
-    return true;
+    let _user: any = undefined;
+    if (email.trim().toLocaleLowerCase() !== user.email) {
+      _user = await prisma.user.findFirst({
+        where: {
+          email: email.trim().toLowerCase(),
+        },
+      });
+    }
+    if (!!_user) {
+      return {
+        error: {
+          field: "email",
+          message: "the email address is taken by someone else.",
+        },
+      };
+    }
+    if (!isValidEmail(email.trim())) {
+      return {
+        error: {
+          field: "email",
+          message: "the email address is invalid.",
+        },
+      };
+    }
+    if (firstName.trim().length < 3) {
+      return {
+        error: {
+          field: "firstName",
+          message: "first name must be at least 3 characters long.",
+        },
+      };
+    }
+    if (lastName.trim().length < 3) {
+      return {
+        error: {
+          field: "lastName",
+          message: "last name must be at least 3 characters long.",
+        },
+      };
+    }
+
+    const __user = await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        email: email.trim().toLowerCase(),
+        firstName: modifyName(firstName.trim()),
+        lastName: modifyName(lastName.trim()),
+      },
+    });
+    const newJwt: string = await signJwt(__user);
+    await pubsub.publish(Events.ON_USER_STATE_CHANGED, {
+      userId: __user.id,
+    });
+    return {
+      me: __user,
+      jwt: newJwt,
+    };
   }
 
   @Query(() => UserType, { nullable: false })
@@ -252,7 +333,7 @@ export class UserResolver {
     const hash = await argon2.hash(password.trim());
     const user = await prisma.user.create({
       data: {
-        email: email.trim(),
+        email: email.trim().toLowerCase(),
         password: hash,
         firstName: modifyName(firstName.trim()),
         lastName: modifyName(lastName.trim()),

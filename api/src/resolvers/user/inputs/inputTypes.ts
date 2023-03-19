@@ -19,6 +19,35 @@ export class RegisterInput {
   @Field({ nullable: false })
   confirmPassword: string;
 }
+@InputType()
+export class UpdateUserInfoInputType {
+  @Field(() => String, { nullable: false })
+  email: string;
+
+  @Field(() => String, { nullable: false })
+  firstName: string;
+
+  @Field(() => String, { nullable: false })
+  lastName: string;
+}
+
+@InputType()
+export class ChangePasswordInputType {
+  @Field(() => String, { nullable: false })
+  email: string;
+
+  @Field(() => String, { nullable: false })
+  password: string;
+
+  @Field({ nullable: false })
+  confirmPassword: string;
+}
+
+@InputType()
+export class RequestForgotPasswordInputType {
+  @Field(() => String, { nullable: false })
+  email: string;
+}
 
 @InputType()
 export class LoginInput {

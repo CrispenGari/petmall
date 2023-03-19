@@ -26,3 +26,15 @@ export class LoginObjectType {
   @Field(() => UserType, { nullable: true })
   me?: UserType;
 }
+
+@ObjectType()
+export class UpdateUserInfoObjectType {
+  @Field(() => ErrorType, { nullable: true })
+  error?: ErrorType;
+
+  @Field(() => String, { nullable: true })
+  jwt?: string;
+
+  @Field(() => UserType, { nullable: true })
+  me?: UserType;
+}

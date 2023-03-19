@@ -1,6 +1,7 @@
 fragment NotificationFragment on NotificationType {
   id
   notification
+  title
   userId
   read
   petId

@@ -3,16 +3,15 @@ import { PetType } from "../../graphql/generated/graphql";
 import "./Pet.css";
 import CountUp from "react-countup";
 import { Icon, Image } from "semantic-ui-react";
-
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
-import updateLocal from "dayjs/plugin/updateLocale";
-import { relativeTimeObject } from "../../constants";
 import { withGlobalProps } from "../../hoc";
 import { GlobalPropsType } from "../../types";
 import { encodeId } from "../../utils";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import updateLocale from "dayjs/plugin/updateLocale";
+import { relativeTimeObject } from "../../constants";
 dayjs.extend(relativeTime);
-dayjs.extend(updateLocal);
+dayjs.extend(updateLocale);
 
 dayjs.updateLocale("en", {
   relativeTime: relativeTimeObject,
@@ -50,7 +49,8 @@ class Pet extends React.Component<PropsType, StateType> {
       >
         <h1>{pet.name}</h1>
         <p>
-          {pet.age} weeks • {pet.gender.toLowerCase()}
+          {pet.age} weeks • {pet.gender.toLowerCase()} •{" "}
+          {dayjs(new Date(Number(pet.createdAt))).fromNow()} ago
         </p>
         <img alt={pet.name} src={pet.image} />
         <div className="pet__details">

@@ -83,6 +83,7 @@ export class CommentResolver {
               },
             },
             petId: pet.id,
+            title: `New Pet Comment • ${user.firstName}`,
           },
         });
         await pubsub.publish(Events.NEW_COMMENT_NOTIFICATION, {
@@ -177,6 +178,7 @@ export class CommentResolver {
               },
             },
             petId: _comment.petId as string,
+            title: `Comment Reply • ${user.firstName}`,
           },
         });
         await pubsub.publish(Events.NEW_COMMENT_REPLY_NOTIFICATION, {
