@@ -28,6 +28,16 @@ const NewPet: React.FC<Props> = () => {
 
   React.useEffect(() => {
     let mounted: boolean = true;
+    if (mounted && !!!user?.emailVerified && !!!user?.isLoggedIn) {
+      navigator("/app/pets", { replace: true });
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [navigator, user]);
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
     if (mounted && !!data) {
       if (!!data.add?.success) {
         navigator("/app/pets", { replace: true });
@@ -37,15 +47,7 @@ const NewPet: React.FC<Props> = () => {
       mounted = false;
     };
   }, [data, navigator]);
-  React.useEffect(() => {
-    let mounted: boolean = true;
-    if (mounted && !!!user) {
-      navigator("/app/pets", { replace: true });
-    }
-    return () => {
-      mounted = false;
-    };
-  }, [navigator, user]);
+
   const [
     { name, age, price, description, gender, category, enableLocation, image },
     setForm,

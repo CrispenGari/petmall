@@ -8,7 +8,6 @@ interface Props {
   subtitle: string;
 }
 const FlatList: React.FC<Props> = ({ title, subtitle }) => {
-  console.log({ title });
   const [{ data }] = useGetPetsByCategoryQuery({
     variables: {
       input: {
@@ -16,8 +15,6 @@ const FlatList: React.FC<Props> = ({ title, subtitle }) => {
       },
     },
   });
-
-  console.log({ data });
   return (
     <div className="flatlist">
       <h1>{title.replace(/_/g, " ")}</h1>

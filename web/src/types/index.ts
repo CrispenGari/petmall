@@ -7,6 +7,7 @@ export interface StateType {
   user: UserType | null;
   location: any | null;
   notifications: NotificationObjectType;
+  reloadCount: number;
 }
 
 export interface ActionType<T> {

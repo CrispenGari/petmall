@@ -16,6 +16,8 @@ model User {
   verified Boolean @default(false)
   isLoggedIn Boolean @default(false)
 
+  emailVerified Boolean @default(false)
+
   avatar String?
   password String
 
@@ -103,7 +105,7 @@ model Pet {
   seller   User   @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   sellerId String
 
-  location   Location @relation(fields: [locationId], references: [id], onDelete: NoAction, onUpdate: Cascade)
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   locationId String   @unique
 
   createdAt DateTime @default(now())
@@ -127,7 +129,7 @@ model Comment {
   id      String @unique @default(uuid())
   comment String
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String
 
   // relations
@@ -147,7 +149,7 @@ model Reaction {
   id       String @unique @default(uuid())
   reaction String
 
-  user   User   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String
 
   createdAt DateTime @default(now())

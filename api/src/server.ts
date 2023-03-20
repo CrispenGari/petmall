@@ -6,6 +6,7 @@ import mercurius from "mercurius";
 import { buildSchema } from "type-graphql";
 import { CtxType } from "./types";
 import { resolvers } from "./resolvers";
+import Redis from "ioredis";
 import { PrismaClient } from "@prisma/client";
 import cors from "@fastify/cors";
 import cookie from "@fastify/cookie";
@@ -13,11 +14,8 @@ import { tokenRoute } from "./routes/token";
 import fastifyWebsocket from "@fastify/websocket";
 import fastifyStatic from "@fastify/static";
 import path from "path";
-import { PubSub } from "graphql-subscriptions";
 import MercuriusGQLUpload from "mercurius-upload";
 _();
-
-const pubsub = new PubSub();
 
 const PORT: any = process.env.PORT || 3001;
 const HOST =
@@ -26,6 +24,7 @@ const HOST =
     : "localhost" || "127.0.0.1";
 
 (async () => {
+  const redis = new Redis({});
   const fastify = Fastify({
     logger: false,
     ignoreTrailingSlash: true,
@@ -73,6 +72,7 @@ const HOST =
         request,
         reply,
         prisma,
+        redis,
       };
     },
     graphiql: true,

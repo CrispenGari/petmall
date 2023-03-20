@@ -11,26 +11,36 @@ import {
 } from "type-graphql";
 import { CtxType } from "../../types";
 import {
+  ChangePasswordInputType,
   GetUserByIdInput,
   LoginInput,
   RegisterInput,
   UpdateAvatarInputType,
   UpdateUserInfoInputType,
+  VerifyEmailInputType,
 } from "./inputs/inputTypes";
 import {
+  ChangePasswordObjectType,
   LoginObjectType,
   RegisterObjectType,
+  ResendVerificationCodeObjectType,
   UpdateUserInfoObjectType,
+  VerifyEmailObjectType,
 } from "./objects/objectTypes";
 import argon2 from "argon2";
 import { isValidEmail, isValidPassword } from "@crispengari/regex-validator";
-import { modifyName, signJwt, verifyJwt } from "../../utils";
+import { modifyName, sendEmail, signJwt, verifyJwt } from "../../utils";
 import client from "@prisma/client";
 import path from "path";
 import util from "util";
 import stream from "stream";
 import fs from "fs";
-import { Events, __storageBaseURL__ } from "../../constants";
+import {
+  Events,
+  __codeExp__,
+  __codePrefix__,
+  __storageBaseURL__,
+} from "../../constants";
 import { UserType } from "../common/objects/UserType";
 const storageDir = path.join(
   __dirname.replace("dist\\resolvers\\user", ""),
@@ -55,7 +65,6 @@ export class UserResolver {
     @PubSub() pubsub: PubSubEngine,
     @Arg("input", () => UpdateAvatarInputType) { avatar }: UpdateAvatarInputType
   ): Promise<Boolean> {
-    // console.log({ prisma });
     const jwt = request.headers.authorization?.split(" ")[1];
     if (!!!jwt) return false;
     const payload = await verifyJwt(jwt);
@@ -83,7 +92,6 @@ export class UserResolver {
         userId: user.id,
       });
     } catch (error) {
-      console.log(error);
       return false;
     }
     return true;
@@ -268,40 +276,196 @@ export class UserResolver {
       me: { ...user, avatar: user.avatar || "" },
     };
   }
+
   @Mutation(() => RegisterObjectType)
   async register(
     @Arg("input", () => RegisterInput, { nullable: false })
     { confirmPassword, email, password, firstName, lastName }: RegisterInput,
     @PubSub() pubsub: PubSubEngine,
-    @Ctx() { prisma }: CtxType
+    @Ctx() { prisma, redis }: CtxType
   ): Promise<RegisterObjectType> {
-    const _user = await prisma.user.findFirst({
-      where: {
-        email: email.trim().toLowerCase(),
-      },
+    try {
+      const _user = await prisma.user.findFirst({
+        where: {
+          email: email.trim().toLowerCase(),
+        },
+      });
+      if (password.trim() !== confirmPassword.trim()) {
+        return {
+          error: {
+            field: "confirm-password",
+            message: "the two passwords must match.",
+          },
+        };
+      }
+      // if the email is not verified we don't have an account
+
+      if (!!_user) {
+        if (_user.emailVerified) {
+          return {
+            error: {
+              field: "email",
+              message: "the email address is taken by someone else.",
+            },
+          };
+        } else {
+          await prisma.user.delete({
+            where: { id: _user.id },
+          });
+        }
+      }
+      if (!isValidEmail(email.trim())) {
+        return {
+          error: {
+            field: "email",
+            message: "the email address is invalid.",
+          },
+        };
+      }
+      if (!isValidPassword(password.trim())) {
+        return {
+          error: {
+            field: "password",
+            message:
+              "the password must contain minimum eight characters, at least one letter and one number.",
+          },
+        };
+      }
+      if (firstName.trim().length < 3) {
+        return {
+          error: {
+            field: "firstName",
+            message: "first name must be at least 3 characters long.",
+          },
+        };
+      }
+      if (lastName.trim().length < 3) {
+        return {
+          error: {
+            field: "lastName",
+            message: "last name must be at least 3 characters long.",
+          },
+        };
+      }
+      const hash = await argon2.hash(password.trim());
+      const user = await prisma.user.create({
+        data: {
+          email: email.trim().toLowerCase(),
+          password: hash,
+          firstName: modifyName(firstName.trim()),
+          lastName: modifyName(lastName.trim()),
+        },
+      });
+      const jwt: string = await signJwt(user);
+      await pubsub.publish(Events.ON_USER_AUTH_STATE_CHANGED, {
+        userId: user.id,
+      });
+      const code: string = Math.random().toString().slice(2, 8);
+      const value = JSON.stringify({
+        code,
+        id: user.id,
+        email: user.email,
+      });
+      const key: string = __codePrefix__ + user.id;
+      await redis.setex(key, __codeExp__, value);
+      await sendEmail(user.email, code);
+      return {
+        jwt,
+        me: {
+          ...user,
+          avatar: user.avatar || "",
+        },
+      };
+    } catch (error) {
+      return {
+        error: {
+          field: "server",
+          message: "something went wrong on the server.",
+        },
+      };
+    }
+  }
+
+  @Mutation(() => ResendVerificationCodeObjectType)
+  async resendVerificationCode(
+    @PubSub() pubsub: PubSubEngine,
+    @Ctx() { prisma, redis, request }: CtxType
+  ): Promise<VerifyEmailObjectType> {
+    const jwt = request.headers.authorization?.split(" ")[1];
+    if (!!!jwt)
+      return {
+        error: {
+          field: "token",
+          message:
+            "Invalid authentication token, the token might have expired or something.",
+        },
+      };
+    const payload = await verifyJwt(jwt);
+    if (!!!payload) {
+      return {
+        error: {
+          field: "token",
+          message:
+            "Invalid authentication token, the token might have expired or something.",
+        },
+      };
+    }
+    const user = await prisma.user.findFirst({ where: { id: payload.id } });
+    if (!!!user) {
+      return {
+        error: {
+          field: "user",
+          message: "Could not found the user for whatever reason.",
+        },
+      };
+    }
+    const newJwt: string = await signJwt(user);
+    const key = __codePrefix__ + user.id;
+    await redis.del(key);
+    const code: string = Math.random().toString().slice(2, 8);
+    const value = JSON.stringify({
+      code,
+      id: user.id,
+      email: user.email,
     });
+    await redis.setex(key, __codeExp__, value);
+    await sendEmail(user.email, code);
+    return {
+      jwt: newJwt,
+      me: {
+        ...user,
+        avatar: user.avatar || "",
+      },
+    };
+  }
+
+  @Mutation(() => ChangePasswordObjectType)
+  async changePassword(
+    @Arg("input", () => ChangePasswordInputType)
+    { confirmPassword, email, password }: ChangePasswordInputType,
+    @PubSub() pubsub: PubSubEngine,
+    @Ctx() { prisma, redis }: CtxType
+  ): Promise<ChangePasswordObjectType> {
+    const user = await prisma.user.findFirst({
+      where: { email: email.trim().toLowerCase() },
+    });
+    if (!!!user)
+      return {
+        success: false,
+        error: {
+          message:
+            "Could not found an account associated with that email address.",
+          field: "email",
+        },
+      };
+
     if (password.trim() !== confirmPassword.trim()) {
       return {
         error: {
           field: "confirm-password",
           message: "the two passwords must match.",
         },
-      };
-    }
-    if (!!_user) {
-      return {
-        error: {
-          field: "email",
-          message: "the email address is taken by someone else.",
-        },
-      };
-    }
-    if (!isValidEmail(email.trim())) {
-      return {
-        error: {
-          field: "email",
-          message: "the email address is invalid.",
-        },
+        success: false,
       };
     }
     if (!isValidPassword(password.trim())) {
@@ -311,48 +475,98 @@ export class UserResolver {
           message:
             "the password must contain minimum eight characters, at least one letter and one number.",
         },
-      };
-    }
-    if (firstName.trim().length < 3) {
-      return {
-        error: {
-          field: "firstName",
-          message: "first name must be at least 3 characters long.",
-        },
-      };
-    }
-    if (lastName.trim().length < 3) {
-      return {
-        error: {
-          field: "lastName",
-          message: "last name must be at least 3 characters long.",
-        },
+        success: false,
       };
     }
 
     const hash = await argon2.hash(password.trim());
-    const user = await prisma.user.create({
+    await prisma.user.update({
+      where: { id: user.id },
       data: {
-        email: email.trim().toLowerCase(),
         password: hash,
-        firstName: modifyName(firstName.trim()),
-        lastName: modifyName(lastName.trim()),
+        isLoggedIn: false,
       },
     });
 
-    const jwt: string = await signJwt(user);
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { isLoggedIn: true },
+    await pubsub.publish(Events.ON_USER_AUTH_STATE_CHANGED, {
+      userId: user.id,
     });
+
+    return {
+      success: true,
+    };
+  }
+
+  @Mutation(() => VerifyEmailObjectType)
+  async verifyEmail(
+    @Arg("input", () => VerifyEmailInputType, { nullable: false })
+    { code, email }: VerifyEmailInputType,
+    @PubSub() pubsub: PubSubEngine,
+    @Ctx() { prisma, redis, request }: CtxType
+  ): Promise<VerifyEmailObjectType> {
+    const user = await prisma.user.findFirst({
+      where: { email: email.trim().toLowerCase() },
+    });
+    if (!!!user) {
+      return {
+        error: {
+          field: "user",
+          message: "Could not found the user for whatever reason.",
+        },
+      };
+    }
+    const key = __codePrefix__ + user.id;
+    const value = await redis.get(key);
+    if (!!!value) {
+      await redis.del(key);
+      return {
+        error: {
+          field: "code",
+          message: "Invalid verification code, it might have expired.",
+        },
+      };
+    }
+    const redisPayload = JSON.parse(value) as {
+      code: string;
+      email: string;
+      id: string;
+    };
+
+    if (code !== redisPayload.code) {
+      return {
+        error: {
+          field: "code",
+          message: "Invalid verification code, it might have expired.",
+        },
+      };
+    }
+
+    if (user.id !== redisPayload.id && user.email !== redisPayload.email) {
+      return {
+        error: {
+          field: "user",
+          message: "User credentials could not match. Try again!.",
+        },
+      };
+    }
+
+    const _user = await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        isLoggedIn: true,
+        emailVerified: true,
+      },
+    });
+    await redis.del(key);
+    const newJwt: string = await signJwt(user);
     await pubsub.publish(Events.ON_USER_AUTH_STATE_CHANGED, {
       userId: user.id,
     });
     return {
-      jwt,
+      jwt: newJwt,
       me: {
-        ...user,
-        avatar: user.avatar || "",
+        ..._user,
+        avatar: _user.avatar || "",
       },
     };
   }

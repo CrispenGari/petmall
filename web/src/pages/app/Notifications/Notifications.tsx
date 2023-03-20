@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { Icon, Input } from "semantic-ui-react";
 import { Divider, Footer, Header, Notification } from "../../../components";
 import { StateType } from "../../../types";
@@ -7,7 +8,17 @@ import "./Notifications.css";
 interface Props {}
 const Notifications: React.FC<Props> = () => {
   const [filter, setFilter] = React.useState<string>("");
-  const { notifications } = useSelector((state: StateType) => state);
+  const { notifications, user } = useSelector((state: StateType) => state);
+  const navigator = useNavigate();
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!!user?.emailVerified && !!!user?.isLoggedIn) {
+      navigator("/app/pets", { replace: true });
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [navigator, user]);
   return (
     <div className="notifications">
       <Header />

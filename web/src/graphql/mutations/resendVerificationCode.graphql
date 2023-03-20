@@ -1,0 +1,11 @@
+mutation ResendVerificationCode {
+  resendVerificationCode {
+    error {
+      ...ErrorFragment
+    }
+    jwt
+    me {
+      ...UserFragment
+    }
+  }
+}

@@ -1,4 +1,4 @@
-.login {
+.verify__email {
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -7,22 +7,17 @@
   background-color: var(--primary);
   color: white;
 }
-.login__forgot__password__link {
-  margin-bottom: 5px !important;
-  display: flex;
-  justify-content: flex-end;
-}
-.login::-webkit-scrollbar {
+.verify__email::-webkit-scrollbar {
   display: none;
 }
-.login__wrapper {
+.verify__email__wrapper {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   flex: 1;
 }
-.login__card {
+.verify__email__card {
   padding: 20px !important;
   width: 100% !important;
   max-width: 400px !important;
@@ -30,65 +25,80 @@
   user-zoom: none !important;
   border-radius: 5px;
 }
-.login__form {
+.verify__email__form {
   margin-bottom: 10px;
 }
-.login__card__content > p {
+.verify__email__card__content > p {
   text-align: center;
   color: white;
   font-size: 1rem;
 }
-.login__card__content > h1 {
+.verify__email__card__content > h1 {
   font-size: 1.5rem;
   text-transform: uppercase;
   color: white;
 }
-.login__card__content {
+.verify__email__card__content {
   display: flex !important;
   flex-direction: column !important;
   justify-content: center !important;
   align-items: center !important;
   margin-bottom: 30px !important;
 }
-.login__card__content > img {
+.verify__email__card__content > img {
   user-zoom: none;
   -webkit-user-drag: none;
   width: 150px;
 }
-.login__form__input {
+.verify__email__form__input {
   margin-bottom: 10px;
+  text-align: center !important;
 }
-.login__form > button {
+.verify__email__form > button {
   background-color: var(--secondary) !important;
 }
-.login__card > p {
+.verify__email__card > p {
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 1.2rem;
   color: white;
 }
-.login__card > p > span {
+.verify__email__card > p > span {
   flex: 1;
   border-bottom: 1px solid white;
   margin-left: 10px;
 }
-.login__card > button {
+.verify__email__card > button {
   background-color: var(--main) !important;
+}
+
+.verify__email__resend__code {
+  margin-bottom: 5px !important;
+  display: flex;
+  justify-content: flex-end;
+}
+.verify__email__resend__code > div {
+  cursor: pointer;
+  color: white;
+  transition: all 1s;
+}
+.verify__email__resend__code > div:hover {
+  text-decoration: underline;
 }
 
 @media only screen and (max-width: 768px) {
   /* iPads, Tablets */
-  .login__card {
+  .verify__email__card {
     border: none !important;
   }
 }
 
 @media only screen and (orientation: landscape) {
-  .login {
+  .verify__email {
     overflow-y: scroll;
   }
-  .login__wrapper {
+  .verify__email__wrapper {
     padding: 30px 0;
   }
 }

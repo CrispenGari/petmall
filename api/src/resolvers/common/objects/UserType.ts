@@ -22,6 +22,9 @@ export class UserType {
   @Field(() => Boolean, { nullable: false })
   verified: boolean;
 
+  @Field(() => Boolean, { nullable: false })
+  emailVerified: boolean;
+
   @Field(() => String, { nullable: true })
   avatar?: string | undefined | null;
 

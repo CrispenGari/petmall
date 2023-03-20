@@ -68,7 +68,7 @@ const EditPet: React.FC<Props> = () => {
 
   React.useEffect(() => {
     let mounted: boolean = true;
-    if (mounted && !!!user) {
+    if (mounted && !!!user?.emailVerified && !!!user?.isLoggedIn) {
       navigator("/app/pets", { replace: true });
     }
     return () => {

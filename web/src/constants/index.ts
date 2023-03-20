@@ -1,6 +1,7 @@
 export const constants = {
   SET_USER: "SET_USER",
   SET_LOCATION: "SET_LOCATION",
+
   SET_NOTIFICATIONS: "SET_NOTIFICATIONS",
 };
 export const url = "http://127.0.0.1:3001/graphql";

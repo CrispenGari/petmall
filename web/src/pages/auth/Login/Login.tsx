@@ -1,5 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Input, Icon, Message, Button, Form } from "semantic-ui-react";
 import { setUser } from "../../../actions";
@@ -71,7 +72,7 @@ const Login: React.FC<Props> = () => {
     if (mounted && !!data?.login.jwt) {
       setError({ field: "", message: "" });
       setForm({ email: "", password: "" });
-      navigator("/app/pets", { replace: true });
+      navigator("/", { replace: true });
     }
     return () => {
       mounted = false;
@@ -120,6 +121,10 @@ const Login: React.FC<Props> = () => {
               fluid
               error={error?.field === "password"}
             />
+            <div className="login__forgot__password__link">
+              <Link to={"/auth/change-password"}>Forgot Password?</Link>
+            </div>
+
             {error?.message && (
               <Message negative>
                 <p style={{ color: "red" }}>{error ? error.message : ""}</p>

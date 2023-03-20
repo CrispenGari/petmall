@@ -1,0 +1,11 @@
+mutation VerifyEmail($input: VerifyEmailInputType!) {
+  verifyEmail(input: $input) {
+    error {
+      ...ErrorFragment
+    }
+    jwt
+    me {
+      ...UserFragment
+    }
+  }
+}

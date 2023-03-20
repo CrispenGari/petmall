@@ -44,7 +44,10 @@ export class ChangePasswordInputType {
 }
 
 @InputType()
-export class RequestForgotPasswordInputType {
+export class VerifyEmailInputType {
+  @Field(() => String, { nullable: false })
+  code: string;
+
   @Field(() => String, { nullable: false })
   email: string;
 }

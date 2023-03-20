@@ -86,7 +86,7 @@ const Register: React.FC<Props> = () => {
         firstName: "",
         lastName: "",
       });
-      navigator("/app/pets", { replace: true });
+      navigator("/auth/verify-email", { replace: true });
     }
     return () => {
       mounted = false;

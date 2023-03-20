@@ -21,7 +21,7 @@ const Header: React.FC<Props> = ({ globalProps: { navigate, user } }) => {
             navigate("/app/pets");
           }}
         />
-        {!!user ? (
+        {!!user?.isLoggedIn && user.emailVerified ? (
           <div className="">
             <HeaderButton
               iconName="home"
@@ -39,7 +39,7 @@ const Header: React.FC<Props> = ({ globalProps: { navigate, user } }) => {
           </div>
         )}
       </div>
-      {!!user ? (
+      {!!user?.isLoggedIn && user.emailVerified ? (
         <div className="app__header__right">
           <HeaderButton
             iconName="wechat"

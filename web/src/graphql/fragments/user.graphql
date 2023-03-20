@@ -4,6 +4,7 @@ fragment UserFragment on UserType {
   avatar
   firstName
   lastName
+  emailVerified
   verified
   isLoggedIn
   createAt

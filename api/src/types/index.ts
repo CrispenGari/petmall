@@ -1,6 +1,9 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { PrismaClient, Prisma } from "@prisma/client";
+import Redis from "ioredis";
+
 export type CtxType = {
+  redis: Redis;
   request: FastifyRequest;
   reply: FastifyReply;
   prisma: PrismaClient<

@@ -1,5 +1,6 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Footer,
   Header,
@@ -7,6 +8,7 @@ import {
   ProfileLogoutButton,
   ProfilePetsFlatList,
 } from "../../../components";
+import { StateType } from "../../../types";
 import { decodeId } from "../../../utils";
 
 import "./Profile.css";
@@ -17,6 +19,17 @@ const Profile: React.FC<Props> = () => {
 
   const userId: string = decodeId(params.userId as string);
   const [category, setCategory] = React.useState<string>("ALL PETS");
+  const { user } = useSelector((state: StateType) => state);
+  const navigator = useNavigate();
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!!user?.emailVerified && !!!user?.isLoggedIn) {
+      navigator("/app/pets", { replace: true });
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [navigator, user]);
 
   return (
     <div className="profile">

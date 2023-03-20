@@ -16,6 +16,39 @@ export class RegisterObjectType {
 }
 
 @ObjectType()
+export class ChangePasswordObjectType {
+  @Field(() => ErrorType, { nullable: true })
+  error?: ErrorType;
+
+  @Field(() => Boolean, { nullable: false })
+  success: boolean;
+}
+
+@ObjectType()
+export class VerifyEmailObjectType {
+  @Field(() => ErrorType, { nullable: true })
+  error?: ErrorType;
+
+  @Field(() => String, { nullable: true })
+  jwt?: string;
+
+  @Field(() => UserType, { nullable: true })
+  me?: UserType;
+}
+
+@ObjectType()
+export class ResendVerificationCodeObjectType {
+  @Field(() => ErrorType, { nullable: true })
+  error?: ErrorType;
+
+  @Field(() => String, { nullable: true })
+  jwt?: string;
+
+  @Field(() => UserType, { nullable: true })
+  me?: UserType;
+}
+
+@ObjectType()
 export class LoginObjectType {
   @Field(() => ErrorType, { nullable: true })
   error?: ErrorType;
