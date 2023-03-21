@@ -41,11 +41,11 @@ class NotFound extends React.Component<PropsType, StateType> {
               <Link to={"/"} replace={true}>
                 HOME
               </Link>
-              <Link to={"/auth/sign-up"} replace={true}>
-                Sign Up
+              <Link to={"/auth/login"} replace={true}>
+                Login
               </Link>
-              <Link to={"/auth/sign-in"} replace={true}>
-                Sign In
+              <Link to={"/auth/register"} replace={true}>
+                Register
               </Link>
             </div>
           </div>{" "}

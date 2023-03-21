@@ -15,6 +15,7 @@ import {
   GetUserByIdInput,
   LoginInput,
   RegisterInput,
+  RequestForgotPasswordEmailLinkInputType,
   UpdateAvatarInputType,
   UpdateUserInfoInputType,
   VerifyEmailInputType,
@@ -23,6 +24,7 @@ import {
   ChangePasswordObjectType,
   LoginObjectType,
   RegisterObjectType,
+  RequestForgotPasswordEmailLinkObjectType,
   ResendVerificationCodeObjectType,
   UpdateUserInfoObjectType,
   VerifyEmailObjectType,
@@ -35,11 +37,15 @@ import path from "path";
 import util from "util";
 import stream from "stream";
 import fs from "fs";
+import crypto from "crypto";
 import {
   Events,
+  __clientBaseURL__,
   __codeExp__,
   __codePrefix__,
   __storageBaseURL__,
+  __tokenExp__,
+  __tokePrefix__,
 } from "../../constants";
 import { UserType } from "../common/objects/UserType";
 const storageDir = path.join(
@@ -368,7 +374,11 @@ export class UserResolver {
       });
       const key: string = __codePrefix__ + user.id;
       await redis.setex(key, __codeExp__, value);
-      await sendEmail(user.email, code);
+
+      const subject: string = "Verify Account Email Creation";
+      const html: string = `<p>Please verify your email address the verification code is: <u><b>${code}</b></u></p>`;
+
+      await sendEmail(user.email, html, subject);
       return {
         jwt,
         me: {
@@ -429,7 +439,10 @@ export class UserResolver {
       email: user.email,
     });
     await redis.setex(key, __codeExp__, value);
-    await sendEmail(user.email, code);
+
+    const subject: string = "Verify Account Email Creation";
+    const html: string = `<p>Please verify your email address the verification code is: <u><b>${code}</b></u></p>`;
+    await sendEmail(user.email, html, subject);
     return {
       jwt: newJwt,
       me: {
@@ -439,10 +452,63 @@ export class UserResolver {
     };
   }
 
+  @Mutation(() => RequestForgotPasswordEmailLinkObjectType)
+  async requestForgotPassword(
+    @Arg("input", () => RequestForgotPasswordEmailLinkInputType)
+    { email }: RequestForgotPasswordEmailLinkInputType,
+    @Ctx() { prisma, redis }: CtxType
+  ): Promise<RequestForgotPasswordEmailLinkObjectType> {
+    const user = await prisma.user.findFirst({
+      where: { email: email.trim().toLowerCase() },
+    });
+
+    if (!!!user)
+      return {
+        success: false,
+        error: {
+          message:
+            "Could not found an account associated with that email address.",
+          field: "email",
+        },
+      };
+
+    const requestPasswordToken: string = crypto.randomBytes(20).toString("hex");
+    const key: string = __tokePrefix__ + user.id;
+    await redis.del(key);
+    const payload: string = JSON.stringify({
+      requestPasswordToken,
+      email: user.email,
+      id: user.id,
+    });
+    await redis.setex(key, __tokenExp__, payload);
+
+    const subject: string = "Reset Password Account";
+    const html: string = `
+    <p>Hey ${user.firstName},</p>
+    <p>We have recievied a request that you want to reset your <b>petmall</b> account password.
+    To reset your password click <a href="${
+      __clientBaseURL__ +
+      "/auth/reset-password/" +
+      requestPasswordToken +
+      "?email=" +
+      user.email
+    }">here</a>. If you do not intent this action ignore this email.</p>
+    `;
+    await sendEmail(user.email, html, subject);
+    return {
+      success: true,
+    };
+  }
+
   @Mutation(() => ChangePasswordObjectType)
   async changePassword(
     @Arg("input", () => ChangePasswordInputType)
-    { confirmPassword, email, password }: ChangePasswordInputType,
+    {
+      confirmPassword,
+      password,
+      resetPasswordToken,
+      email,
+    }: ChangePasswordInputType,
     @PubSub() pubsub: PubSubEngine,
     @Ctx() { prisma, redis }: CtxType
   ): Promise<ChangePasswordObjectType> {
@@ -478,6 +544,33 @@ export class UserResolver {
         success: false,
       };
     }
+    const key: string = __tokePrefix__ + user.id;
+    const payload = await redis.get(key);
+    await redis.del(key);
+    if (!!!payload) {
+      return {
+        success: false,
+        error: {
+          message: "the reset password link has expired.",
+          field: "token",
+        },
+      };
+    }
+    const { requestPasswordToken } = JSON.parse(payload) as {
+      requestPasswordToken: string;
+      email: string;
+      id: string;
+    };
+    if (requestPasswordToken !== resetPasswordToken) {
+      return {
+        error: {
+          message:
+            "Invalid reset password token, the token might have expired.",
+          field: "token",
+        },
+        success: false,
+      };
+    }
 
     const hash = await argon2.hash(password.trim());
     await prisma.user.update({
@@ -491,7 +584,6 @@ export class UserResolver {
     await pubsub.publish(Events.ON_USER_AUTH_STATE_CHANGED, {
       userId: user.id,
     });
-
     return {
       success: true,
     };

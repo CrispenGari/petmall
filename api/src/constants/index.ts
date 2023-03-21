@@ -2,7 +2,11 @@ export const __cookieName__: string = "jwt";
 export const __storageBaseURL__: string =
   "http://127.0.0.1:3001/petmall/api/storage";
 export const __codePrefix__: string = "code:";
+export const __tokePrefix__: string = "token:";
 export const __codeExp__: number = 60 * 10; // 10m
+export const __tokenExp__: number = 60 * 30; // 30m
+
+export const __clientBaseURL__: string = "http://localhost:3000";
 
 export enum Events {
   NEW_REACTION_TO_COMMENT = "NEW_REACTION_TO_COMMENT",

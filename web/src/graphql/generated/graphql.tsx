@@ -20,6 +20,7 @@ export type ChangePasswordInputType = {
   confirmPassword: Scalars['String'];
   email: Scalars['String'];
   password: Scalars['String'];
+  resetPasswordToken: Scalars['String'];
 };
 
 export type ChangePasswordObjectType = {
@@ -142,6 +143,7 @@ export type Mutation = {
   reactToPet: PetObjectType;
   register: RegisterObjectType;
   replyToComment: PetObjectType;
+  requestForgotPassword: RequestForgotPasswordEmailLinkObjectType;
   resendVerificationCode: ResendVerificationCodeObjectType;
   sayHello: Scalars['String'];
   sayHi: Scalars['String'];
@@ -204,6 +206,11 @@ export type MutationRegisterArgs = {
 
 export type MutationReplyToCommentArgs = {
   input: ReplyToCommentInput;
+};
+
+
+export type MutationRequestForgotPasswordArgs = {
+  input: RequestForgotPasswordEmailLinkInputType;
 };
 
 
@@ -382,6 +389,16 @@ export type ReplyToCommentInput = {
   comment: Scalars['String'];
   id: Scalars['String'];
   userId: Scalars['String'];
+};
+
+export type RequestForgotPasswordEmailLinkInputType = {
+  email: Scalars['String'];
+};
+
+export type RequestForgotPasswordEmailLinkObjectType = {
+  __typename?: 'RequestForgotPasswordEmailLinkObjectType';
+  error?: Maybe<ErrorType>;
+  success: Scalars['Boolean'];
 };
 
 export type ResendVerificationCodeObjectType = {
@@ -571,6 +588,13 @@ export type ReplyCommentMutationVariables = Exact<{
 
 
 export type ReplyCommentMutation = { __typename?: 'Mutation', replyToComment: { __typename?: 'PetObjectType', success: boolean } };
+
+export type RequestForgotPasswordLinkMutationVariables = Exact<{
+  input: RequestForgotPasswordEmailLinkInputType;
+}>;
+
+
+export type RequestForgotPasswordLinkMutation = { __typename?: 'Mutation', requestForgotPassword: { __typename?: 'RequestForgotPasswordEmailLinkObjectType', success: boolean, error?: { __typename?: 'ErrorType', field: string, message: string } | null } };
 
 export type ResendVerificationCodeMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -1010,6 +1034,20 @@ export const ReplyCommentDocument = gql`
 
 export function useReplyCommentMutation() {
   return Urql.useMutation<ReplyCommentMutation, ReplyCommentMutationVariables>(ReplyCommentDocument);
+};
+export const RequestForgotPasswordLinkDocument = gql`
+    mutation RequestForgotPasswordLink($input: RequestForgotPasswordEmailLinkInputType!) {
+  requestForgotPassword(input: $input) {
+    error {
+      ...ErrorFragment
+    }
+    success
+  }
+}
+    ${ErrorFragmentFragmentDoc}`;
+
+export function useRequestForgotPasswordLinkMutation() {
+  return Urql.useMutation<RequestForgotPasswordLinkMutation, RequestForgotPasswordLinkMutationVariables>(RequestForgotPasswordLinkDocument);
 };
 export const ResendVerificationCodeDocument = gql`
     mutation ResendVerificationCode {

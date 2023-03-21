@@ -34,13 +34,22 @@ export class UpdateUserInfoInputType {
 @InputType()
 export class ChangePasswordInputType {
   @Field(() => String, { nullable: false })
-  email: string;
+  resetPasswordToken: string;
 
   @Field(() => String, { nullable: false })
   password: string;
 
+  @Field(() => String, { nullable: false })
+  email: string;
+
   @Field({ nullable: false })
   confirmPassword: string;
+}
+
+@InputType()
+export class RequestForgotPasswordEmailLinkInputType {
+  @Field(() => String, { nullable: false })
+  email: string;
 }
 
 @InputType()

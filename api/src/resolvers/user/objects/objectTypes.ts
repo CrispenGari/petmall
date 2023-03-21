@@ -1,6 +1,5 @@
 import { Field, ObjectType } from "type-graphql";
 import { ErrorType } from "../../common/objects/ErrorType";
-import { PetType } from "../../common/objects/PetType";
 import { UserType } from "../../common/objects/UserType";
 
 @ObjectType()
@@ -17,6 +16,15 @@ export class RegisterObjectType {
 
 @ObjectType()
 export class ChangePasswordObjectType {
+  @Field(() => ErrorType, { nullable: true })
+  error?: ErrorType;
+
+  @Field(() => Boolean, { nullable: false })
+  success: boolean;
+}
+
+@ObjectType()
+export class RequestForgotPasswordEmailLinkObjectType {
   @Field(() => ErrorType, { nullable: true })
   error?: ErrorType;
 

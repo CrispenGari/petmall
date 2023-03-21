@@ -134,7 +134,7 @@ const Login: React.FC<Props> = () => {
               error={error?.field === "password"}
             />
             <div className="login__forgot__password__link">
-              <Link to={"/auth/change-password"}>Forgot Password?</Link>
+              <Link to={"/auth/forgot-password"}>Forgot Password?</Link>
             </div>
 
             {error?.message && (

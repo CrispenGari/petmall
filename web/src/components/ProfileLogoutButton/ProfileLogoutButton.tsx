@@ -5,7 +5,7 @@ import { setUser } from "../../actions";
 import { RELOADED_KEY, TOKEN_KEY } from "../../constants";
 import { LogoutDocument } from "../../graphql/generated/graphql";
 import { client } from "../../providers/UrqlProvider";
-import { del, store } from "../../utils";
+import { del } from "../../utils";
 import "./ProfileLogoutButton.css";
 interface Props {}
 const ProfileLogoutButton: React.FC<Props> = () => {

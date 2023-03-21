@@ -11,8 +11,14 @@ import {
   Pet,
   Profile,
 } from "../pages/app";
-import { ForgotPassword, Login, Register, VerifyEmail } from "../pages/auth";
-import {  NotFound } from "../pages/common";
+import {
+  ForgotPassword,
+  Login,
+  Register,
+  ResetPassword,
+  VerifyEmail,
+} from "../pages/auth";
+import { NotFound } from "../pages/common";
 interface Props {}
 const Routes: React.FC<Props> = () => {
   return (
@@ -28,9 +34,14 @@ const Routes: React.FC<Props> = () => {
           element={<VerifyEmail />}
         />
         <Route
-          path="/auth/change-password"
+          path="/auth/forgot-password"
           caseSensitive
           element={<ForgotPassword />}
+        />
+        <Route
+          path="/auth/reset-password/:resetPasswordToken"
+          caseSensitive
+          element={<ResetPassword />}
         />
         <Route path="/app/pet/:petId" caseSensitive element={<Pet />} />
         <Route path="/app/chats/:userId" caseSensitive element={<Chats />} />
