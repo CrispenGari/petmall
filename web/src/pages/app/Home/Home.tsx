@@ -1,10 +1,28 @@
 import React from "react";
+
 import { Header, Banner, FlatList } from "../../../components";
-import { PETS_CATEGORIES } from "../../../constants";
+import { RELOADED_KEY, PETS_CATEGORIES } from "../../../constants";
+
+import { retrieve, store } from "../../../utils";
 
 import "./Home.css";
 interface Props {}
 const Home: React.FC<Props> = () => {
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted) {
+      (async () => {
+        const reloaded = await retrieve(RELOADED_KEY);
+        if (!!!reloaded) {
+          await store(RELOADED_KEY, "reloaded");
+          window.location.reload();
+        }
+      })();
+    }
+    return () => {
+      mounted = false;
+    };
+  }, []);
   return (
     <div className="home">
       <Header />

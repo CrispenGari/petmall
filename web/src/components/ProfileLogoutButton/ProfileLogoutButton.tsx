@@ -2,10 +2,10 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { Button } from "semantic-ui-react";
 import { setUser } from "../../actions";
-import { TOKEN_KEY } from "../../constants";
+import { RELOADED_KEY, TOKEN_KEY } from "../../constants";
 import { LogoutDocument } from "../../graphql/generated/graphql";
 import { client } from "../../providers/UrqlProvider";
-import { del } from "../../utils";
+import { del, store } from "../../utils";
 import "./ProfileLogoutButton.css";
 interface Props {}
 const ProfileLogoutButton: React.FC<Props> = () => {
@@ -20,6 +20,7 @@ const ProfileLogoutButton: React.FC<Props> = () => {
             .mutation(LogoutDocument, {})
             .toPromise();
           if (data.logout) {
+            await del(RELOADED_KEY);
             await del(TOKEN_KEY);
             dispatch(setUser(null));
             window.location.reload();

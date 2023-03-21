@@ -4,20 +4,19 @@ import { useNavigate } from "react-router-dom";
 import { Input, Icon, Message, Button, Form } from "semantic-ui-react";
 import { setUser } from "../../../actions";
 import { Footer } from "../../../components";
-import { COLORS, TOKEN_KEY } from "../../../constants";
+import { COLORS, RELOADED_KEY, TOKEN_KEY } from "../../../constants";
 import {
   useResendVerificationCodeMutation,
   useVerifyEmailMutation,
 } from "../../../graphql/generated/graphql";
 import { ErrorType, StateType } from "../../../types";
-import { store } from "../../../utils";
+import { del, store } from "../../../utils";
 import "./VerifyEmail.css";
 interface Props {}
 const VerifyEmail: React.FC<Props> = () => {
   const navigator = useNavigate();
   const { user: me } = useSelector((state: StateType) => state);
   const [{ fetching, data }, verifyEmail] = useVerifyEmailMutation();
-
   const [{ fetching: resending, data: result }, resendVerificationCode] =
     useResendVerificationCodeMutation();
   const dispatch = useDispatch();
@@ -42,6 +41,16 @@ const VerifyEmail: React.FC<Props> = () => {
     e.preventDefault();
     await verifyEmail({ input: { code, email: me?.email ? me.email : "" } });
   };
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!me?.emailVerified) {
+      navigator("/app/pets", { replace: true });
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [me, navigator]);
   React.useEffect(() => {
     let mounted: boolean = true;
     if (mounted && !!data?.verifyEmail) {
@@ -62,6 +71,7 @@ const VerifyEmail: React.FC<Props> = () => {
       (async () => {
         const value = await store(TOKEN_KEY, data.verifyEmail.jwt as any);
         if (value) {
+          await del(RELOADED_KEY);
           dispatch(setUser(data.verifyEmail.me as any));
         }
       })();

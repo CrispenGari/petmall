@@ -12,7 +12,7 @@ import {
   Profile,
 } from "../pages/app";
 import { ForgotPassword, Login, Register, VerifyEmail } from "../pages/auth";
-import { NotFound } from "../pages/common";
+import {  NotFound } from "../pages/common";
 interface Props {}
 const Routes: React.FC<Props> = () => {
   return (

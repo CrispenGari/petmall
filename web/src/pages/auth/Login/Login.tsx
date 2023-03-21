@@ -1,18 +1,19 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { Input, Icon, Message, Button, Form } from "semantic-ui-react";
 import { setUser } from "../../../actions";
 import { Footer } from "../../../components";
-import { TOKEN_KEY } from "../../../constants";
+import { RELOADED_KEY, TOKEN_KEY } from "../../../constants";
 import { useLoginMutation } from "../../../graphql/generated/graphql";
-import { ErrorType } from "../../../types";
-import { store } from "../../../utils";
+import { ErrorType, StateType } from "../../../types";
+import { del, store } from "../../../utils";
 import "./Login.css";
 interface Props {}
 const Login: React.FC<Props> = () => {
   const navigator = useNavigate();
+  const { user: me } = useSelector((state: StateType) => state);
   const [{ fetching, data }, login] = useLoginMutation();
   const dispatch = useDispatch();
   const [{ email, password }, setForm] = React.useState<{
@@ -38,6 +39,16 @@ const Login: React.FC<Props> = () => {
     e.preventDefault();
     await login({ input: { email, password } });
   };
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!me?.emailVerified) {
+      navigator("/app/pets", { replace: true });
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [me, navigator]);
   React.useEffect(() => {
     let mounted: boolean = true;
     if (mounted && !!data?.login) {
@@ -58,6 +69,7 @@ const Login: React.FC<Props> = () => {
       (async () => {
         const value = await store(TOKEN_KEY, data.login.jwt as any);
         if (value) {
+          await del(RELOADED_KEY);
           dispatch(setUser(data.login.me as any));
         }
       })();

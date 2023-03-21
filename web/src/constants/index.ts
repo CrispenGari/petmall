@@ -53,3 +53,4 @@ export const relativeTimeObject = {
 };
 
 export const TOKEN_KEY: string = "qid";
+export const RELOADED_KEY: string = "reloaded";

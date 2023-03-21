@@ -1,18 +1,19 @@
 import React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Input, Icon, Message, Button, Form } from "semantic-ui-react";
 import { setUser } from "../../../actions";
 import { Footer } from "../../../components";
 import { TOKEN_KEY } from "../../../constants";
 import { useRegisterMutation } from "../../../graphql/generated/graphql";
-import { ErrorType } from "../../../types";
+import { ErrorType, StateType } from "../../../types";
 import { store } from "../../../utils";
 import "./Register.css";
 interface Props {}
 const Register: React.FC<Props> = () => {
   const navigator = useNavigate();
   const [{ fetching, data }, register] = useRegisterMutation();
+  const { user: me } = useSelector((state: StateType) => state);
   const dispatch = useDispatch();
   const [{ email, password, confirmPassword, firstName, lastName }, setForm] =
     React.useState<{
@@ -45,6 +46,16 @@ const Register: React.FC<Props> = () => {
       input: { confirmPassword, email, password, firstName, lastName },
     });
   };
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!me?.emailVerified) {
+      navigator("/app/pets", { replace: true });
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [me, navigator]);
 
   React.useEffect(() => {
     let mounted: boolean = true;

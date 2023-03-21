@@ -69,8 +69,6 @@ const App: React.FC<Props> = () => {
       mounted = false;
     };
   }, [newUser, dispatch]);
-
-  console.log({ me: newUser?.me });
   return (
     <div className="app">
       <Routes />
