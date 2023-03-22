@@ -3,11 +3,15 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Icon, Input } from "semantic-ui-react";
 import { Footer, Header } from "../../../components";
+import { useMyChatsQuery } from "../../../graphql/generated/graphql";
 import { StateType } from "../../../types";
 import "./Chats.css";
 interface Props {}
 const Chats: React.FC<Props> = () => {
   const [filter, setFilter] = React.useState<string>("");
+  const [{ data }] = useMyChatsQuery();
+
+  console.log({ data });
   const { user } = useSelector((state: StateType) => state);
   const navigator = useNavigate();
   React.useEffect(() => {

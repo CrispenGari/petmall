@@ -38,7 +38,7 @@ export class UserType {
   chats?: ChatType[];
 
   @Field(() => String, { nullable: true })
-  createAt?: Date;
+  createAt?: Date | string;
   @Field(() => String, { nullable: true })
-  updateAt?: Date;
+  updateAt?: Date | string;
 }

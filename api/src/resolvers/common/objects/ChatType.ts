@@ -5,16 +5,18 @@ import { MessageType } from "./MessageType";
 export class ChatType {
   @Field(() => String)
   id: string;
+
   @Field(() => [String])
   userIds: string[];
+
   @Field(() => String)
   chatId: string;
 
   @Field(() => [MessageType], { nullable: true })
-  messages?: [MessageType];
+  messages?: MessageType[];
 
   @Field(() => String)
-  createdAt: Date;
+  createdAt: Date | string;
   @Field(() => String)
-  updatedAt: Date;
+  updatedAt: Date | string;
 }

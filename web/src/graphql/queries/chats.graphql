@@ -1,0 +1,8 @@
+query MyChats {
+  chats {
+    chats {
+      id
+    }
+    count
+  }
+}

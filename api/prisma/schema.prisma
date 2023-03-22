@@ -48,6 +48,7 @@ model Notification{
 }
 model Chat{
   id       String @unique @default(uuid())
+  chatId String
   userIds    String[]
 
   messages Message[]
@@ -60,7 +61,6 @@ model Chat{
 }
 
 model ChatOnUser {
-
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId     String
 

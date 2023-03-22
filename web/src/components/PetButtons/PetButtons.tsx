@@ -5,6 +5,7 @@ import { Button, Form, TextArea } from "semantic-ui-react";
 import {
   PetType,
   useMarkAsSoldMutation,
+  useNewChatMutation,
 } from "../../graphql/generated/graphql";
 import { StateType } from "../../types";
 import { encodeId } from "../../utils";
@@ -16,6 +17,7 @@ const PetButtons: React.FC<Props> = ({ pet }) => {
   const { user } = useSelector((state: StateType) => state);
 
   const [{ fetching: marking }, markAsSold] = useMarkAsSoldMutation();
+  const [{ fetching: sending, data }, newChat] = useNewChatMutation();
 
   const navigate = useNavigate();
   const [message, setMessage] = React.useState<string>(
@@ -24,6 +26,7 @@ const PetButtons: React.FC<Props> = ({ pet }) => {
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!!!message.trim()) return;
+    await newChat({ input: { message, userId: pet.seller?.id || "" } });
     setMessage("");
   };
 
@@ -34,7 +37,7 @@ const PetButtons: React.FC<Props> = ({ pet }) => {
   return (
     <div className="pet__buttons">
       {user?.id !== pet.seller?.id ? (
-        <Form loading={false} onSubmit={onSubmit}>
+        <Form loading={sending} onSubmit={onSubmit}>
           <TextArea
             placeholder="Write a message to the seller..."
             fluid
@@ -47,6 +50,7 @@ const PetButtons: React.FC<Props> = ({ pet }) => {
             color="green"
             type="submit"
             className="pet__buttons__send__btn"
+            disabled={sending}
           >
             SEND
           </Button>

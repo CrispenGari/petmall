@@ -13,14 +13,11 @@ export class MessageType {
   @Field(() => String)
   senderId: string;
 
-  @Field(() => ChatType, { nullable: true })
-  chat?: ChatType;
-
   @Field(() => UserType, { nullable: true })
   sender?: UserType;
 
   @Field(() => String)
-  createdAt: Date;
+  createdAt: Date | string;
   @Field(() => String)
-  updatedAt: Date;
+  updatedAt: Date | string;
 }

@@ -39,6 +39,12 @@ export type ChatType = {
   userIds: Array<Scalars['String']>;
 };
 
+export type ChatsObjectType = {
+  __typename?: 'ChatsObjectType';
+  chats: Array<ChatType>;
+  count: Scalars['Int'];
+};
+
 export type CommentToPetInput = {
   comment: Scalars['String'];
   id: Scalars['String'];
@@ -139,6 +145,7 @@ export type Mutation = {
   logout: Scalars['Boolean'];
   markAsSold: PetObjectType;
   markNotificationAsRead: MarkNotificationAsReadObjectType;
+  newChat: NewChatObjectType;
   reactToComment: PetObjectType;
   reactToPet: PetObjectType;
   register: RegisterObjectType;
@@ -186,6 +193,11 @@ export type MutationMarkAsSoldArgs = {
 
 export type MutationMarkNotificationAsReadArgs = {
   input: MarkNotificationAsReadInputType;
+};
+
+
+export type MutationNewChatArgs = {
+  input: NewChatInputType;
 };
 
 
@@ -241,6 +253,16 @@ export type MutationUpdateUserInfoArgs = {
 
 export type MutationVerifyEmailArgs = {
   input: VerifyEmailInputType;
+};
+
+export type NewChatInputType = {
+  message: Scalars['String'];
+  userId: Scalars['String'];
+};
+
+export type NewChatObjectType = {
+  __typename?: 'NewChatObjectType';
+  success: Scalars['Boolean'];
 };
 
 export type NewNotificationSubscriptionInput = {
@@ -322,6 +344,7 @@ export type PetsObjectType = {
 
 export type Query = {
   __typename?: 'Query';
+  chats: ChatsObjectType;
   getCategoryPets: PetsObjectType;
   getPetById?: Maybe<PetObjectType>;
   hello: Scalars['String'];
@@ -554,6 +577,13 @@ export type MarkNotificationAsReadMutationVariables = Exact<{
 
 export type MarkNotificationAsReadMutation = { __typename?: 'Mutation', markNotificationAsRead: { __typename?: 'MarkNotificationAsReadObjectType', success: boolean } };
 
+export type NewChatMutationVariables = Exact<{
+  input: NewChatInputType;
+}>;
+
+
+export type NewChatMutation = { __typename?: 'Mutation', newChat: { __typename?: 'NewChatObjectType', success: boolean } };
+
 export type NewPetMutationVariables = Exact<{
   input: NewPetInputType;
 }>;
@@ -628,6 +658,11 @@ export type VerifyEmailMutationVariables = Exact<{
 
 
 export type VerifyEmailMutation = { __typename?: 'Mutation', verifyEmail: { __typename?: 'VerifyEmailObjectType', jwt?: string | null, error?: { __typename?: 'ErrorType', field: string, message: string } | null, me?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null } };
+
+export type MyChatsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MyChatsQuery = { __typename?: 'Query', chats: { __typename?: 'ChatsObjectType', count: number, chats: Array<{ __typename?: 'ChatType', id: string }> } };
 
 export type GetPetByIdQueryVariables = Exact<{
   input: GetPetByIdInput;
@@ -973,6 +1008,17 @@ export const MarkNotificationAsReadDocument = gql`
 export function useMarkNotificationAsReadMutation() {
   return Urql.useMutation<MarkNotificationAsReadMutation, MarkNotificationAsReadMutationVariables>(MarkNotificationAsReadDocument);
 };
+export const NewChatDocument = gql`
+    mutation NewChat($input: NewChatInputType!) {
+  newChat(input: $input) {
+    success
+  }
+}
+    `;
+
+export function useNewChatMutation() {
+  return Urql.useMutation<NewChatMutation, NewChatMutationVariables>(NewChatDocument);
+};
 export const NewPetDocument = gql`
     mutation NewPet($input: NewPetInputType!) {
   add(input: $input) {
@@ -1122,6 +1168,20 @@ ${UserFragmentFragmentDoc}`;
 
 export function useVerifyEmailMutation() {
   return Urql.useMutation<VerifyEmailMutation, VerifyEmailMutationVariables>(VerifyEmailDocument);
+};
+export const MyChatsDocument = gql`
+    query MyChats {
+  chats {
+    chats {
+      id
+    }
+    count
+  }
+}
+    `;
+
+export function useMyChatsQuery(options?: Omit<Urql.UseQueryArgs<MyChatsQueryVariables>, 'query'>) {
+  return Urql.useQuery<MyChatsQuery, MyChatsQueryVariables>({ query: MyChatsDocument, ...options });
 };
 export const GetPetByIdDocument = gql`
     query GetPetById($input: GetPetByIdInput!) {
