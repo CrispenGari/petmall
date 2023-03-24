@@ -29,12 +29,23 @@ export type ChangePasswordObjectType = {
   success: Scalars['Boolean'];
 };
 
+export type ChatMessagesInputType = {
+  id: Scalars['String'];
+};
+
+export type ChatMessagesObjectType = {
+  __typename?: 'ChatMessagesObjectType';
+  chat?: Maybe<ChatType>;
+};
+
 export type ChatType = {
   __typename?: 'ChatType';
   chatId: Scalars['String'];
+  chatTitle: Scalars['String'];
   createdAt: Scalars['String'];
   id: Scalars['String'];
   messages?: Maybe<Array<MessageType>>;
+  pet?: Maybe<PetType>;
   updatedAt: Scalars['String'];
   userIds: Array<Scalars['String']>;
 };
@@ -125,7 +136,6 @@ export type MarkNotificationAsReadObjectType = {
 
 export type MessageType = {
   __typename?: 'MessageType';
-  chat?: Maybe<ChatType>;
   chatId: Scalars['String'];
   createdAt: Scalars['String'];
   id: Scalars['String'];
@@ -154,6 +164,7 @@ export type Mutation = {
   resendVerificationCode: ResendVerificationCodeObjectType;
   sayHello: Scalars['String'];
   sayHi: Scalars['String'];
+  sendMessage: SendMessageObjectType;
   update: PetObjectType;
   updateAvatar: Scalars['Boolean'];
   updateUserInfo: UpdateUserInfoObjectType;
@@ -236,6 +247,11 @@ export type MutationSayHiArgs = {
 };
 
 
+export type MutationSendMessageArgs = {
+  input: SendMessageInputType;
+};
+
+
 export type MutationUpdateArgs = {
   input: UpdatePetInputType;
 };
@@ -257,11 +273,23 @@ export type MutationVerifyEmailArgs = {
 
 export type NewChatInputType = {
   message: Scalars['String'];
+  petId: Scalars['String'];
+  userId: Scalars['String'];
+};
+
+export type NewChatMessageSubscriptionInput = {
+  userId: Scalars['String'];
+};
+
+export type NewChatMessageType = {
+  __typename?: 'NewChatMessageType';
+  message?: Maybe<MessageType>;
   userId: Scalars['String'];
 };
 
 export type NewChatObjectType = {
   __typename?: 'NewChatObjectType';
+  chatId?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
 };
 
@@ -344,6 +372,7 @@ export type PetsObjectType = {
 
 export type Query = {
   __typename?: 'Query';
+  chat: ChatMessagesObjectType;
   chats: ChatsObjectType;
   getCategoryPets: PetsObjectType;
   getPetById?: Maybe<PetObjectType>;
@@ -351,6 +380,11 @@ export type Query = {
   me?: Maybe<UserType>;
   notifications: NotificationObjectType;
   user: UserType;
+};
+
+
+export type QueryChatArgs = {
+  input: ChatMessagesInputType;
 };
 
 
@@ -431,12 +465,28 @@ export type ResendVerificationCodeObjectType = {
   me?: Maybe<UserType>;
 };
 
+export type SendMessageInputType = {
+  chatId: Scalars['String'];
+  message: Scalars['String'];
+};
+
+export type SendMessageObjectType = {
+  __typename?: 'SendMessageObjectType';
+  success: Scalars['Boolean'];
+};
+
 export type Subscription = {
   __typename?: 'Subscription';
+  newChatMessage: NewChatMessageType;
   newNotification: NewNotificationType;
   notify: Scalars['String'];
   onUserStateChange?: Maybe<Scalars['Boolean']>;
   petInteraction: PetInteractionType;
+};
+
+
+export type SubscriptionNewChatMessageArgs = {
+  input: NewChatMessageSubscriptionInput;
 };
 
 
@@ -507,11 +557,15 @@ export type VerifyEmailObjectType = {
   me?: Maybe<UserType>;
 };
 
+export type ChatFragmentFragment = { __typename?: 'ChatType', id: string, userIds: Array<string>, chatId: string, chatTitle: string, createdAt: string, updatedAt: string, pet?: { __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, replies?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null } | null, messages?: Array<{ __typename?: 'MessageType', id: string, message: string, chatId: string, senderId: string, createdAt: string, updatedAt: string, sender?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null };
+
 export type CommentFragmentFragment = { __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, replies?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null };
 
 export type ErrorFragmentFragment = { __typename?: 'ErrorType', field: string, message: string };
 
 export type LocationFragmentFragment = { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null };
+
+export type MessageFragmentFragment = { __typename?: 'MessageType', id: string, message: string, chatId: string, senderId: string, createdAt: string, updatedAt: string, sender?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null };
 
 export type NewNotificationFragmentFragment = { __typename?: 'NotificationType', id: string, notification: string, userId: string, read: boolean, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null };
 
@@ -582,7 +636,7 @@ export type NewChatMutationVariables = Exact<{
 }>;
 
 
-export type NewChatMutation = { __typename?: 'Mutation', newChat: { __typename?: 'NewChatObjectType', success: boolean } };
+export type NewChatMutation = { __typename?: 'Mutation', newChat: { __typename?: 'NewChatObjectType', success: boolean, chatId?: string | null } };
 
 export type NewPetMutationVariables = Exact<{
   input: NewPetInputType;
@@ -631,6 +685,13 @@ export type ResendVerificationCodeMutationVariables = Exact<{ [key: string]: nev
 
 export type ResendVerificationCodeMutation = { __typename?: 'Mutation', resendVerificationCode: { __typename?: 'ResendVerificationCodeObjectType', jwt?: string | null, error?: { __typename?: 'ErrorType', field: string, message: string } | null, me?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null } };
 
+export type SendMessageMutationVariables = Exact<{
+  input: SendMessageInputType;
+}>;
+
+
+export type SendMessageMutation = { __typename?: 'Mutation', sendMessage: { __typename?: 'SendMessageObjectType', success: boolean } };
+
 export type UpdateProfileAvatarMutationVariables = Exact<{
   input: UpdateAvatarInputType;
 }>;
@@ -659,10 +720,17 @@ export type VerifyEmailMutationVariables = Exact<{
 
 export type VerifyEmailMutation = { __typename?: 'Mutation', verifyEmail: { __typename?: 'VerifyEmailObjectType', jwt?: string | null, error?: { __typename?: 'ErrorType', field: string, message: string } | null, me?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null } };
 
+export type ChatMessagesQueryVariables = Exact<{
+  input: ChatMessagesInputType;
+}>;
+
+
+export type ChatMessagesQuery = { __typename?: 'Query', chat: { __typename?: 'ChatMessagesObjectType', chat?: { __typename?: 'ChatType', id: string, userIds: Array<string>, chatId: string, chatTitle: string, createdAt: string, updatedAt: string, pet?: { __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, replies?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null } | null, messages?: Array<{ __typename?: 'MessageType', id: string, message: string, chatId: string, senderId: string, createdAt: string, updatedAt: string, sender?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null } | null } };
+
 export type MyChatsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MyChatsQuery = { __typename?: 'Query', chats: { __typename?: 'ChatsObjectType', count: number, chats: Array<{ __typename?: 'ChatType', id: string }> } };
+export type MyChatsQuery = { __typename?: 'Query', chats: { __typename?: 'ChatsObjectType', count: number, chats: Array<{ __typename?: 'ChatType', id: string, userIds: Array<string>, chatId: string, chatTitle: string, createdAt: string, updatedAt: string, pet?: { __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, replies?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null } | null, messages?: Array<{ __typename?: 'MessageType', id: string, message: string, chatId: string, senderId: string, createdAt: string, updatedAt: string, sender?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null }> } };
 
 export type GetPetByIdQueryVariables = Exact<{
   input: GetPetByIdInput;
@@ -732,54 +800,6 @@ export type OnUserStateChangeSubscription = { __typename?: 'Subscription', onUse
 };
       export default result;
     
-export const ErrorFragmentFragmentDoc = gql`
-    fragment ErrorFragment on ErrorType {
-  field
-  message
-}
-    `;
-export const UserFragmentFragmentDoc = gql`
-    fragment UserFragment on UserType {
-  id
-  email
-  avatar
-  firstName
-  lastName
-  emailVerified
-  verified
-  isLoggedIn
-  createAt
-  updateAt
-}
-    `;
-export const NewNotificationFragmentFragmentDoc = gql`
-    fragment NewNotificationFragment on NotificationType {
-  id
-  notification
-  userId
-  read
-  createdAt
-  updatedAt
-  user {
-    ...UserFragment
-  }
-}
-    ${UserFragmentFragmentDoc}`;
-export const NotificationFragmentFragmentDoc = gql`
-    fragment NotificationFragment on NotificationType {
-  id
-  notification
-  title
-  userId
-  read
-  petId
-  createdAt
-  updatedAt
-  user {
-    ...UserFragment
-  }
-}
-    ${UserFragmentFragmentDoc}`;
 export const LocationFragmentFragmentDoc = gql`
     fragment LocationFragment on LocationType {
   id
@@ -914,6 +934,84 @@ export const PetFragmentFragmentDoc = gql`
     ${LocationFragmentFragmentDoc}
 ${ReactionFragmentFragmentDoc}
 ${CommentFragmentFragmentDoc}`;
+export const UserFragmentFragmentDoc = gql`
+    fragment UserFragment on UserType {
+  id
+  email
+  avatar
+  firstName
+  lastName
+  emailVerified
+  verified
+  isLoggedIn
+  createAt
+  updateAt
+}
+    `;
+export const MessageFragmentFragmentDoc = gql`
+    fragment MessageFragment on MessageType {
+  id
+  message
+  chatId
+  senderId
+  sender {
+    ...UserFragment
+  }
+  createdAt
+  updatedAt
+}
+    ${UserFragmentFragmentDoc}`;
+export const ChatFragmentFragmentDoc = gql`
+    fragment ChatFragment on ChatType {
+  id
+  userIds
+  chatId
+  chatTitle
+  pet {
+    ...PetFragment
+  }
+  messages {
+    ...MessageFragment
+  }
+  createdAt
+  updatedAt
+}
+    ${PetFragmentFragmentDoc}
+${MessageFragmentFragmentDoc}`;
+export const ErrorFragmentFragmentDoc = gql`
+    fragment ErrorFragment on ErrorType {
+  field
+  message
+}
+    `;
+export const NewNotificationFragmentFragmentDoc = gql`
+    fragment NewNotificationFragment on NotificationType {
+  id
+  notification
+  userId
+  read
+  createdAt
+  updatedAt
+  user {
+    ...UserFragment
+  }
+}
+    ${UserFragmentFragmentDoc}`;
+export const NotificationFragmentFragmentDoc = gql`
+    fragment NotificationFragment on NotificationType {
+  id
+  notification
+  title
+  userId
+  read
+  petId
+  createdAt
+  updatedAt
+  user {
+    ...UserFragment
+  }
+}
+    ${UserFragmentFragmentDoc}`;
 export const ChangePasswordDocument = gql`
     mutation ChangePassword($input: ChangePasswordInputType!) {
   changePassword(input: $input) {
@@ -1012,6 +1110,7 @@ export const NewChatDocument = gql`
     mutation NewChat($input: NewChatInputType!) {
   newChat(input: $input) {
     success
+    chatId
   }
 }
     `;
@@ -1113,6 +1212,17 @@ ${UserFragmentFragmentDoc}`;
 export function useResendVerificationCodeMutation() {
   return Urql.useMutation<ResendVerificationCodeMutation, ResendVerificationCodeMutationVariables>(ResendVerificationCodeDocument);
 };
+export const SendMessageDocument = gql`
+    mutation SendMessage($input: SendMessageInputType!) {
+  sendMessage(input: $input) {
+    success
+  }
+}
+    `;
+
+export function useSendMessageMutation() {
+  return Urql.useMutation<SendMessageMutation, SendMessageMutationVariables>(SendMessageDocument);
+};
 export const UpdateProfileAvatarDocument = gql`
     mutation UpdateProfileAvatar($input: UpdateAvatarInputType!) {
   updateAvatar(input: $input)
@@ -1169,16 +1279,29 @@ ${UserFragmentFragmentDoc}`;
 export function useVerifyEmailMutation() {
   return Urql.useMutation<VerifyEmailMutation, VerifyEmailMutationVariables>(VerifyEmailDocument);
 };
+export const ChatMessagesDocument = gql`
+    query ChatMessages($input: ChatMessagesInputType!) {
+  chat(input: $input) {
+    chat {
+      ...ChatFragment
+    }
+  }
+}
+    ${ChatFragmentFragmentDoc}`;
+
+export function useChatMessagesQuery(options: Omit<Urql.UseQueryArgs<ChatMessagesQueryVariables>, 'query'>) {
+  return Urql.useQuery<ChatMessagesQuery, ChatMessagesQueryVariables>({ query: ChatMessagesDocument, ...options });
+};
 export const MyChatsDocument = gql`
     query MyChats {
   chats {
     chats {
-      id
+      ...ChatFragment
     }
     count
   }
 }
-    `;
+    ${ChatFragmentFragmentDoc}`;
 
 export function useMyChatsQuery(options?: Omit<Urql.UseQueryArgs<MyChatsQueryVariables>, 'query'>) {
   return Urql.useQuery<MyChatsQuery, MyChatsQueryVariables>({ query: MyChatsDocument, ...options });

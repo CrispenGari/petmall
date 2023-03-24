@@ -1,0 +1,15 @@
+fragment ChatFragment on ChatType {
+  id
+  userIds
+  chatId
+  chatTitle
+  pet {
+    ...PetFragment
+  }
+  messages {
+    ...MessageFragment
+  }
+
+  createdAt
+  updatedAt
+}

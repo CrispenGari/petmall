@@ -1,7 +1,7 @@
 query MyChats {
   chats {
     chats {
-      id
+      ...ChatFragment
     }
     count
   }

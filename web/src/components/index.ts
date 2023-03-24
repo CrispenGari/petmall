@@ -3,6 +3,8 @@ export { default as PetButtons } from "./PetButtons/PetButtons";
 export { default as Header } from "./Header/Header";
 export { default as Footer } from "./Footer/Footer";
 export { default as Pet } from "./Pet/Pet";
+export { default as Chat } from "./Chat/Chat";
+export { default as Message } from "./Message/Message";
 export { default as Comment } from "./Comment/Comment";
 export { default as NoPets } from "./NoPets/NoPets";
 export { default as Notification } from "./Notification/Notification";

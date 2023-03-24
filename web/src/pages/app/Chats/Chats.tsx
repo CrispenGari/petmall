@@ -5,6 +5,7 @@ import { Icon, Input } from "semantic-ui-react";
 import { Footer, Header } from "../../../components";
 import { useMyChatsQuery } from "../../../graphql/generated/graphql";
 import { StateType } from "../../../types";
+import { Chat } from "../../../components";
 import "./Chats.css";
 interface Props {}
 const Chats: React.FC<Props> = () => {
@@ -39,9 +40,15 @@ const Chats: React.FC<Props> = () => {
           />
         </div>
         <div className="chats__main__lists">
-          <div className="chats__main__empty">
-            <p>No new chats.</p>
-          </div>
+          {data?.chats.count === 0 ? (
+            <div className="chats__main__empty">
+              <p>No new chats.</p>
+            </div>
+          ) : (
+            data?.chats.chats.map((chat) => (
+              <Chat key={chat.id} chat={chat as any} />
+            ))
+          )}
         </div>
       </div>
       <Footer />

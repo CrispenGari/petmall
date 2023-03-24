@@ -21,14 +21,25 @@ const PetButtons: React.FC<Props> = ({ pet }) => {
 
   const navigate = useNavigate();
   const [message, setMessage] = React.useState<string>(
-    `Hey ${pet.seller?.email}, is this still available?`
+    `Hey ${pet.seller?.firstName}, is this still available?`
   );
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!!!message.trim()) return;
-    await newChat({ input: { message, userId: pet.seller?.id || "" } });
+    await newChat({
+      input: { message, userId: pet.seller?.id || "", petId: pet.id },
+    });
     setMessage("");
   };
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!data?.newChat.chatId) {
+      navigate(`/app/chat/${encodeId(data.newChat.chatId)}`);
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [data, navigate]);
 
   const markAsSoldHandler = async () => {
     await markAsSold({ input: { id: pet.id } });
@@ -37,7 +48,7 @@ const PetButtons: React.FC<Props> = ({ pet }) => {
   return (
     <div className="pet__buttons">
       {user?.id !== pet.seller?.id ? (
-        <Form loading={sending} onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit}>
           <TextArea
             placeholder="Write a message to the seller..."
             fluid
@@ -45,6 +56,7 @@ const PetButtons: React.FC<Props> = ({ pet }) => {
             onChange={(e) => setMessage(e.target.value)}
             value={message}
             name="message"
+            rows={1}
           />
           <Button
             color="green"

@@ -6,4 +6,12 @@ export class NewChatInputType {
   userId: string;
   @Field(() => String)
   message: string;
+  @Field(() => String)
+  petId: string;
+}
+
+@InputType()
+export class ChatMessagesInputType {
+  @Field(() => String)
+  id: string;
 }

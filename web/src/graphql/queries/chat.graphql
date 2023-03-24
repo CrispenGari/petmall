@@ -1,0 +1,7 @@
+query ChatMessages($input: ChatMessagesInputType!) {
+  chat(input: $input) {
+    chat {
+      ...ChatFragment
+    }
+  }
+}

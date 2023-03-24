@@ -1,0 +1,11 @@
+fragment MessageFragment on MessageType {
+  id
+  message
+  chatId
+  senderId
+  sender {
+    ...UserFragment
+  }
+  createdAt
+  updatedAt
+}

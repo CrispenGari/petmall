@@ -8,63 +8,69 @@ datasource db {
 }
 
 model User {
-  id       String @unique @default(uuid())
-  email    String @unique
+  id    String @unique @default(uuid())
+  email String @unique
 
-  firstName String
-  lastName String
-  verified Boolean @default(false)
+  firstName  String
+  lastName   String
+  verified   Boolean @default(false)
   isLoggedIn Boolean @default(false)
 
   emailVerified Boolean @default(false)
 
-  avatar String?
+  avatar   String?
   password String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
- // relations
-  pets     Pet[]
+  // relations
+  pets          Pet[]
   notifications Notification[]
-  comments Comment[]
-  reactions Reaction[]
-  chats ChatOnUser[]
-  messages Message[]
+  comments      Comment[]
+  reactions     Reaction[]
+  chats         ChatOnUser[]
+  messages      Message[]
 }
 
-model Notification{
-  id       String @unique @default(uuid())
+model Notification {
+  id           String  @unique @default(uuid())
   notification String
-  read Boolean @default(false)
-  petId String
-  title String
+  read         Boolean @default(false)
+  petId        String
+  title        String
 
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-model Chat{
-  id       String @unique @default(uuid())
-  chatId String
-  userIds    String[]
 
+model Chat {
+  id      String   @unique @default(uuid())
+  chatId  String
+  userIds String[]
+
+  chatTitle String
   messages Message[]
 
-  users  ChatOnUser[]
+  pet Pet @relation(fields: [petId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  petId String
+
+  users ChatOnUser[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+
 }
 
 model ChatOnUser {
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId     String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String
 
-  chat   Chat @relation(fields: [chatId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   chatId String
 
   createdAt DateTime @default(now())
@@ -72,15 +78,15 @@ model ChatOnUser {
 
   @@id([userId, chatId])
 }
-model Message{
-  id       String @unique @default(uuid())
-  message    String
 
+model Message {
+  id      String @unique @default(uuid())
+  message String
 
-  sender   User @relation(fields: [senderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  sender   User   @relation(fields: [senderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   senderId String
 
-  chat   Chat @relation(fields: [chatId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  chat   Chat   @relation(fields: [chatId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   chatId String
 
   createdAt DateTime @default(now())
@@ -101,6 +107,8 @@ model Pet {
 
   reactions Reaction[]
   comments  Comment[]
+chats      Chat[]
+
 
   seller   User   @relation(fields: [sellerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   sellerId String
@@ -110,10 +118,11 @@ model Pet {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
 }
 
 model Location {
-  id             String  @unique @default(uuid())
+  id  String @unique @default(uuid())
   lat Float
   lon Float
 
@@ -122,8 +131,6 @@ model Location {
 
   pet Pet?
 }
-
-
 
 model Comment {
   id      String @unique @default(uuid())
@@ -136,8 +143,8 @@ model Comment {
   reactions Reaction[]
   commentId String?
 
-  mainComment   Comment?   @relation("CommentsReplies", fields: [commentId], references: [id])
-  replies  Comment[]  @relation("CommentsReplies")
+  mainComment Comment?  @relation("CommentsReplies", fields: [commentId], references: [id])
+  replies     Comment[] @relation("CommentsReplies")
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
