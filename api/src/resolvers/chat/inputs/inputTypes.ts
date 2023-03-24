@@ -9,6 +9,11 @@ export class NewChatInputType {
   @Field(() => String)
   petId: string;
 }
+@InputType()
+export class NewChatMessageSubscriptionInput {
+  @Field(() => String)
+  userId: string;
+}
 
 @InputType()
 export class ChatMessagesInputType {

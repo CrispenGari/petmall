@@ -8,7 +8,7 @@ export class SendMessageObjectType {
 }
 
 @ObjectType()
-export class NewChatMessageType {
+export class NewMessageType {
   @Field(() => String, { nullable: false })
   userId: String;
 

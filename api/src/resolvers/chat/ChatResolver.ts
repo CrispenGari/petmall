@@ -1,10 +1,26 @@
-import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Ctx,
+  Mutation,
+  PubSub,
+  PubSubEngine,
+  Query,
+  Resolver,
+  Root,
+  Subscription,
+} from "type-graphql";
+import { Events } from "../../constants";
 import { CtxType } from "../../types";
 import { verifyJwt } from "../../utils";
-import { ChatMessagesInputType, NewChatInputType } from "./inputs/inputTypes";
+import {
+  ChatMessagesInputType,
+  NewChatInputType,
+  NewChatMessageSubscriptionInput,
+} from "./inputs/inputTypes";
 import {
   ChatMessagesObjectType,
   ChatsObjectType,
+  NewChatMessageType,
   NewChatObjectType,
 } from "./objects/objectTypes";
 
@@ -14,7 +30,8 @@ export class ChatResolver {
   async newChat(
     @Arg("input", () => NewChatInputType)
     { userId, message, petId }: NewChatInputType,
-    @Ctx() { prisma, request }: CtxType
+    @Ctx() { prisma, request }: CtxType,
+    @PubSub() pubsub: PubSubEngine
   ): Promise<NewChatObjectType> {
     const jwt = request.headers.authorization?.split(" ")[1];
 
@@ -65,7 +82,8 @@ export class ChatResolver {
           chat: { connect: { id: _chat.id } },
         },
       });
-
+      await pubsub.publish(Events.NEW_CHAT_MESSAGE, { userId: me.id });
+      await pubsub.publish(Events.NEW_CHAT_MESSAGE, { userId: friend.id });
       return {
         success: true,
         chatId: _chat.id,
@@ -119,12 +137,14 @@ export class ChatResolver {
       return {
         count: 0,
         chats: [],
+        unopened: 0,
       };
     const payload = await verifyJwt(jwt);
     if (!!!payload) {
       return {
         count: 0,
         chats: [],
+        unopened: 0,
       };
     }
 
@@ -135,6 +155,7 @@ export class ChatResolver {
       return {
         count: 0,
         chats: [],
+        unopened: 0,
       };
     }
     const chats = await prisma.chat.findMany({
@@ -165,9 +186,27 @@ export class ChatResolver {
         },
       },
     });
+
     return {
       count: chats.length,
       chats: chats,
+      unopened: 0,
+    };
+  }
+  @Subscription(() => NewChatMessageType, {
+    topics: [Events.NEW_CHAT_MESSAGE, Events.READ_CHAT_MESSAGE],
+    nullable: false,
+  })
+  async newChatMessage(
+    @Arg("input", () => NewChatMessageSubscriptionInput)
+    { userId: uid }: NewChatMessageSubscriptionInput,
+    @Root()
+    { userId }: { userId: string }
+  ): Promise<NewChatMessageType | undefined> {
+    // the notification does not belong to you
+    if (userId !== uid) return undefined;
+    return {
+      userId,
     };
   }
 }

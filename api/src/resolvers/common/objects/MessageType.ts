@@ -12,6 +12,8 @@ export class MessageType {
   chatId: string;
   @Field(() => String)
   senderId: string;
+  @Field(() => Boolean)
+  opened: boolean;
 
   @Field(() => UserType, { nullable: true })
   sender?: UserType;

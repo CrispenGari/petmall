@@ -14,13 +14,10 @@ import { Events } from "../../constants";
 import { CtxType } from "../../types";
 import { verifyJwt } from "../../utils";
 import {
-  NewChatMessageSubscriptionInput,
+  NewMessageSubscriptionInput,
   SendMessageInputType,
 } from "./inputs/inputTypes";
-import {
-  NewChatMessageType,
-  SendMessageObjectType,
-} from "./objects/objectTypes";
+import { NewMessageType, SendMessageObjectType } from "./objects/objectTypes";
 
 @Resolver()
 export class MessageResolver {
@@ -55,6 +52,7 @@ export class MessageResolver {
     if (!!!chat) {
       return { success: false };
     }
+    const friendId: string = chat.userIds.find((id) => id !== me.id) || "";
 
     const msg = await prisma.message.create({
       data: {
@@ -63,22 +61,23 @@ export class MessageResolver {
         sender: { connect: { id: me.id } },
       },
     });
-
+    await pubsub.publish(Events.NEW_CHAT_MESSAGE, { userId: msg.senderId });
+    await pubsub.publish(Events.NEW_CHAT_MESSAGE, { userId: friendId });
     return {
       success: true,
     };
   }
 
-  @Subscription(() => NewChatMessageType, {
+  @Subscription(() => NewMessageType, {
     topics: [Events.NEW_CHAT_MESSAGE, Events.READ_CHAT_MESSAGE],
     nullable: false,
   })
-  async newChatMessage(
-    @Arg("input", () => NewChatMessageSubscriptionInput)
-    { userId: uid }: NewChatMessageSubscriptionInput,
+  async newMessage(
+    @Arg("input", () => NewMessageSubscriptionInput)
+    { userId: uid }: NewMessageSubscriptionInput,
     @Root()
     { userId, message }: { userId: string; message: Message }
-  ): Promise<NewChatMessageType | undefined> {
+  ): Promise<NewMessageType | undefined> {
     // the notification does not belong to you
     if (userId !== uid) return undefined;
     return {

@@ -82,6 +82,7 @@ model ChatOnUser {
 model Message {
   id      String @unique @default(uuid())
   message String
+  opened Boolean @default(false)
 
   sender   User   @relation(fields: [senderId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   senderId String

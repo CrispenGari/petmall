@@ -11,7 +11,7 @@ export class SendMessageInputType {
 
 
 @InputType()
-export class NewChatMessageSubscriptionInput {
+export class NewMessageSubscriptionInput {
   @Field(() => String, { nullable: false })
   userId: String;
 }

@@ -11,9 +11,8 @@ export class NewChatObjectType {
   @Field(() => Boolean)
   success: boolean;
 
-  @Field(() => String, {nullable: true})
+  @Field(() => String, { nullable: true })
   chatId?: string;
-
 }
 @ObjectType()
 export class ChatsObjectType {
@@ -22,4 +21,13 @@ export class ChatsObjectType {
 
   @Field(() => Int)
   count: number;
+
+  @Field(() => Int)
+  unopened: number;
+}
+
+@ObjectType()
+export class NewChatMessageType {
+  @Field(() => String, { nullable: false })
+  userId: String;
 }
