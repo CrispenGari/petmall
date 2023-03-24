@@ -1,8 +1,13 @@
-import { ObjectType, Field, Int } from "type-graphql";
+import { ObjectType, Field } from "type-graphql";
 import { MessageType } from "../../common/objects/MessageType";
 
 @ObjectType()
 export class SendMessageObjectType {
+  @Field(() => Boolean)
+  success: boolean;
+}
+@ObjectType()
+export class MarkMessagesAsReadObjectType {
   @Field(() => Boolean)
   success: boolean;
 }

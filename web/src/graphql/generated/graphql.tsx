@@ -126,6 +126,15 @@ export type MarkAsSoldInput = {
   id: Scalars['String'];
 };
 
+export type MarkMessagesAsReadInputType = {
+  chatId: Scalars['String'];
+};
+
+export type MarkMessagesAsReadObjectType = {
+  __typename?: 'MarkMessagesAsReadObjectType';
+  success: Scalars['Boolean'];
+};
+
 export type MarkNotificationAsReadInputType = {
   id: Scalars['String'];
 };
@@ -156,6 +165,7 @@ export type Mutation = {
   login: LoginObjectType;
   logout: Scalars['Boolean'];
   markAsSold: PetObjectType;
+  markMessagesAsRead: MarkMessagesAsReadObjectType;
   markNotificationAsRead: MarkNotificationAsReadObjectType;
   newChat: NewChatObjectType;
   reactToComment: PetObjectType;
@@ -201,6 +211,11 @@ export type MutationLoginArgs = {
 
 export type MutationMarkAsSoldArgs = {
   input: MarkAsSoldInput;
+};
+
+
+export type MutationMarkMessagesAsReadArgs = {
+  input: MarkMessagesAsReadInputType;
 };
 
 
@@ -640,6 +655,13 @@ export type MarkAsSoldMutationVariables = Exact<{
 
 
 export type MarkAsSoldMutation = { __typename?: 'Mutation', markAsSold: { __typename?: 'PetObjectType', success: boolean } };
+
+export type MarkMessagesAsReadMutationVariables = Exact<{
+  input: MarkMessagesAsReadInputType;
+}>;
+
+
+export type MarkMessagesAsReadMutation = { __typename?: 'Mutation', markMessagesAsRead: { __typename?: 'MarkMessagesAsReadObjectType', success: boolean } };
 
 export type MarkNotificationAsReadMutationVariables = Exact<{
   input: MarkNotificationAsReadInputType;
@@ -1119,6 +1141,17 @@ export const MarkAsSoldDocument = gql`
 
 export function useMarkAsSoldMutation() {
   return Urql.useMutation<MarkAsSoldMutation, MarkAsSoldMutationVariables>(MarkAsSoldDocument);
+};
+export const MarkMessagesAsReadDocument = gql`
+    mutation MarkMessagesAsRead($input: MarkMessagesAsReadInputType!) {
+  markMessagesAsRead(input: $input) {
+    success
+  }
+}
+    `;
+
+export function useMarkMessagesAsReadMutation() {
+  return Urql.useMutation<MarkMessagesAsReadMutation, MarkMessagesAsReadMutationVariables>(MarkMessagesAsReadDocument);
 };
 export const MarkNotificationAsReadDocument = gql`
     mutation MarkNotificationAsRead($input: MarkNotificationAsReadInputType!) {

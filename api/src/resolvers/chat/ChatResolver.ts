@@ -56,9 +56,11 @@ export class ChatResolver {
         success: false,
       };
     }
-    const chatId: string = [me.id, friend.id]
-      .sort((a, b) => a.localeCompare(b))
-      .join("@");
+    const chatId: string = [
+      pet.id,
+      [me.id, friend.id].sort((a, b) => a.localeCompare(b)).join("@"),
+    ].join(":");
+    // chatId = petId:user1Id@user2Id
     const chatTitle = `${pet.name} • ${me.firstName} & ${friend.firstName}`;
     const chat = await prisma.chat.findFirst({
       where: {
@@ -97,6 +99,8 @@ export class ChatResolver {
         },
       });
     }
+    await pubsub.publish(Events.NEW_CHAT_MESSAGE, { userId: me.id });
+    await pubsub.publish(Events.NEW_CHAT_MESSAGE, { userId: friend.id });
 
     return {
       success: true,
@@ -114,6 +118,7 @@ export class ChatResolver {
       include: {
         messages: {
           include: { sender: true },
+          orderBy: { createdAt: "asc" },
         },
         pet: {
           include: {
@@ -173,7 +178,8 @@ export class ChatResolver {
           include: {
             sender: true,
           },
-          orderBy: { createdAt: "asc" },
+          orderBy: { createdAt: "desc" },
+          take: 1,
         },
         pet: {
           include: {
@@ -187,10 +193,15 @@ export class ChatResolver {
       },
     });
 
+    const unopened: number = chats
+      .flatMap((chat) => chat.messages)
+      .filter(
+        (message) => !message.opened && message.senderId !== me.id
+      ).length;
     return {
       count: chats.length,
       chats: chats,
-      unopened: 0,
+      unopened,
     };
   }
   @Subscription(() => NewChatMessageType, {

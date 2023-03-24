@@ -9,6 +9,11 @@ export class SendMessageInputType {
   chatId: string;
 }
 
+@InputType()
+export class MarkMessagesAsReadInputType {
+  @Field(() => String)
+  chatId: string;
+}
 
 @InputType()
 export class NewMessageSubscriptionInput {

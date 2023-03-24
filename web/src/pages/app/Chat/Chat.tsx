@@ -1,10 +1,12 @@
-import React from "react";
+import React, { RefObject } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Form, TextArea } from "semantic-ui-react";
+import { Button, Form, Modal, TextArea } from "semantic-ui-react";
 import { Footer, Header, Message } from "../../../components";
+import { BoxIndicator } from "@crispengari/react-activity-indicators";
 import {
   useChatMessagesQuery,
+  useMarkMessagesAsReadMutation,
   useNewChatMessageSubscription,
   useSendMessageMutation,
 } from "../../../graphql/generated/graphql";
@@ -12,10 +14,12 @@ import { StateType } from "../../../types";
 import { decodeId } from "../../../utils";
 import CountUp from "react-countup";
 import "./Chat.css";
+import { COLORS } from "../../../constants";
 interface Props {}
 const Chat: React.FC<Props> = () => {
   const { user: me } = useSelector((state: StateType) => state);
   const [{ fetching: sending }, sendMessage] = useSendMessageMutation();
+  const [{ fetching: reading }, readMessages] = useMarkMessagesAsReadMutation();
   const params = useParams<Readonly<{ chatId: string }>>();
   const [{ data: chatMessage }] = useNewChatMessageSubscription({
     variables: {
@@ -25,6 +29,9 @@ const Chat: React.FC<Props> = () => {
     },
   });
   const chatId = decodeId(params.chatId || "");
+  const navigator = useNavigate();
+
+  const scrollRef = React.useRef<RefObject<HTMLDivElement>>();
   const [{ data: chat }, refetchChatMessages] = useChatMessagesQuery({
     variables: { input: { id: chatId } },
   });
@@ -36,7 +43,7 @@ const Chat: React.FC<Props> = () => {
     await sendMessage({ input: { message, chatId } });
     setMessage("");
   };
-  const navigator = useNavigate();
+
   React.useEffect(() => {
     let mounted: boolean = true;
     if (mounted && !!!me?.emailVerified && !!!me?.isLoggedIn) {
@@ -49,9 +56,28 @@ const Chat: React.FC<Props> = () => {
 
   React.useEffect(() => {
     let mounted: boolean = true;
+    if (mounted && !!chatId) {
+      (async () => {
+        await readMessages({ input: { chatId } });
+      })();
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [chatId, readMessages]);
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
     if (mounted && !!chatMessage?.newChatMessage.userId) {
       (async () => {
         await refetchChatMessages();
+        if (scrollRef.current?.current) {
+          scrollRef.current.current.scrollIntoView({
+            behavior: "smooth",
+            block: "end",
+            inline: "nearest",
+          });
+        }
       })();
     }
     return () => {
@@ -64,6 +90,7 @@ const Chat: React.FC<Props> = () => {
       <div
         className="chat__page__main"
         style={{ backgroundImage: `url(${chat?.chat.chat?.pet?.image})` }}
+        ref={scrollRef as any}
       >
         <div className="chat__page__main__header">
           <img
@@ -96,6 +123,18 @@ const Chat: React.FC<Props> = () => {
           </div>
         </div>
         <div className="chat__page__main__lists">
+          {reading && <BoxIndicator size="small" color="#082032" />}
+          <p>
+            Your messages with are end-to-end encrypted.{" "}
+            <Modal
+              trigger={
+                <span style={{ color: COLORS.tertiary }}>Learn more.</span>
+              }
+              header="End-to-End Encrypted"
+              content="This means that your messages with your customer or your seller will be private between the two of you. Not anyone will have access to your messages outside this private chat even the PetMall team can to be able to see your messages."
+              actions={[{ key: "done", content: "OK", positive: false }]}
+            />
+          </p>
           {chat?.chat.chat?.messages?.map((message) => (
             <Message message={message} key={message.id} />
           ))}

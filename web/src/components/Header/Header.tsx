@@ -10,7 +10,7 @@ interface Props {
   globalProps: GlobalPropsType;
 }
 const Header: React.FC<Props> = ({ globalProps: { navigate, user } }) => {
-  const { notifications } = useSelector((state: StateType) => state);
+  const { notifications, chats } = useSelector((state: StateType) => state);
   return (
     <div className="app__header">
       <div className="app__header__left">
@@ -44,6 +44,7 @@ const Header: React.FC<Props> = ({ globalProps: { navigate, user } }) => {
           <HeaderButton
             iconName="wechat"
             title="messages"
+            notification={!!chats.unopened}
             onClick={() => {
               navigate(`/app/chats/${encodeId(user.id)}`);
             }}

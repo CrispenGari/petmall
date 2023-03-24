@@ -6,6 +6,10 @@
   margin-bottom: 3px;
   min-width: 200px;
 }
+
+.message:last-of-type {
+  margin-bottom: 10%;
+}
 .message > img {
   width: 20px;
   aspect-ratio: 1;

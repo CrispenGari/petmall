@@ -7,6 +7,7 @@
   background-color: var(--primary);
   position: relative;
   border-radius: 5px;
+  margin-bottom: 2px;
   padding: 5px;
 }
 .chat p {
