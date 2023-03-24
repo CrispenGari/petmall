@@ -33,8 +33,8 @@ const Message: React.FC<Props> = ({ message }) => {
       <div
         className="message__main"
         style={{
-          background:
-            me?.id === message.senderId ? COLORS.primary : COLORS.secondary,
+          backgroundColor:
+            me?.id === message.senderId ? COLORS.main : COLORS.secondary,
         }}
       >
         <p>{message.message}</p>

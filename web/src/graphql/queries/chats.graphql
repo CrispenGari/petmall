@@ -4,5 +4,6 @@ query MyChats {
       ...ChatFragment
     }
     count
+    unopened
   }
 }

@@ -1,5 +1,9 @@
 import { constants } from "../constants";
-import { NotificationObjectType, UserType } from "../graphql/generated/graphql";
+import {
+  ChatsObjectType,
+  NotificationObjectType,
+  UserType,
+} from "../graphql/generated/graphql";
 export const setUser = (payload: UserType | null) => {
   return {
     type: constants.SET_USER,
@@ -15,6 +19,13 @@ export const setLocationAction = (payload: any | null) => {
 export const setNotifications = (payload: NotificationObjectType) => {
   return {
     type: constants.SET_NOTIFICATIONS,
+    payload,
+  };
+};
+
+export const setChats = (payload: ChatsObjectType) => {
+  return {
+    type: constants.SET_CHATS,
     payload,
   };
 };

@@ -5,6 +5,7 @@ import { Button, Form, TextArea } from "semantic-ui-react";
 import { Footer, Header, Message } from "../../../components";
 import {
   useChatMessagesQuery,
+  useNewChatMessageSubscription,
   useSendMessageMutation,
 } from "../../../graphql/generated/graphql";
 import { StateType } from "../../../types";
@@ -14,16 +15,20 @@ import "./Chat.css";
 interface Props {}
 const Chat: React.FC<Props> = () => {
   const { user: me } = useSelector((state: StateType) => state);
-  const [{ fetching: sending, data }, sendMessage] = useSendMessageMutation();
+  const [{ fetching: sending }, sendMessage] = useSendMessageMutation();
   const params = useParams<Readonly<{ chatId: string }>>();
-
+  const [{ data: chatMessage }] = useNewChatMessageSubscription({
+    variables: {
+      input: {
+        userId: me?.id || "",
+      },
+    },
+  });
   const chatId = decodeId(params.chatId || "");
-  const [{ data: chat }] = useChatMessagesQuery({
+  const [{ data: chat }, refetchChatMessages] = useChatMessagesQuery({
     variables: { input: { id: chatId } },
   });
   const [message, setMessage] = React.useState<string>(``);
-
-  console.log({ data });
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -41,6 +46,18 @@ const Chat: React.FC<Props> = () => {
       mounted = false;
     };
   }, [navigator, me]);
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!chatMessage?.newChatMessage.userId) {
+      (async () => {
+        await refetchChatMessages();
+      })();
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [refetchChatMessages, chatMessage]);
   return (
     <div className="chat__page">
       <Header />

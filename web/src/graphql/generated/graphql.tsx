@@ -54,6 +54,7 @@ export type ChatsObjectType = {
   __typename?: 'ChatsObjectType';
   chats: Array<ChatType>;
   count: Scalars['Int'];
+  unopened: Scalars['Int'];
 };
 
 export type CommentToPetInput = {
@@ -140,6 +141,7 @@ export type MessageType = {
   createdAt: Scalars['String'];
   id: Scalars['String'];
   message: Scalars['String'];
+  opened: Scalars['Boolean'];
   sender?: Maybe<UserType>;
   senderId: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -283,7 +285,6 @@ export type NewChatMessageSubscriptionInput = {
 
 export type NewChatMessageType = {
   __typename?: 'NewChatMessageType';
-  message?: Maybe<MessageType>;
   userId: Scalars['String'];
 };
 
@@ -291,6 +292,16 @@ export type NewChatObjectType = {
   __typename?: 'NewChatObjectType';
   chatId?: Maybe<Scalars['String']>;
   success: Scalars['Boolean'];
+};
+
+export type NewMessageSubscriptionInput = {
+  userId: Scalars['String'];
+};
+
+export type NewMessageType = {
+  __typename?: 'NewMessageType';
+  message?: Maybe<MessageType>;
+  userId: Scalars['String'];
 };
 
 export type NewNotificationSubscriptionInput = {
@@ -478,6 +489,7 @@ export type SendMessageObjectType = {
 export type Subscription = {
   __typename?: 'Subscription';
   newChatMessage: NewChatMessageType;
+  newMessage: NewMessageType;
   newNotification: NewNotificationType;
   notify: Scalars['String'];
   onUserStateChange?: Maybe<Scalars['Boolean']>;
@@ -487,6 +499,11 @@ export type Subscription = {
 
 export type SubscriptionNewChatMessageArgs = {
   input: NewChatMessageSubscriptionInput;
+};
+
+
+export type SubscriptionNewMessageArgs = {
+  input: NewMessageSubscriptionInput;
 };
 
 
@@ -557,7 +574,7 @@ export type VerifyEmailObjectType = {
   me?: Maybe<UserType>;
 };
 
-export type ChatFragmentFragment = { __typename?: 'ChatType', id: string, userIds: Array<string>, chatId: string, chatTitle: string, createdAt: string, updatedAt: string, pet?: { __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, replies?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null } | null, messages?: Array<{ __typename?: 'MessageType', id: string, message: string, chatId: string, senderId: string, createdAt: string, updatedAt: string, sender?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null };
+export type ChatFragmentFragment = { __typename?: 'ChatType', id: string, userIds: Array<string>, chatId: string, chatTitle: string, createdAt: string, updatedAt: string, pet?: { __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, replies?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null } | null, messages?: Array<{ __typename?: 'MessageType', id: string, message: string, chatId: string, senderId: string, opened: boolean, createdAt: string, updatedAt: string, sender?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null };
 
 export type CommentFragmentFragment = { __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, replies?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null };
 
@@ -565,7 +582,7 @@ export type ErrorFragmentFragment = { __typename?: 'ErrorType', field: string, m
 
 export type LocationFragmentFragment = { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null };
 
-export type MessageFragmentFragment = { __typename?: 'MessageType', id: string, message: string, chatId: string, senderId: string, createdAt: string, updatedAt: string, sender?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null };
+export type MessageFragmentFragment = { __typename?: 'MessageType', id: string, message: string, chatId: string, senderId: string, opened: boolean, createdAt: string, updatedAt: string, sender?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null };
 
 export type NewNotificationFragmentFragment = { __typename?: 'NotificationType', id: string, notification: string, userId: string, read: boolean, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null };
 
@@ -725,12 +742,12 @@ export type ChatMessagesQueryVariables = Exact<{
 }>;
 
 
-export type ChatMessagesQuery = { __typename?: 'Query', chat: { __typename?: 'ChatMessagesObjectType', chat?: { __typename?: 'ChatType', id: string, userIds: Array<string>, chatId: string, chatTitle: string, createdAt: string, updatedAt: string, pet?: { __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, replies?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null } | null, messages?: Array<{ __typename?: 'MessageType', id: string, message: string, chatId: string, senderId: string, createdAt: string, updatedAt: string, sender?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null } | null } };
+export type ChatMessagesQuery = { __typename?: 'Query', chat: { __typename?: 'ChatMessagesObjectType', chat?: { __typename?: 'ChatType', id: string, userIds: Array<string>, chatId: string, chatTitle: string, createdAt: string, updatedAt: string, pet?: { __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, replies?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null } | null, messages?: Array<{ __typename?: 'MessageType', id: string, message: string, chatId: string, senderId: string, opened: boolean, createdAt: string, updatedAt: string, sender?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null } | null } };
 
 export type MyChatsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MyChatsQuery = { __typename?: 'Query', chats: { __typename?: 'ChatsObjectType', count: number, chats: Array<{ __typename?: 'ChatType', id: string, userIds: Array<string>, chatId: string, chatTitle: string, createdAt: string, updatedAt: string, pet?: { __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, replies?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null } | null, messages?: Array<{ __typename?: 'MessageType', id: string, message: string, chatId: string, senderId: string, createdAt: string, updatedAt: string, sender?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null }> } };
+export type MyChatsQuery = { __typename?: 'Query', chats: { __typename?: 'ChatsObjectType', count: number, unopened: number, chats: Array<{ __typename?: 'ChatType', id: string, userIds: Array<string>, chatId: string, chatTitle: string, createdAt: string, updatedAt: string, pet?: { __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, replies?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null } | null, messages?: Array<{ __typename?: 'MessageType', id: string, message: string, chatId: string, senderId: string, opened: boolean, createdAt: string, updatedAt: string, sender?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null }> } };
 
 export type GetPetByIdQueryVariables = Exact<{
   input: GetPetByIdInput;
@@ -769,6 +786,13 @@ export type GetUserQueryVariables = Exact<{
 
 
 export type GetUserQuery = { __typename?: 'Query', user: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null, pets?: Array<{ __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, replies?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null }> | null } };
+
+export type NewChatMessageSubscriptionVariables = Exact<{
+  input: NewChatMessageSubscriptionInput;
+}>;
+
+
+export type NewChatMessageSubscription = { __typename?: 'Subscription', newChatMessage: { __typename?: 'NewChatMessageType', userId: string } };
 
 export type NewNotificationSubscriptionVariables = Exact<{
   input: NewNotificationSubscriptionInput;
@@ -954,6 +978,7 @@ export const MessageFragmentFragmentDoc = gql`
   message
   chatId
   senderId
+  opened
   sender {
     ...UserFragment
   }
@@ -1299,6 +1324,7 @@ export const MyChatsDocument = gql`
       ...ChatFragment
     }
     count
+    unopened
   }
 }
     ${ChatFragmentFragmentDoc}`;
@@ -1390,6 +1416,17 @@ export const GetUserDocument = gql`
 
 export function useGetUserQuery(options: Omit<Urql.UseQueryArgs<GetUserQueryVariables>, 'query'>) {
   return Urql.useQuery<GetUserQuery, GetUserQueryVariables>({ query: GetUserDocument, ...options });
+};
+export const NewChatMessageDocument = gql`
+    subscription NewChatMessage($input: NewChatMessageSubscriptionInput!) {
+  newChatMessage(input: $input) {
+    userId
+  }
+}
+    `;
+
+export function useNewChatMessageSubscription<TData = NewChatMessageSubscription>(options: Omit<Urql.UseSubscriptionArgs<NewChatMessageSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<NewChatMessageSubscription, TData>) {
+  return Urql.useSubscription<NewChatMessageSubscription, TData, NewChatMessageSubscriptionVariables>({ query: NewChatMessageDocument, ...options }, handler);
 };
 export const NewNotificationDocument = gql`
     subscription NewNotification($input: NewNotificationSubscriptionInput!) {

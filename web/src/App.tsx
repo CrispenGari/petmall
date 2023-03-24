@@ -1,8 +1,10 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setNotifications, setUser } from "./actions";
+import { setChats, setNotifications, setUser } from "./actions";
 import {
   useMeQuery,
+  useMyChatsQuery,
+  useNewChatMessageSubscription,
   useNewNotificationSubscription,
   useNotificationsQuery,
   useOnUserStateChangeSubscription,
@@ -21,6 +23,15 @@ const App: React.FC<Props> = () => {
       },
     },
   });
+  const [{ data: chatMessage }] = useNewChatMessageSubscription({
+    variables: {
+      input: {
+        userId: me?.id || "",
+      },
+    },
+  });
+  const [{ data: chats }, refetchChats] = useMyChatsQuery({});
+
   const [{ data: notifications }, refetchNotifications] =
     useNotificationsQuery();
   React.useEffect(() => {
@@ -44,6 +55,16 @@ const App: React.FC<Props> = () => {
       mounted = false;
     };
   }, [dispatch, notifications]);
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!chats?.chats) {
+      dispatch(setChats(chats.chats as any));
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [dispatch, chats]);
   const [{ data: newUser }, refetchUser] = useMeQuery();
   const [{ data }] = useOnUserStateChangeSubscription({
     variables: { userId: me?.id || "" },
@@ -60,6 +81,18 @@ const App: React.FC<Props> = () => {
       mounted = false;
     };
   }, [refetchUser, data]);
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!chatMessage?.newChatMessage.userId) {
+      (async () => {
+        await refetchChats();
+      })();
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [chatMessage, refetchChats]);
   React.useEffect(() => {
     let mounted: boolean = true;
     if (mounted && !!newUser?.me) {

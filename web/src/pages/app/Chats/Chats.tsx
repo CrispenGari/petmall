@@ -3,17 +3,13 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Icon, Input } from "semantic-ui-react";
 import { Footer, Header } from "../../../components";
-import { useMyChatsQuery } from "../../../graphql/generated/graphql";
 import { StateType } from "../../../types";
 import { Chat } from "../../../components";
 import "./Chats.css";
 interface Props {}
 const Chats: React.FC<Props> = () => {
   const [filter, setFilter] = React.useState<string>("");
-  const [{ data }] = useMyChatsQuery();
-
-  console.log({ data });
-  const { user } = useSelector((state: StateType) => state);
+  const { user, chats } = useSelector((state: StateType) => state);
   const navigator = useNavigate();
   React.useEffect(() => {
     let mounted: boolean = true;
@@ -40,14 +36,12 @@ const Chats: React.FC<Props> = () => {
           />
         </div>
         <div className="chats__main__lists">
-          {data?.chats.count === 0 ? (
+          {chats.count === 0 ? (
             <div className="chats__main__empty">
               <p>No new chats.</p>
             </div>
           ) : (
-            data?.chats.chats.map((chat) => (
-              <Chat key={chat.id} chat={chat as any} />
-            ))
+            chats.chats.map((chat) => <Chat key={chat.id} chat={chat as any} />)
           )}
         </div>
       </div>

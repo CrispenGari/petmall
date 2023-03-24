@@ -20,7 +20,11 @@ interface Props {
 }
 const Chat: React.FC<Props> = ({ chat }) => {
   const { user: me } = useSelector((state: StateType) => state);
-  const lastMessage = chat.messages ? chat.messages[0] : undefined;
+  const lastMessage = chat.messages
+    ? chat.messages[chat.messages.length - 1]
+    : undefined;
+
+  console.log({ lastMessage });
   const navigate = useNavigate();
   return (
     <div
@@ -39,7 +43,10 @@ const Chat: React.FC<Props> = ({ chat }) => {
             ? lastMessage.message
             : "no messages in this chat yet"}{" "}
         </p>
-        <div className="chat__main__dot"></div>
+        {lastMessage?.senderId ===
+        me?.id ? null : lastMessage?.opened ? null : (
+          <div className="chat__main__dot"></div>
+        )}
         <div className="chat__main__info">
           <p>
             {dayjs(new Date(Number(lastMessage?.createdAt ?? ""))).fromNow()}{" "}

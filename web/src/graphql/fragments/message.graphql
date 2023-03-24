@@ -3,6 +3,7 @@ fragment MessageFragment on MessageType {
   message
   chatId
   senderId
+  opened
   sender {
     ...UserFragment
   }

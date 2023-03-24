@@ -1,13 +1,18 @@
 import { Dispatch } from "react";
 import { NavigateFunction, Params } from "react-router-dom";
 import { AnyAction } from "redux";
-import { NotificationObjectType, UserType } from "../graphql/generated/graphql";
+import {
+  ChatsObjectType,
+  NotificationObjectType,
+  UserType,
+} from "../graphql/generated/graphql";
 
 export interface StateType {
   user: UserType | null;
   location: any | null;
   notifications: NotificationObjectType;
   reloadCount: number;
+  chats: ChatsObjectType;
 }
 
 export interface ActionType<T> {
