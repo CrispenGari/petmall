@@ -1,0 +1,52 @@
+.profile__change__email {
+  display: flex;
+  margin: 10px auto;
+  background-color: var(--main);
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  flex-direction: column;
+  user-select: none;
+  user-zoom: none;
+  max-width: 1000px;
+  margin: 10px auto;
+}
+
+.profile__change__email > form > button {
+  width: 200px;
+  transition: all 1s;
+  background-color: var(--secondary) !important;
+}
+.profile__change__email > h1 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  color: white;
+  margin-bottom: 5px !important;
+}
+.profile__change__email > p {
+  color: white !important;
+  margin-bottom: 10px !important;
+}
+
+.profile__change__email__inputs {
+  display: flex;
+  width: 100%;
+  margin: 10px 0;
+}
+.profile__change__email__input {
+  flex: 1;
+}
+
+.profile__change__email__input:last-of-type {
+  margin-left: 10px !important;
+}
+
+@media only screen and (max-width: 768px) {
+  .profile__change__email__input:last-of-type {
+    margin: unset !important;
+    margin-top: 5px !important;
+  }
+  .profile__change__email__inputs {
+    flex-direction: column;
+  }
+}

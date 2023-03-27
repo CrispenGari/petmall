@@ -13,7 +13,7 @@
   flex-direction: column;
   user-select: none;
   user-zoom: none;
-  transition: transform 100ms ease-out;
+  transition: all 1s ease-out;
 }
 .no__pets > h1 {
   color: white;

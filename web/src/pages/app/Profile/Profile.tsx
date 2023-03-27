@@ -5,8 +5,12 @@ import {
   Footer,
   Header,
   ProfileCard,
+  ProfileChangeEmail,
+  ProfileChangePassword,
+  ProfileDeleteAccount,
   ProfileLogoutButton,
   ProfilePetsFlatList,
+  ProfileResetPassword,
 } from "../../../components";
 import { StateType } from "../../../types";
 import { decodeId } from "../../../utils";
@@ -45,7 +49,16 @@ const Profile: React.FC<Props> = () => {
         subtitle={`Pet in the market.`}
         setCategory={setCategory}
       />
-      <ProfileLogoutButton />
+      {user?.id === userId && (
+        <>
+          <ProfileLogoutButton />
+          <ProfileDeleteAccount />
+          <ProfileChangePassword />
+          <ProfileChangeEmail />
+          <ProfileResetPassword />
+        </>
+      )}
+
       <Footer />
     </div>
   );

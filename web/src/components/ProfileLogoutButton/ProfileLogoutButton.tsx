@@ -27,7 +27,7 @@ const ProfileLogoutButton: React.FC<Props> = () => {
           }
         }}
       >
-        LOGOUT
+        Logout
       </Button>
     </div>
   );
