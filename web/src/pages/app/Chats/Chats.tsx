@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Icon, Input } from "semantic-ui-react";
@@ -20,6 +20,25 @@ const Chats: React.FC<Props> = () => {
       mounted = false;
     };
   }, [navigator, user]);
+  const [_chats, set_Chats] = useState(chats.chats);
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted) {
+      if (!!filter) {
+        set_Chats(
+          chats.chats.filter((chat) =>
+            chat.chatTitle.toLowerCase().includes(filter.trim().toLowerCase())
+          )
+        );
+      } else {
+        set_Chats(chats.chats.filter(Boolean));
+      }
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [filter, chats]);
   return (
     <div className="chats">
       <Header />
@@ -40,8 +59,12 @@ const Chats: React.FC<Props> = () => {
             <div className="chats__main__empty">
               <p>No new chats.</p>
             </div>
+          ) : _chats.length === 0 ? (
+            <div className="chats__main__empty">
+              <p>No chats that matches "{filter.trim()}"</p>
+            </div>
           ) : (
-            chats.chats.map((chat) => <Chat key={chat.id} chat={chat as any} />)
+            _chats.map((chat) => <Chat key={chat.id} chat={chat as any} />)
           )}
         </div>
       </div>

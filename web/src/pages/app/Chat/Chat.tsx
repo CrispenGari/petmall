@@ -1,4 +1,4 @@
-import React, { RefObject } from "react";
+import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button, Form, Modal, TextArea } from "semantic-ui-react";
@@ -10,8 +10,10 @@ import {
   useNewChatMessageSubscription,
   useSendMessageMutation,
 } from "../../../graphql/generated/graphql";
+import axios from "axios";
+import { BiCurrentLocation } from "react-icons/bi";
 import { StateType } from "../../../types";
-import { decodeId } from "../../../utils";
+import { decodeId, encodeId } from "../../../utils";
 import CountUp from "react-countup";
 import "./Chat.css";
 import { COLORS } from "../../../constants";
@@ -31,7 +33,7 @@ const Chat: React.FC<Props> = () => {
   const chatId = decodeId(params.chatId || "");
   const navigator = useNavigate();
 
-  const scrollRef = React.useRef<RefObject<HTMLDivElement>>();
+  const scrollRef = React.useRef<HTMLDivElement | undefined>();
   const [{ data: chat }, refetchChatMessages] = useChatMessagesQuery({
     variables: { input: { id: chatId } },
   });
@@ -71,11 +73,10 @@ const Chat: React.FC<Props> = () => {
     if (mounted && !!chatMessage?.newChatMessage.userId) {
       (async () => {
         await refetchChatMessages();
-        if (scrollRef.current?.current) {
-          scrollRef.current.current.scrollIntoView({
+        if (scrollRef?.current) {
+          scrollRef.current.scrollTo({
+            top: scrollRef.current.scrollHeight,
             behavior: "smooth",
-            block: "end",
-            inline: "nearest",
           });
         }
       })();
@@ -84,6 +85,36 @@ const Chat: React.FC<Props> = () => {
       mounted = false;
     };
   }, [refetchChatMessages, chatMessage]);
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!scrollRef?.current) {
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const sendCurrentAddress = () => {
+    window.navigator.geolocation.getCurrentPosition(
+      async ({ coords: { latitude, longitude } }) => {
+        console.log({ latitude, longitude });
+        // const geocoder = new Geocoder()
+        const data = await axios.get(
+          `http://www.geoplugin.net/extras/location.gp?lat=-32.972404&long=27.908321&format=json`
+        );
+        console.log(data);
+      },
+      (error) => console.error(error),
+      {
+        enableHighAccuracy: true,
+      }
+    );
+  };
   return (
     <div className="chat__page">
       <Header />
@@ -92,7 +123,12 @@ const Chat: React.FC<Props> = () => {
         style={{ backgroundImage: `url(${chat?.chat.chat?.pet?.image})` }}
         ref={scrollRef as any}
       >
-        <div className="chat__page__main__header">
+        <div
+          className="chat__page__main__header"
+          onClick={() => {
+            navigator(`/app/pet/${encodeId(chat?.chat.chat?.pet?.id || "")}`);
+          }}
+        >
           <img
             alt="chat-avatar"
             src={
@@ -140,20 +176,35 @@ const Chat: React.FC<Props> = () => {
           ))}
         </div>
         <Form onSubmit={onSubmit}>
-          <TextArea
-            placeholder="Write a message to the seller..."
-            fluid
-            className="chat__page__main__input"
-            onChange={(e) => setMessage(e.target.value)}
-            value={message}
-            name="message"
-            rows={1}
-          />
+          <div className="chat__page__form__inputs">
+            <div
+              className="chat__page__main__location__btn"
+              tabIndex={1}
+              role={"button"}
+              title="send current address"
+              onClick={sendCurrentAddress}
+            >
+              <BiCurrentLocation />
+            </div>
+            <TextArea
+              placeholder="Write a message to the seller..."
+              fluid
+              className="chat__page__main__input"
+              onChange={(e) => setMessage(e.target.value)}
+              value={message}
+              name="message"
+              rows={1}
+            />
+          </div>
           <Button
             color="green"
             type="submit"
             className="chat__page__main__send__btn"
-            disabled={sending || !!!message.trim().length}
+            disabled={
+              sending ||
+              !!!message.trim().length ||
+              !!chat?.chat.chat?.pet?.sold
+            }
           >
             SEND
           </Button>
