@@ -20,3 +20,9 @@ export class ChatMessagesInputType {
   @Field(() => String)
   id: string;
 }
+
+@InputType()
+export class DeleteChatInputType {
+  @Field(() => String)
+  id: string;
+}

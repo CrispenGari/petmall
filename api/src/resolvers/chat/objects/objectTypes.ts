@@ -15,6 +15,12 @@ export class NewChatObjectType {
   chatId?: string;
 }
 @ObjectType()
+export class DeleteChatObjectType {
+  @Field(() => Boolean)
+  success: boolean;
+
+}
+@ObjectType()
 export class ChatsObjectType {
   @Field(() => [ChatType])
   chats: ChatType[];

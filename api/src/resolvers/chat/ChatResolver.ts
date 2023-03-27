@@ -14,12 +14,14 @@ import { CtxType } from "../../types";
 import { verifyJwt } from "../../utils";
 import {
   ChatMessagesInputType,
+  DeleteChatInputType,
   NewChatInputType,
   NewChatMessageSubscriptionInput,
 } from "./inputs/inputTypes";
 import {
   ChatMessagesObjectType,
   ChatsObjectType,
+  DeleteChatObjectType,
   NewChatMessageType,
   NewChatObjectType,
 } from "./objects/objectTypes";
@@ -101,10 +103,50 @@ export class ChatResolver {
     }
     await pubsub.publish(Events.NEW_CHAT_MESSAGE, { userId: me.id });
     await pubsub.publish(Events.NEW_CHAT_MESSAGE, { userId: friend.id });
-
     return {
       success: true,
       chatId: chat.id,
+    };
+  }
+
+  @Mutation(() => DeleteChatObjectType)
+  async deleteChat(
+    @Arg("input", () => DeleteChatInputType)
+    { id }: DeleteChatInputType,
+    @Ctx() { prisma, request }: CtxType,
+    @PubSub() pubsub: PubSubEngine
+  ): Promise<DeleteChatObjectType> {
+    const jwt = request.headers.authorization?.split(" ")[1];
+
+    if (!!!jwt)
+      return {
+        success: false,
+      };
+    const payload = await verifyJwt(jwt);
+    if (!!!payload) {
+      return {
+        success: false,
+      };
+    }
+    const me = await prisma.user.findFirst({ where: { id: payload.id } });
+    const chat = await prisma.chat.findFirst({ where: { id } });
+    if (!!!chat) return { success: false };
+    if (!!!me) return { success: false };
+    const friendId = chat.userIds.find((i) => i !== me.id) || "";
+    const friend = await prisma.user.findFirst({ where: { id: friendId } });
+    if (!!!friend) return { success: false };
+    try {
+      await prisma.chat.delete({ where: { id: chat.id } });
+    } catch (error) {
+      console.log(error);
+      return {
+        success: false,
+      };
+    }
+    await pubsub.publish(Events.DELETE_CHAT, { userId: me.id });
+    await pubsub.publish(Events.DELETE_CHAT, { userId: friend.id });
+    return {
+      success: true,
     };
   }
 
@@ -205,7 +247,11 @@ export class ChatResolver {
     };
   }
   @Subscription(() => NewChatMessageType, {
-    topics: [Events.NEW_CHAT_MESSAGE, Events.READ_CHAT_MESSAGE],
+    topics: [
+      Events.NEW_CHAT_MESSAGE,
+      Events.READ_CHAT_MESSAGE,
+      Events.DELETE_CHAT,
+    ],
     nullable: false,
   })
   async newChatMessage(

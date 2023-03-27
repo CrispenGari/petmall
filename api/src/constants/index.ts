@@ -9,6 +9,7 @@ export const __tokenExp__: number = 60 * 30; // 30m
 export const __clientBaseURL__: string = "http://localhost:3000";
 
 export enum Events {
+  DELETE_CHAT = "DELETE_CHAT",
   NEW_REACTION_TO_COMMENT = "NEW_REACTION_TO_COMMENT",
   NEW_CHAT_MESSAGE = "NEW_CHAT_MESSAGE",
   READ_CHAT_MESSAGE = "READ_CHAT_MESSAGE",

@@ -1,5 +1,8 @@
 import React from "react";
-import { ChatType } from "../../graphql/generated/graphql";
+import {
+  ChatType,
+  useDeleteChatMutation,
+} from "../../graphql/generated/graphql";
 import "./Chat.css";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -21,11 +24,13 @@ interface Props {
 }
 const Chat: React.FC<Props> = ({ chat }) => {
   const { user: me } = useSelector((state: StateType) => state);
+  const [, deleteChat] = useDeleteChatMutation();
   const lastMessage = chat.messages
     ? chat.messages[chat.messages.length - 1]
     : undefined;
-
-  const deleteChat = async () => {};
+  const deleteChatHandler = async () => {
+    await deleteChat({ input: { id: chat.id } });
+  };
   const navigate = useNavigate();
   return (
     <div className="chat">
@@ -57,7 +62,7 @@ const Chat: React.FC<Props> = ({ chat }) => {
         </div>
       </div>
       <div className="chat__buttons">
-        <div className="chat__delete__button" onClick={deleteChat}>
+        <div className="chat__delete__button" onClick={deleteChatHandler}>
           <AiOutlineDelete />
         </div>
       </div>

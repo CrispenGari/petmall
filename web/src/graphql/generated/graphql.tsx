@@ -73,6 +73,15 @@ export type CommentType = {
   user?: Maybe<UserType>;
 };
 
+export type DeleteChatInputType = {
+  id: Scalars['String'];
+};
+
+export type DeleteChatObjectType = {
+  __typename?: 'DeleteChatObjectType';
+  success: Scalars['Boolean'];
+};
+
 export type DeletePetInputType = {
   id: Scalars['String'];
 };
@@ -161,6 +170,7 @@ export type Mutation = {
   add: PetObjectType;
   changePassword: ChangePasswordObjectType;
   commentToPet: PetObjectType;
+  deleteChat: DeleteChatObjectType;
   deletePet: PetObjectType;
   login: LoginObjectType;
   logout: Scalars['Boolean'];
@@ -196,6 +206,11 @@ export type MutationChangePasswordArgs = {
 
 export type MutationCommentToPetArgs = {
   input: CommentToPetInput;
+};
+
+
+export type MutationDeleteChatArgs = {
+  input: DeleteChatInputType;
 };
 
 
@@ -622,6 +637,13 @@ export type CommentToPetMutationVariables = Exact<{
 
 
 export type CommentToPetMutation = { __typename?: 'Mutation', commentToPet: { __typename?: 'PetObjectType', success: boolean } };
+
+export type DeleteChatMutationVariables = Exact<{
+  input: DeleteChatInputType;
+}>;
+
+
+export type DeleteChatMutation = { __typename?: 'Mutation', deleteChat: { __typename?: 'DeleteChatObjectType', success: boolean } };
 
 export type DeletePetMutationVariables = Exact<{
   input: DeletePetInputType;
@@ -1083,6 +1105,17 @@ export const CommentToPetDocument = gql`
 
 export function useCommentToPetMutation() {
   return Urql.useMutation<CommentToPetMutation, CommentToPetMutationVariables>(CommentToPetDocument);
+};
+export const DeleteChatDocument = gql`
+    mutation DeleteChat($input: DeleteChatInputType!) {
+  deleteChat(input: $input) {
+    success
+  }
+}
+    `;
+
+export function useDeleteChatMutation() {
+  return Urql.useMutation<DeleteChatMutation, DeleteChatMutationVariables>(DeleteChatDocument);
 };
 export const DeletePetDocument = gql`
     mutation DeletePet($input: DeletePetInputType!) {
