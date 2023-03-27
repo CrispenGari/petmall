@@ -24,6 +24,15 @@ export class ChangePasswordObjectType {
 }
 
 @ObjectType()
+export class ChangeAccountPasswordObjectType {
+  @Field(() => ErrorType, { nullable: true })
+  error?: ErrorType;
+
+  @Field(() => Boolean, { nullable: false })
+  success: boolean;
+}
+
+@ObjectType()
 export class RequestForgotPasswordEmailLinkObjectType {
   @Field(() => ErrorType, { nullable: true })
   error?: ErrorType;

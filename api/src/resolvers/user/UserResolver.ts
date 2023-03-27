@@ -11,6 +11,7 @@ import {
 } from "type-graphql";
 import { CtxType } from "../../types";
 import {
+  ChangeAccountPasswordInputType,
   ChangePasswordInputType,
   GetUserByIdInput,
   LoginInput,
@@ -21,6 +22,7 @@ import {
   VerifyEmailInputType,
 } from "./inputs/inputTypes";
 import {
+  ChangeAccountPasswordObjectType,
   ChangePasswordObjectType,
   LoginObjectType,
   RegisterObjectType,
@@ -500,6 +502,106 @@ export class UserResolver {
     };
   }
 
+  @Mutation(() => ChangeAccountPasswordObjectType)
+  async changeAccountPassword(
+    @Arg("input", () => ChangeAccountPasswordInputType)
+    {
+      confirmPassword,
+      password,
+      currentAccountPassword,
+    }: ChangeAccountPasswordInputType,
+    @PubSub() pubsub: PubSubEngine,
+    @Ctx() { prisma, redis, request }: CtxType
+  ): Promise<ChangeAccountPasswordObjectType> {
+    const jwt = request.headers.authorization?.split(" ")[1];
+    if (!!!jwt)
+      return {
+        success: false,
+        error: {
+          field: "token",
+          message: "You are not authenticated do to this action.",
+        },
+      };
+    const payload = await verifyJwt(jwt);
+    if (!!!payload) {
+      return {
+        error: {
+          field: "token",
+          message: "You are not authenticated to do this action.",
+        },
+        success: false,
+      };
+    }
+    const user = await prisma.user.findFirst({ where: { id: payload.id } });
+    if (!!!user) {
+      return {
+        error: {
+          field: "user",
+          message: "Could not found the user for whatever reason.",
+        },
+        success: false,
+      };
+    }
+
+    if (password.trim() !== confirmPassword.trim()) {
+      return {
+        error: {
+          field: "confirm-password",
+          message: "the two passwords must match.",
+        },
+        success: false,
+      };
+    }
+
+    if (!isValidPassword(password.trim())) {
+      return {
+        error: {
+          field: "password",
+          message:
+            "the password must contain minimum eight characters, at least one letter and one number.",
+        },
+        success: false,
+      };
+    }
+    const correct = await argon2.verify(
+      user.password,
+      currentAccountPassword.trim()
+    );
+    if (!correct)
+      return {
+        success: false,
+        error: {
+          field: "currentPassword",
+          message: "The current account password is invalid.",
+        },
+      };
+    const _usingPrevious = await argon2.verify(user.password, password.trim());
+    if (_usingPrevious)
+      return {
+        success: false,
+        error: {
+          field: "currentPassword",
+          message:
+            "You can't change your password to the one that already exists.",
+        },
+      };
+    const hash = await argon2.hash(password.trim());
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        password: hash,
+        isLoggedIn: false,
+      },
+    });
+
+    await pubsub.publish(Events.ON_USER_AUTH_STATE_CHANGED, {
+      userId: user.id,
+    });
+    return {
+      success: true,
+    };
+  }
+
   @Mutation(() => ChangePasswordObjectType)
   async changePassword(
     @Arg("input", () => ChangePasswordInputType)
@@ -571,6 +673,16 @@ export class UserResolver {
         success: false,
       };
     }
+    const _usingPrevious = await argon2.verify(user.password, password.trim());
+    if (_usingPrevious)
+      return {
+        success: false,
+        error: {
+          field: "currentPassword",
+          message:
+            "You can't change your password to the one that already exists.",
+        },
+      };
 
     const hash = await argon2.hash(password.trim());
     await prisma.user.update({

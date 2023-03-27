@@ -51,11 +51,11 @@ const Profile: React.FC<Props> = () => {
       />
       {user?.id === userId && (
         <>
-          <ProfileLogoutButton />
-          <ProfileDeleteAccount />
-          <ProfileChangePassword />
           <ProfileChangeEmail />
+          <ProfileChangePassword />
           <ProfileResetPassword />
+          <ProfileDeleteAccount />
+          <ProfileLogoutButton />
         </>
       )}
 

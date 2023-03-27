@@ -16,6 +16,18 @@ export type Scalars = {
   Upload: any;
 };
 
+export type ChangeAccountPasswordInputType = {
+  confirmPassword: Scalars['String'];
+  currentAccountPassword: Scalars['String'];
+  password: Scalars['String'];
+};
+
+export type ChangeAccountPasswordObjectType = {
+  __typename?: 'ChangeAccountPasswordObjectType';
+  error?: Maybe<ErrorType>;
+  success: Scalars['Boolean'];
+};
+
 export type ChangePasswordInputType = {
   confirmPassword: Scalars['String'];
   email: Scalars['String'];
@@ -168,6 +180,7 @@ export type MessageType = {
 export type Mutation = {
   __typename?: 'Mutation';
   add: PetObjectType;
+  changeAccountPassword: ChangeAccountPasswordObjectType;
   changePassword: ChangePasswordObjectType;
   commentToPet: PetObjectType;
   deleteChat: DeleteChatObjectType;
@@ -196,6 +209,11 @@ export type Mutation = {
 
 export type MutationAddArgs = {
   input: NewPetInputType;
+};
+
+
+export type MutationChangeAccountPasswordArgs = {
+  input: ChangeAccountPasswordInputType;
 };
 
 
@@ -623,6 +641,13 @@ export type PetFragmentFragment = { __typename?: 'PetType', id: string, name: st
 export type ReactionFragmentFragment = { __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null };
 
 export type UserFragmentFragment = { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null };
+
+export type ChangeAccountPasswordMutationVariables = Exact<{
+  input: ChangeAccountPasswordInputType;
+}>;
+
+
+export type ChangeAccountPasswordMutation = { __typename?: 'Mutation', changeAccountPassword: { __typename?: 'ChangeAccountPasswordObjectType', success: boolean, error?: { __typename?: 'ErrorType', field: string, message: string } | null } };
 
 export type ChangePasswordMutationVariables = Exact<{
   input: ChangePasswordInputType;
@@ -1081,6 +1106,20 @@ export const NotificationFragmentFragmentDoc = gql`
   }
 }
     ${UserFragmentFragmentDoc}`;
+export const ChangeAccountPasswordDocument = gql`
+    mutation ChangeAccountPassword($input: ChangeAccountPasswordInputType!) {
+  changeAccountPassword(input: $input) {
+    success
+    error {
+      ...ErrorFragment
+    }
+  }
+}
+    ${ErrorFragmentFragmentDoc}`;
+
+export function useChangeAccountPasswordMutation() {
+  return Urql.useMutation<ChangeAccountPasswordMutation, ChangeAccountPasswordMutationVariables>(ChangeAccountPasswordDocument);
+};
 export const ChangePasswordDocument = gql`
     mutation ChangePassword($input: ChangePasswordInputType!) {
   changePassword(input: $input) {
