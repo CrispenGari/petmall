@@ -5,12 +5,10 @@ import {
   Footer,
   Header,
   ProfileCard,
-  ProfileChangeEmail,
   ProfileChangePassword,
   ProfileDeleteAccount,
   ProfileLogoutButton,
   ProfilePetsFlatList,
-  ProfileResetPassword,
 } from "../../../components";
 import { StateType } from "../../../types";
 import { decodeId } from "../../../utils";
@@ -51,9 +49,7 @@ const Profile: React.FC<Props> = () => {
       />
       {user?.id === userId && (
         <>
-          <ProfileChangeEmail />
           <ProfileChangePassword />
-          <ProfileResetPassword />
           <ProfileDeleteAccount />
           <ProfileLogoutButton />
         </>

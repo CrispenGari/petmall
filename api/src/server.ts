@@ -10,7 +10,7 @@ import Redis from "ioredis";
 import { PrismaClient } from "@prisma/client";
 import cors from "@fastify/cors";
 import cookie from "@fastify/cookie";
-import { tokenRoute } from "./routes/token";
+import { petMallRoute } from "./routes/token";
 import fastifyWebsocket from "@fastify/websocket";
 import fastifyStatic from "@fastify/static";
 import path from "path";
@@ -64,7 +64,7 @@ const HOST =
   fastify.register(MercuriusGQLUpload, {
     validate: false,
   });
-  fastify.register(tokenRoute);
+  fastify.register(petMallRoute);
   fastify.register(mercurius, {
     subscription: true,
     context: (request, reply): CtxType => {
@@ -77,8 +77,7 @@ const HOST =
     },
     graphiql: true,
     schema: schema as any,
-    errorHandler(error, request, reply) {
-      console.log(error);
+    errorHandler(error, _request, _reply) {
       console.error(error.message);
     },
   });

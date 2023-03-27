@@ -85,6 +85,17 @@ export type CommentType = {
   user?: Maybe<UserType>;
 };
 
+export type DeleteAccountInputType = {
+  confirmPassword: Scalars['String'];
+  password: Scalars['String'];
+};
+
+export type DeleteAccountObjectType = {
+  __typename?: 'DeleteAccountObjectType';
+  error?: Maybe<ErrorType>;
+  success: Scalars['Boolean'];
+};
+
 export type DeleteChatInputType = {
   id: Scalars['String'];
 };
@@ -183,6 +194,7 @@ export type Mutation = {
   changeAccountPassword: ChangeAccountPasswordObjectType;
   changePassword: ChangePasswordObjectType;
   commentToPet: PetObjectType;
+  deleteAccount: DeleteAccountObjectType;
   deleteChat: DeleteChatObjectType;
   deletePet: PetObjectType;
   login: LoginObjectType;
@@ -224,6 +236,11 @@ export type MutationChangePasswordArgs = {
 
 export type MutationCommentToPetArgs = {
   input: CommentToPetInput;
+};
+
+
+export type MutationDeleteAccountArgs = {
+  input: DeleteAccountInputType;
 };
 
 
@@ -662,6 +679,13 @@ export type CommentToPetMutationVariables = Exact<{
 
 
 export type CommentToPetMutation = { __typename?: 'Mutation', commentToPet: { __typename?: 'PetObjectType', success: boolean } };
+
+export type DeleteAccountMutationVariables = Exact<{
+  input: DeleteAccountInputType;
+}>;
+
+
+export type DeleteAccountMutation = { __typename?: 'Mutation', deleteAccount: { __typename?: 'DeleteAccountObjectType', success: boolean, error?: { __typename?: 'ErrorType', field: string, message: string } | null } };
 
 export type DeleteChatMutationVariables = Exact<{
   input: DeleteChatInputType;
@@ -1144,6 +1168,20 @@ export const CommentToPetDocument = gql`
 
 export function useCommentToPetMutation() {
   return Urql.useMutation<CommentToPetMutation, CommentToPetMutationVariables>(CommentToPetDocument);
+};
+export const DeleteAccountDocument = gql`
+    mutation DeleteAccount($input: DeleteAccountInputType!) {
+  deleteAccount(input: $input) {
+    success
+    error {
+      ...ErrorFragment
+    }
+  }
+}
+    ${ErrorFragmentFragmentDoc}`;
+
+export function useDeleteAccountMutation() {
+  return Urql.useMutation<DeleteAccountMutation, DeleteAccountMutationVariables>(DeleteAccountDocument);
 };
 export const DeleteChatDocument = gql`
     mutation DeleteChat($input: DeleteChatInputType!) {

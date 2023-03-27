@@ -13,6 +13,7 @@ import { CtxType } from "../../types";
 import {
   ChangeAccountPasswordInputType,
   ChangePasswordInputType,
+  DeleteAccountInputType,
   GetUserByIdInput,
   LoginInput,
   RegisterInput,
@@ -24,6 +25,7 @@ import {
 import {
   ChangeAccountPasswordObjectType,
   ChangePasswordObjectType,
+  DeleteAccountObjectType,
   LoginObjectType,
   RegisterObjectType,
   RequestForgotPasswordEmailLinkObjectType,
@@ -33,8 +35,13 @@ import {
 } from "./objects/objectTypes";
 import argon2 from "argon2";
 import { isValidEmail, isValidPassword } from "@crispengari/regex-validator";
-import { modifyName, sendEmail, signJwt, verifyJwt } from "../../utils";
-import client from "@prisma/client";
+import {
+  deleteFiles,
+  modifyName,
+  sendEmail,
+  signJwt,
+  verifyJwt,
+} from "../../utils";
 import path from "path";
 import util from "util";
 import stream from "stream";
@@ -400,7 +407,6 @@ export class UserResolver {
 
   @Mutation(() => ResendVerificationCodeObjectType)
   async resendVerificationCode(
-    @PubSub() pubsub: PubSubEngine,
     @Ctx() { prisma, redis, request }: CtxType
   ): Promise<VerifyEmailObjectType> {
     const jwt = request.headers.authorization?.split(" ")[1];
@@ -511,7 +517,7 @@ export class UserResolver {
       currentAccountPassword,
     }: ChangeAccountPasswordInputType,
     @PubSub() pubsub: PubSubEngine,
-    @Ctx() { prisma, redis, request }: CtxType
+    @Ctx() { prisma, request }: CtxType
   ): Promise<ChangeAccountPasswordObjectType> {
     const jwt = request.headers.authorization?.split(" ")[1];
     if (!!!jwt)
@@ -701,12 +707,113 @@ export class UserResolver {
     };
   }
 
+  @Mutation(() => DeleteAccountObjectType)
+  async deleteAccount(
+    @Arg("input", () => DeleteAccountInputType)
+    { confirmPassword, password }: DeleteAccountInputType,
+    @PubSub() pubsub: PubSubEngine,
+    @Ctx() { prisma, request }: CtxType
+  ): Promise<DeleteAccountObjectType> {
+    const jwt = request.headers.authorization?.split(" ")[1];
+    if (!!!jwt)
+      return {
+        success: false,
+        error: {
+          field: "token",
+          message: "You are not authenticated do to this action.",
+        },
+      };
+    const payload = await verifyJwt(jwt);
+    if (!!!payload) {
+      return {
+        error: {
+          field: "token",
+          message: "You are not authenticated to do this action.",
+        },
+        success: false,
+      };
+    }
+    const user = await prisma.user.findFirst({
+      where: { id: payload.id },
+      include: {
+        pets: true,
+      },
+    });
+    if (!!!user) {
+      return {
+        error: {
+          field: "user",
+          message: "Could not found the user for whatever reason.",
+        },
+        success: false,
+      };
+    }
+
+    if (password.trim() !== confirmPassword.trim()) {
+      return {
+        error: {
+          field: "confirm-password",
+          message: "the two passwords must match.",
+        },
+        success: false,
+      };
+    }
+
+    if (!isValidPassword(password.trim())) {
+      return {
+        error: {
+          field: "password",
+          message:
+            "the password must contain minimum eight characters, at least one letter and one number.",
+        },
+        success: false,
+      };
+    }
+    const correct = await argon2.verify(user.password, password.trim());
+    if (!correct)
+      return {
+        success: false,
+        error: {
+          field: "currentPassword",
+          message: "The current account password is invalid.",
+        },
+      };
+
+    const petsImages = user.pets
+      .map(({ image }) => image.split("/")[image.split("/").length - 1])
+      .map((image) => path.join(storageDir, "pets", image));
+    const avatarPath = user.avatar
+      ? user.avatar.split("/")[user.avatar.split("/").length - 1]
+      : undefined;
+    const images = [
+      ...petsImages,
+      avatarPath ? path.join(storageDir, "avatars", avatarPath) : undefined,
+    ].filter(Boolean);
+    const { success } = await deleteFiles(images as Array<string>);
+    if (success === false) {
+      return {
+        success: false,
+        error: {
+          message: "Unknown server error.",
+          field: "files",
+        },
+      };
+    }
+    await prisma.user.delete({ where: { id: user.id } });
+    await pubsub.publish(Events.ON_USER_AUTH_STATE_CHANGED, {
+      userId: user.id,
+    });
+    return {
+      success: true,
+    };
+  }
+
   @Mutation(() => VerifyEmailObjectType)
   async verifyEmail(
     @Arg("input", () => VerifyEmailInputType, { nullable: false })
     { code, email }: VerifyEmailInputType,
     @PubSub() pubsub: PubSubEngine,
-    @Ctx() { prisma, redis, request }: CtxType
+    @Ctx() { prisma, redis }: CtxType
   ): Promise<VerifyEmailObjectType> {
     const user = await prisma.user.findFirst({
       where: { email: email.trim().toLowerCase() },

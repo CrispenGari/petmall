@@ -56,6 +56,14 @@ export class ChangeAccountPasswordInputType {
   @Field({ nullable: false })
   confirmPassword: string;
 }
+@InputType()
+export class DeleteAccountInputType {
+  @Field(() => String, { nullable: false })
+  password: string;
+
+  @Field({ nullable: false })
+  confirmPassword: string;
+}
 
 @InputType()
 export class RequestForgotPasswordEmailLinkInputType {

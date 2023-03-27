@@ -5,7 +5,6 @@ import {
   Mutation,
   PubSub,
   PubSubEngine,
-  Query,
   Resolver,
   Root,
   Subscription,

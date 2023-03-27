@@ -1,5 +1,4 @@
 import { ObjectType, Field } from "type-graphql";
-import { ChatType } from "./ChatType";
 import { UserType } from "./UserType";
 
 @ObjectType()

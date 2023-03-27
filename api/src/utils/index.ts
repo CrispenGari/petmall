@@ -3,6 +3,7 @@ import { FastifyReply } from "fastify";
 import jwt from "jsonwebtoken";
 import { __cookieName__ } from "../constants";
 import nodemailer from "nodemailer";
+import { unlink } from "fs/promises";
 
 export const sendEmail = async (
   email: string,
@@ -55,4 +56,17 @@ export const signJwt = async ({ id, email }: User): Promise<string> => {
 
 export const verifyJwt = async (token: string) => {
   return jwt.verify(token, process.env.JWT_TOKEN_SCRETE) as Partial<User>;
+};
+
+export const deleteFiles = async (
+  paths: Array<string>
+): Promise<{ success: boolean }> => {
+  try {
+    const promises = paths.map((file) => unlink(file));
+    await Promise.all(promises);
+    return { success: true };
+  } catch (err) {
+    console.error(err);
+    return { success: false };
+  }
 };
