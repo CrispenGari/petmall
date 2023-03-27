@@ -6,6 +6,7 @@ import { Footer, Header, Message } from "../../../components";
 import { BoxIndicator } from "@crispengari/react-activity-indicators";
 import {
   useChatMessagesQuery,
+  useMarkAsSoldMutation,
   useMarkMessagesAsReadMutation,
   useNewChatMessageSubscription,
   useSendMessageMutation,
@@ -22,6 +23,8 @@ const Chat: React.FC<Props> = () => {
   const { user: me } = useSelector((state: StateType) => state);
   const [{ fetching: sending }, sendMessage] = useSendMessageMutation();
   const [{ fetching: reading }, readMessages] = useMarkMessagesAsReadMutation();
+  const [{ fetching: marking }, markAsSold] = useMarkAsSoldMutation();
+
   const params = useParams<Readonly<{ chatId: string }>>();
   const [{ data: chatMessage }] = useNewChatMessageSubscription({
     variables: {
@@ -88,16 +91,18 @@ const Chat: React.FC<Props> = () => {
 
   React.useEffect(() => {
     let mounted: boolean = true;
-    if (mounted && !!scrollRef?.current) {
-      scrollRef.current.scrollTo({
-        top: scrollRef.current.scrollHeight,
-        behavior: "smooth",
-      });
+    if (mounted && !!chat?.chat.chat?.messages) {
+      if (scrollRef?.current) {
+        scrollRef.current.scrollTo({
+          top: scrollRef.current.scrollHeight,
+          behavior: "smooth",
+        });
+      }
     }
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [chat]);
 
   const sendCurrentAddress = () => {
     window.navigator.geolocation.getCurrentPosition(
@@ -114,6 +119,10 @@ const Chat: React.FC<Props> = () => {
         enableHighAccuracy: true,
       }
     );
+  };
+
+  const markAsSoldHandler = async () => {
+    await markAsSold({ input: { id: chat?.chat.chat?.pet?.id || "" } });
   };
   return (
     <div className="chat__page">
@@ -157,6 +166,29 @@ const Chat: React.FC<Props> = () => {
               {chat?.chat.chat?.pet?.comments?.length} comments
             </p>
           </div>
+          {chat?.chat.chat?.pet?.seller?.id === me?.id && (
+            <div className="chat__header__buttons">
+              <Button
+                type="button"
+                className="chat__header__buttons__btn"
+                onClick={() =>
+                  navigator(
+                    `/app/pet/edit/${encodeId(chat?.chat.chat?.pet?.id || "")}`
+                  )
+                }
+              >
+                EDIT
+              </Button>
+              <Button
+                type="button"
+                className="chat__header__buttons__btn__tertiary"
+                onClick={markAsSoldHandler}
+                disabled={chat?.chat.chat?.pet?.sold || marking}
+              >
+                SOLD
+              </Button>
+            </div>
+          )}
         </div>
         <div className="chat__page__main__lists">
           {reading && <BoxIndicator size="small" color="#082032" />}

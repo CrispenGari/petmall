@@ -4,6 +4,7 @@ import "./Chat.css";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import updateLocale from "dayjs/plugin/updateLocale";
+import { AiOutlineDelete } from "react-icons/ai";
 import { relativeTimeObject } from "../../constants";
 import { useNavigate } from "react-router-dom";
 import { encodeId } from "../../utils";
@@ -24,18 +25,19 @@ const Chat: React.FC<Props> = ({ chat }) => {
     ? chat.messages[chat.messages.length - 1]
     : undefined;
 
-  console.log({ lastMessage });
+  const deleteChat = async () => {};
   const navigate = useNavigate();
   return (
-    <div
-      className="chat"
-      onClick={() => navigate(`/app/chat/${encodeId(chat.id)}`)}
-    >
+    <div className="chat">
       <img
+        onClick={() => navigate(`/app/pet/${encodeId(chat?.pet?.id || "")}`)}
         alt="chat-avatar"
         src={!!chat.pet?.image ? chat.pet.image : "/profile.png"}
       />
-      <div className="chat__main">
+      <div
+        className="chat__main"
+        onClick={() => navigate(`/app/chat/${encodeId(chat.id)}`)}
+      >
         <h1>{chat.chatTitle}</h1>
         <p>
           {lastMessage?.senderId === me?.id && "you: "}
@@ -52,6 +54,11 @@ const Chat: React.FC<Props> = ({ chat }) => {
             {dayjs(new Date(Number(lastMessage?.createdAt ?? ""))).fromNow()}{" "}
             ago
           </p>
+        </div>
+      </div>
+      <div className="chat__buttons">
+        <div className="chat__delete__button" onClick={deleteChat}>
+          <AiOutlineDelete />
         </div>
       </div>
     </div>

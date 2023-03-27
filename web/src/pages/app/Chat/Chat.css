@@ -131,3 +131,11 @@
   color: white;
   font-size: 0.9rem;
 }
+.chat__header__buttons__btn {
+  background-color: var(--main) !important;
+  color: white !important;
+}
+.chat__header__buttons__btn__tertiary {
+  background-color: var(--tertiary) !important;
+  color: white !important;
+}

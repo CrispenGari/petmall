@@ -54,3 +54,23 @@
 .chat__main__info > p {
   font-size: 0.8rem;
 }
+.chat__delete__button {
+  height: 100%;
+  background-color: var(--tertiary);
+  color: white;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border-radius: 5px;
+  font-size: 2rem;
+  padding: 0px 10px;
+  transition: all 1s ease;
+  display: none;
+  z-index: 1;
+}
+.chat__delete__button:hover {
+  background-color: var(--main);
+}
+.chat:hover .chat__delete__button {
+  display: flex;
+}
