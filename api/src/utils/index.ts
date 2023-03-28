@@ -50,12 +50,15 @@ export const signJwt = async ({ id, email }: User): Promise<string> => {
       id,
       email,
     },
-    process.env.JWT_TOKEN_SCRETE
+    process.env.JWT_TOKEN_SECRETE as any
   );
 };
 
 export const verifyJwt = async (token: string) => {
-  return jwt.verify(token, process.env.JWT_TOKEN_SCRETE) as Partial<User>;
+  return jwt.verify(
+    token,
+    process.env.JWT_TOKEN_SECRETE as any
+  ) as Partial<User>;
 };
 
 export const deleteFiles = async (

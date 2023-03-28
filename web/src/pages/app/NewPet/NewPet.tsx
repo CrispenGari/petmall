@@ -145,7 +145,6 @@ const NewPet: React.FC<Props> = () => {
     });
   };
 
-  console.log({ data, name });
   return (
     <div className="new__pet">
       <Header />

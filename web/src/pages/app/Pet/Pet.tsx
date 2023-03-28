@@ -61,6 +61,8 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
     };
   }, [user, data]);
 
+  console.log(data);
+
   return (
     <div className="pet__page">
       <Header />

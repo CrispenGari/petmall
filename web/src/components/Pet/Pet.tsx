@@ -33,6 +33,7 @@ class Pet extends React.Component<PropsType, StateType> {
       next,
       globalProps: { navigate },
     } = this.props;
+
     const repliesCount: number =
       pet.comments
         ?.map((cmt) => cmt.replies?.length || 0)

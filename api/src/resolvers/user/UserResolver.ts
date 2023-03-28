@@ -58,7 +58,9 @@ import {
 } from "../../constants";
 import { UserType } from "../common/objects/UserType";
 const storageDir = path.join(
-  __dirname.replace("dist\\resolvers\\user", ""),
+  __dirname
+    .replace("dist\\resolvers\\user", "")
+    .replace("src\\resolvers\\user", ""),
   "storage"
 );
 const pipeline = util.promisify(stream.pipeline);
@@ -91,7 +93,9 @@ export class UserResolver {
       const fileName: string = `${user.id}.${
         filename.split(".")[filename.split(".").length - 1]
       }`;
+
       const avatarImage: string = __storageBaseURL__ + `/avatars/${fileName}`;
+
       const rs = createReadStream();
       const ws = fs.createWriteStream(
         path.join(storageDir, "avatars", fileName)

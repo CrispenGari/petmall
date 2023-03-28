@@ -31,7 +31,9 @@ import {
 } from "./objects/objectTypes";
 
 const storageDir = path.join(
-  __dirname.replace("dist\\resolvers\\pet", ""),
+  __dirname
+    .replace("dist\\resolvers\\pet", "")
+    .replace("src\\resolvers\\pet", ""),
   "storage"
 );
 const pipeline = util.promisify(stream.pipeline);

@@ -24,7 +24,7 @@ const HOST =
     : "localhost" || "127.0.0.1";
 
 (async () => {
-  const redis = new Redis({});
+  const redis = new Redis({ host: process.env.REDIS_HOST });
   const fastify = Fastify({
     logger: false,
     ignoreTrailingSlash: true,
@@ -57,7 +57,10 @@ const HOST =
     },
   });
   fastify.register(fastifyStatic, {
-    root: path.join(__dirname.replace("dist", ""), "storage"),
+    root: path.join(
+      __dirname.replace("dist", "").replace("src", ""),
+      "storage"
+    ),
     prefixAvoidTrailingSlash: true,
     prefix: "/petmall/api/storage",
   });

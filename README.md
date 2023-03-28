@@ -8,18 +8,7 @@ Online pet marketing made easy online.
     <img src="cover-2.png" width="200" alt="logo"/>
 </p>
 
-```shell
-
-                    |---------> [reaction] ------> [user]
-                    |
-  [user] -------> [pet] ------> [comment] -------------> [reaction] -----> [user]
-                    |       |        |
-                    |       |        |------> [comment] -----> [reaction] ---> [user]
-  [location] <------|       |                     |
-                            |                     |---------> [user]
-                            |--------> [user]
-
-```
+`petmall` is a multi-repo project that contains the following packages
 
 ```shell
 - api
@@ -27,31 +16,185 @@ Online pet marketing made easy online.
 - web
 ```
 
-<!-- http://www.geoplugin.net/extras/location.gp?lat=-32.9721835&long=27.909569&format=json -->
+- `api` - this is the backend server where the database and storage logic is handled.
+- `mobile` - this is a react-native client consuming the graphql api.
+- `web` - this is a web application client built with `react.js` and is consuming the graphql api.
+
+### App Mind
+
+In this section I will demonstrate the logic behind my application which can be visualized as follows.
 
 ```shell
-curl http://localhost:3001/graphql -F operations='{"query":"mutation NewPet($input: NewPetInputType!){ add(input:$input) }", "variables":{"input": { "image":null } } }' -F map='{ "0": ["variables.input.image"] }' -F 0=@male.jpg
+
+                        |----------> [messages] ------> [user]
+                        |
+      |------------> [chats]-------> [pet] ------> [seller]
+      |
+      |
+      |------------> [notifications]
+      |
+      |             |---------> [reaction] ------> [user]
+      |             |
+[user/seller]  -> [pet] ------> [comment] -------------> [reaction] -----> [user]
+                    |       |        |
+                    |       |        |------> [comment] -----> [reaction] ---> [user]
+  [location] <------|       |                     |
+                            |                     |---------> [user]
+                            |--------> [user]
 ```
+
+- It all starts with the `user` or `seller`
+
+  - anyone who created an account with `petmall` can buy and sell pets.
+  - the user can have access to his/her `notifications` which are triggered when someone in the app:
+    - react to your pet
+    - react to your comment
+    - commented to your pet
+    - reply to your comment on a pet
+  - real time messages are the part of this app. The `chat` models allows buyers and sellers of pets to chat privately. and each chat will be modeled with
+    - `messages`
+    - `pet`
+  - The user/seller of the pet can edit pet details and even mark the pet as sold if the pet is sold.
+  - an authenticated seller or buyer will have access to the notifications and messages and a profile.
+  - In the profile the user can do the following:
+    - edit profile details
+    - signing out of the app
+    - delete their account
+    - change account password
+
+- `pet` model contains the following
+  - `location` of the pet
+  - `reactions` to the pet by others
+  - `comments` / `reviews` of the pets by others
+
+### Output
+
+In this section wi will show the screenshot of the `petmall` app for both the `web` and `mobile` version.
+
+### 1. web
+
+The web UI and basic functionality looks as follows:
+
+1. Landing
+
+<p>
+<img src="/images/web/0.jpg" alt="demo" width="100%"/>
+</p>
+
+2. Login Page
+
+<p>
+<img src="/images/web/1.jpg" alt="demo" width="100%"/>
+</p>
+
+3. Register Page
+
+<p>
+<img src="/images/web/3.jpg" alt="demo" width="100%"/>
+</p>
+
+4. Home Page
+
+This page is shown when you are authenticated.
+
+<p>
+<img src="/images/web/4.jpg" alt="demo" width="100%"/>
+</p>
+
+5. Creating a New Pet
+
+<p>
+<img src="/images/web/5.jpg" alt="demo" width="50%"/><img src="/images/web/6.jpg" alt="demo" width="50%"/>
+</p>
+
+6. Opening a Pet
+
+<p>
+<img src="/images/web/7.jpg" alt="demo" width="50%"/><img src="/images/web/8.jpg" alt="demo" width="50%"/>
+</p>
+
+7. Edit Pet
+
+<p>
+<img src="/images/web/9.jpg" alt="demo" width="50%"/><img src="/images/web/10.jpg" alt="demo" width="50%"/>
+</p>
+8. User Profile
+
+<p>
+<img src="/images/web/11.jpg" alt="demo" width="50%"/><img src="/images/web/12.jpg" alt="demo" width="50%"/>
+</p>
+<p>
+
+9. Notifications
+
+<img src="/images/web/13.jpg" alt="demo" width="100%"/>
+</p>
+
+10. Messages
+<p>
+<img src="/images/web/14.jpg" alt="demo" width="50%"/><img src="/images/web/15.jpg" alt="demo" width="50%"/>
+</p>
+
+11. Request Reset Password Email Link
+
+<p>
+<img src="/images/web/16.jpg" alt="demo" width="100%"/>
+</p>
+
+12. Changing Password
+
+<p>
+<img src="/images/web/17.jpg" alt="demo" width="100%"/>
+</p>
+
+### 2. mobile
+
+- still coming
+
+### Languages used
+
+In this project I used the following languages:
+
+```shell
+- typescript
+```
+
+### Tech Stack
+
+In this project I used the following technologies.
+
+1. api
+
+- `fastify` server with `mercurius` graphql with `type-graphql`
+- `jwt` authentication
+- `prisma`
+- `postgres` database
+- `redis` cache
+
+2. web
+
+- `react.js`
+- `semantic-ui` for some components
+- `react-icons` for some icons
+- `react-router-dom` for pages and routing
+- `urql` graphql client
+- `redux` for state management
+- `graphql-codegen` in development for generating graphql-types from graphql documents
+- `localStorage`
+
+3. mobile
+
+- `react-native`
+- `expo-font`
+- `react-native-navigation`
+- `urql` graphql client
+- `redux` for state management
+- `graphql-codegen` in development for generating graphql-types from graphql documents
+- `async-storage`
 
 ### License
 
-```js
-[
-  "CATS",
-  "DOGS",
-  "BIRDS",
-  "RABBITS",
-  "HORSES",
-  "FERRETS",
-  "FISH",
-  "GUINEA-PIGS",
-  "RATS-AND-MICE",
-  "AMPHIBIANS",
-  "REPTILES",
-];
-```
-
-In this project i'm using the `MIT` license which reads as follows:
+In this project I'm using the `MIT` license which reads as follows:
 
 ```shell
 MIT License

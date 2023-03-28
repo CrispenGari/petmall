@@ -6,7 +6,20 @@ const banners = [
   `/static/1.jpg`,
   `/static/2.jpg`,
   `/static/3.jpg`,
-];
+  `/static/4.webp`,
+  `/static/5.jpg`,
+  `/static/6.jpg`,
+  `/static/7.jpg`,
+  `/static/8.jpg`,
+  `/static/9.webp`,
+  `/static/10.webp`,
+  `/static/11.jpg`,
+  `/static/12.jpg`,
+  `/static/13.jpg`,
+  `/static/14.webp`,
+  `/static/15.jpg`,
+  `/static/16.jpg`,
+].sort((_) => Math.random() - 0.5);
 interface PropsType {}
 interface StateType {
   index: number;
