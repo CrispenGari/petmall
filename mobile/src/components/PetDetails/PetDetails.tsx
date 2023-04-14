@@ -15,6 +15,7 @@ import { CommentType, PetType } from "../../graphql/generated/graphql";
 import PetButtons from "../PetButtons/PetButtons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Reactions from "../Reactions/Reactions";
+import ReactionsSummary from "../ReactionsSummary/ReactionsSummary";
 dayjs.extend(relativeTime);
 dayjs.extend(updateLocale);
 
@@ -27,15 +28,11 @@ interface Props {
   reaction: string;
   setReaction: React.Dispatch<React.SetStateAction<string>>;
 }
-const PetDetails: React.FunctionComponent<Props> = ({ pet }) => {
-  const [reaction, setReaction] = React.useState<string>("");
-  const [replyTo, setReplyTo] = React.useState<
-    | (CommentType & {
-        parentCommentId: string;
-      })
-    | undefined
-  >();
-
+const PetDetails: React.FunctionComponent<Props> = ({
+  pet,
+  reaction,
+  setReaction,
+}) => {
   return (
     <View style={{ width: "100%", maxWidth: 500, height: SCREEN_HEIGHT * 0.8 }}>
       <Text
@@ -82,7 +79,6 @@ const PetDetails: React.FunctionComponent<Props> = ({ pet }) => {
         {pet.description}
       </Text>
       <PetButtons pet={pet} />
-
       <View style={{}}>
         <Popover
           from={
@@ -97,6 +93,15 @@ const PetDetails: React.FunctionComponent<Props> = ({ pet }) => {
             sold={pet.sold}
             setReaction={setReaction}
           />
+        </Popover>
+        <Popover
+          from={
+            <TouchableOpacity>
+              <Text>{pet.reactions?.length || 0} reactions</Text>
+            </TouchableOpacity>
+          }
+        >
+          <ReactionsSummary reactions={pet.reactions || []} />
         </Popover>
       </View>
     </View>

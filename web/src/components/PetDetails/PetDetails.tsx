@@ -139,7 +139,7 @@ class PetDetails extends React.Component<PropsType, StateType> {
               pinned
               closeOnDocumentClick
               className="comment__details__reactions__popup"
-              trigger={<p>{pet.reactions?.length ?? 0} likes</p>}
+              trigger={<p>{pet.reactions?.length ?? 0} reactions</p>}
             />
           </div>
           <div>
