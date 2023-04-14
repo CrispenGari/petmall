@@ -1,0 +1,8 @@
+query GetPetById($input: GetPetByIdInput!) {
+  getPetById(input: $input) {
+    pet {
+      ...PetFragment
+    }
+    success
+  }
+}

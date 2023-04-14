@@ -8,7 +8,20 @@ const banners = [
   require(`../../../assets/static/1.jpg`),
   require(`../../../assets/static/2.jpg`),
   require(`../../../assets/static/3.jpg`),
-];
+  require(`../../../assets/static/4.webp`),
+  require(`../../../assets/static/5.jpg`),
+  require(`../../../assets/static/6.jpg`),
+  require(`../../../assets/static/7.jpg`),
+  require(`../../../assets/static/8.jpg`),
+  require(`../../../assets/static/9.webp`),
+  require(`../../../assets/static/10.webp`),
+  require(`../../../assets/static/11.jpg`),
+  require(`../../../assets/static/12.jpg`),
+  require(`../../../assets/static/13.jpg`),
+  require(`../../../assets/static/14.webp`),
+  require(`../../../assets/static/15.jpg`),
+  require(`../../../assets/static/16.jpg`),
+].sort((_) => Math.random() - 0.5);
 const Banner = () => {
   const [index, setIndex] = useState(0);
   React.useEffect(() => {
@@ -46,7 +59,7 @@ const Banner = () => {
         <Text
           style={{
             fontSize: 30,
-            fontWeight: FONTS.regularBold,
+            fontFamily: FONTS.regularBold,
             color: COLORS.white,
           }}
         >

@@ -1,0 +1,7 @@
+fragment LocationFragment on LocationType {
+  id
+  lat
+  lon
+  createAt
+  updateAt
+}

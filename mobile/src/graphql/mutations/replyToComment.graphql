@@ -1,0 +1,5 @@
+mutation ReplyComment($input: ReplyToCommentInput!) {
+  replyToComment(input: $input) {
+    success
+  }
+}

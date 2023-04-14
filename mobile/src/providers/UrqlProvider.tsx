@@ -1,18 +1,23 @@
 import React from "react";
-import { TOKEN_KEY, url } from "../constants";
+import { TOKEN_KEY, ngrokDomain } from "../constants";
 import {
   createClient,
-  dedupExchange,
-  fetchExchange,
   Provider,
   makeOperation,
+  subscriptionExchange,
 } from "urql";
 import { authExchange } from "@urql/exchange-auth";
 import { multipartFetchExchange } from "@urql/exchange-multipart-fetch";
 import { retrieve } from "../utils";
 
+import { createClient as createWSClient } from "graphql-ws";
+
+const wsClient = createWSClient({
+  url: `wss://${ngrokDomain}/graphql`,
+});
+
 export const client = createClient({
-  url,
+  url: `https://${ngrokDomain}/graphql`,
   exchanges: [
     authExchange({
       getAuth: async ({ authState }: any) => {
@@ -42,6 +47,16 @@ export const client = createClient({
       },
     }),
     multipartFetchExchange,
+    subscriptionExchange({
+      forwardSubscription: (operation) => ({
+        subscribe: (sink) => ({
+          unsubscribe: wsClient.subscribe(
+            { query: operation.query, variables: operation.variables },
+            sink
+          ),
+        }),
+      }),
+    }),
   ],
 });
 

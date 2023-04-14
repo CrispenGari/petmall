@@ -1,0 +1,5 @@
+subscription NewChatMessage($input: NewChatMessageSubscriptionInput!) {
+  newChatMessage(input: $input) {
+    userId
+  }
+}

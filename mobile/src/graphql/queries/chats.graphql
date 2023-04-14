@@ -1,0 +1,9 @@
+query MyChats {
+  chats {
+    chats {
+      ...ChatFragment
+    }
+    count
+    unopened
+  }
+}

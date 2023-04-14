@@ -1,0 +1,11 @@
+fragment NewNotificationFragment on NotificationType {
+  id
+  notification
+  userId
+  read
+  createdAt
+  updatedAt
+  user {
+    ...UserFragment
+  }
+}

@@ -1,0 +1,3 @@
+mutation SayHello($message: String!) {
+  sayHello(message: $message)
+}

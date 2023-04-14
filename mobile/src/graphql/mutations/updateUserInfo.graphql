@@ -1,0 +1,11 @@
+mutation UpdateUserInfo($input: UpdateUserInfoInputType!) {
+  updateUserInfo(input: $input) {
+    error {
+      ...ErrorFragment
+    }
+    jwt
+    me {
+      ...UserFragment
+    }
+  }
+}

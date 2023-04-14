@@ -1,0 +1,6 @@
+mutation NewChat($input: NewChatInputType!) {
+  newChat(input: $input) {
+    success
+    chatId
+  }
+}

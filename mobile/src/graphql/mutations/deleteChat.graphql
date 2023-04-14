@@ -1,0 +1,5 @@
+mutation DeleteChat($input: DeleteChatInputType!) {
+  deleteChat(input: $input) {
+    success
+  }
+}

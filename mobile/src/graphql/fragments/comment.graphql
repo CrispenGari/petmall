@@ -1,0 +1,66 @@
+fragment CommentFragment on CommentType {
+  id
+  comment
+  createdAt
+  updatedAt
+  reactions {
+    id
+    reaction
+    userId
+    user {
+      id
+      email
+      avatar
+      firstName
+      lastName
+      verified
+      isLoggedIn
+      createAt
+      updateAt
+    }
+  }
+  replies {
+    reactions {
+      id
+      reaction
+      userId
+      user {
+        id
+        email
+        avatar
+        firstName
+        lastName
+        verified
+        isLoggedIn
+        createAt
+        updateAt
+      }
+    }
+    user {
+      id
+      email
+      avatar
+      firstName
+      lastName
+      verified
+      isLoggedIn
+      createAt
+      updateAt
+    }
+    id
+    comment
+    createdAt
+    updatedAt
+  }
+  user {
+    id
+    email
+    avatar
+    firstName
+    lastName
+    verified
+    isLoggedIn
+    createAt
+    updateAt
+  }
+}

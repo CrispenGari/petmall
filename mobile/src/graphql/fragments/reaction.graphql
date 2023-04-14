@@ -1,0 +1,18 @@
+fragment ReactionFragment on ReactionType {
+  id
+  reaction
+  createdAt
+  updatedAt
+  userId
+  user {
+    id
+    email
+    avatar
+    firstName
+    lastName
+    verified
+    isLoggedIn
+    createAt
+    updateAt
+  }
+}

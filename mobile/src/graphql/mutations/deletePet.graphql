@@ -1,0 +1,5 @@
+mutation DeletePet($input: DeletePetInputType!) {
+  deletePet(input: $input) {
+    success
+  }
+}

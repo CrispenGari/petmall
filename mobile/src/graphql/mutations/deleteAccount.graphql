@@ -1,0 +1,8 @@
+mutation DeleteAccount($input: DeleteAccountInputType!) {
+  deleteAccount(input: $input) {
+    success
+    error {
+      ...ErrorFragment
+    }
+  }
+}

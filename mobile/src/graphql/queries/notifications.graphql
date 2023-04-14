@@ -1,0 +1,9 @@
+query Notifications {
+  notifications {
+    total
+    unread
+    notifications {
+      ...NotificationFragment
+    }
+  }
+}

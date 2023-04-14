@@ -1,0 +1,12 @@
+fragment UserFragment on UserType {
+  id
+  email
+  avatar
+  firstName
+  lastName
+  emailVerified
+  verified
+  isLoggedIn
+  createAt
+  updateAt
+}

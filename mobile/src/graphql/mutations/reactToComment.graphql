@@ -1,0 +1,5 @@
+mutation ReactToComment($input: ReactToCommentInput!) {
+  reactToComment(input: $input) {
+    success
+  }
+}

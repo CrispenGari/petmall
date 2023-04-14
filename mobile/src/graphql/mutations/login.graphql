@@ -1,0 +1,11 @@
+mutation Login($input: LoginInput!) {
+  login(input: $input) {
+    error {
+      ...ErrorFragment
+    }
+    jwt
+    me {
+      ...UserFragment
+    }
+  }
+}

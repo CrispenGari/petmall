@@ -4,7 +4,8 @@ export const constants = {
   SET_USER: "SET_USER",
   SET_LOCATION: "SET_LOCATION",
 };
-export const url = "https://6dd1-197-98-127-119.ngrok.io/graphql";
+
+export const ngrokDomain: string = "c2e4-102-66-82-42.ngrok-free.app";
 
 export const PETS_CATEGORIES = [
   "CATS",
