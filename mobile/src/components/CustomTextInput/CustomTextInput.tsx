@@ -15,6 +15,7 @@ import { FONTS } from "../../constants";
 
 interface Props {
   containerStyles: StyleProp<ViewStyle>;
+  outerContainerStyles: StyleProp<ViewStyle>;
   labelStyle: StyleProp<TextStyle>;
   errorStyle: StyleProp<TextStyle>;
   inputStyle: StyleProp<TextStyle>;
@@ -54,9 +55,10 @@ const CustomTextInput: React.FunctionComponent<Partial<Props>> = ({
   label,
   error,
   errorStyle,
+  outerContainerStyles,
 }) => {
   return (
-    <View style={{ width: "100%" }}>
+    <View style={[{ width: "100%" }, outerContainerStyles]}>
       {label ? <Text style={labelStyle}>{label}</Text> : null}
       <View
         style={[

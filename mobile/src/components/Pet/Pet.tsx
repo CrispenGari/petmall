@@ -1,12 +1,15 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import React from "react";
-import { COLORS, FONTS } from "../../constants";
+import { COLORS, FONTS, ngrokDomain } from "../../constants";
 import { PetType } from "../../graphql/generated/graphql";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import updateLocale from "dayjs/plugin/updateLocale";
 import { relativeTimeObject } from "../../constants";
 import { FontAwesome, Foundation } from "@expo/vector-icons";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { MarketParamList } from "../../params";
+import { encodeId } from "../../utils";
 dayjs.extend(relativeTime);
 dayjs.extend(updateLocale);
 
@@ -14,9 +17,10 @@ dayjs.updateLocale("en", {
   relativeTime: relativeTimeObject,
 });
 interface Props {
+  navigation: StackNavigationProp<MarketParamList, "Pets">;
   pet: PetType;
 }
-const Pet: React.FunctionComponent<Props> = ({ pet }) => {
+const Pet: React.FunctionComponent<Props> = ({ pet, navigation }) => {
   const repliesCount: number =
     pet.comments
       ?.map((cmt) => cmt.replies?.length || 0)
@@ -24,6 +28,7 @@ const Pet: React.FunctionComponent<Props> = ({ pet }) => {
   const commentCount: number = pet.comments?.length || 0;
   return (
     <TouchableOpacity
+      onPress={() => navigation.navigate("Pet", { petId: encodeId(pet.id) })}
       style={{
         width: 180,
         minWidth: 180,
@@ -50,10 +55,7 @@ const Pet: React.FunctionComponent<Props> = ({ pet }) => {
       </Text>
       <Image
         source={{
-          uri: pet.image.replace(
-            "127.0.0.1:3001",
-            "c2e4-102-66-82-42.ngrok-free.app"
-          ),
+          uri: pet.image.replace("127.0.0.1:3001", ngrokDomain),
         }}
         style={{
           width: "100%",
@@ -120,10 +122,7 @@ const Pet: React.FunctionComponent<Props> = ({ pet }) => {
         <Image
           source={{
             uri: !!pet.seller?.avatar
-              ? pet.seller.avatar.replace(
-                  "127.0.0.1:3001",
-                  "c2e4-102-66-82-42.ngrok-free.app"
-                )
+              ? pet.seller.avatar.replace("127.0.0.1:3001", ngrokDomain)
               : Image.resolveAssetSource(require("../../../assets/profile.png"))
                   .uri,
           }}

@@ -5,7 +5,7 @@ export const constants = {
   SET_LOCATION: "SET_LOCATION",
 };
 
-export const ngrokDomain: string = "c2e4-102-66-82-42.ngrok-free.app";
+export const ngrokDomain: string = "0a2e-102-66-82-42.ngrok-free.app";
 
 export const PETS_CATEGORIES = [
   "CATS",

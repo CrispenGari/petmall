@@ -6,7 +6,9 @@ import * as Location from "expo-location";
 //  Market Stack Param Lists
 export type MarketParamList = {
   Pets: undefined;
-  Pet: undefined;
+  Pet: {
+    petId: string;
+  };
 };
 
 export type MarketNavProps<T extends keyof MarketParamList> = {

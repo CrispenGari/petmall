@@ -2,7 +2,6 @@ import React from "react";
 
 import { Header, Banner, FlatList } from "../../../components";
 import { RELOADED_KEY, PETS_CATEGORIES } from "../../../constants";
-
 import { retrieve, store } from "../../../utils";
 
 import "./Home.css";

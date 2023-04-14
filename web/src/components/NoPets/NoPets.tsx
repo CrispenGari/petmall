@@ -13,7 +13,7 @@ class NoPets extends React.Component<PropsType, StateType> {
     const { category } = this.props;
     return (
       <div className="no__pets">
-        <h1>no {category.replace(/_/g, " ").toLowerCase()}s in the market.</h1>
+        <h1>no {category.replace(/_/g, " ").toLowerCase()} in the market.</h1>
       </div>
     );
   }

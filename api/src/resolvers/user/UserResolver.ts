@@ -400,6 +400,7 @@ export class UserResolver {
         },
       };
     } catch (error) {
+      console.log({ error });
       return {
         error: {
           field: "server",

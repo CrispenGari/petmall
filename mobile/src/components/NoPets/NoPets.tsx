@@ -27,7 +27,7 @@ const NoPets: React.FunctionComponent<Props> = ({ category }) => {
           textAlign: "center",
         }}
       >
-        no {category.replace(/_/g, " ").toLowerCase()}s in the market.
+        no {category.replace(/_/g, " ").toLowerCase()} in the market.
       </Text>
     </View>
   );

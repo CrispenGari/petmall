@@ -5,12 +5,17 @@ import NoPets from "../NoPets/NoPets";
 import Pet from "../Pet/Pet";
 import { COLORS, FONTS } from "../../constants";
 import { FlatList } from "react-native-gesture-handler";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { MarketParamList } from "../../params";
+import { useDevice } from "../../hooks";
 
 interface Props {
   title: string;
   subtitle: string;
+  navigation: StackNavigationProp<MarketParamList, "Pets">;
 }
-const PetCategory: React.FC<Props> = ({ subtitle, title }) => {
+const PetCategory: React.FC<Props> = ({ subtitle, title, navigation }) => {
+  const { isIpad } = useDevice();
   const [{ data }] = useGetPetsByCategoryQuery({
     variables: {
       input: {
@@ -22,8 +27,8 @@ const PetCategory: React.FC<Props> = ({ subtitle, title }) => {
     <View
       style={{
         backgroundColor: COLORS.secondary,
-        padding: 20,
         marginBottom: 10,
+        padding: isIpad ? 10 : 5,
       }}
     >
       <Text
@@ -51,7 +56,9 @@ const PetCategory: React.FC<Props> = ({ subtitle, title }) => {
           horizontal={true}
           data={data.getCategoryPets.pets}
           keyExtractor={({ id }) => id}
-          renderItem={({ item: pet }) => <Pet pet={pet as any} />}
+          renderItem={({ item: pet }) => (
+            <Pet pet={pet as any} navigation={navigation} />
+          )}
         />
       ) : (
         <NoPets category={"no"} />

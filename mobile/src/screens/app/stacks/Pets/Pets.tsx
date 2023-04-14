@@ -10,14 +10,6 @@ import { PetCategory } from "../../../../components";
 const Pets: React.FunctionComponent<MarketNavProps<"Pets">> = ({
   navigation,
 }) => {
-  const [{ fetching, data }, refetch] = useGetPetsByCategoryQuery({
-    variables: {
-      input: {
-        category: "DOGS",
-      },
-    },
-  });
-
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: COLORS.secondary }}
@@ -30,6 +22,7 @@ const Pets: React.FunctionComponent<MarketNavProps<"Pets">> = ({
       {PETS_CATEGORIES.map((category) => (
         <PetCategory
           title={category}
+          navigation={navigation}
           key={category}
           subtitle={`All ${category.toLowerCase()} in the market.`}
         />

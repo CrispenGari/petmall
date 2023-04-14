@@ -3,6 +3,8 @@ import "./Reactions.css";
 import { AiFillLike, AiFillDislike, AiFillHeart } from "react-icons/ai";
 import { FaHandHoldingHeart, FaHandHoldingUsd } from "react-icons/fa";
 import { useReactToPetMutation } from "../../graphql/generated/graphql";
+
+
 interface Props {
   setReaction: React.Dispatch<React.SetStateAction<string>>;
   reaction?: string;
@@ -10,7 +12,6 @@ interface Props {
   sold: boolean;
 }
 
-interface Props {}
 const Reactions: React.FC<Props> = ({
   reaction,
   setReaction,
