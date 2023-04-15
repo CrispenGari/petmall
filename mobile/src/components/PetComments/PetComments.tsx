@@ -16,6 +16,7 @@ import { COLORS, FONTS } from "../../constants";
 import CustomTextInput from "../CustomTextInput/CustomTextInput";
 import { styles } from "../../styles";
 import { AntDesign } from "@expo/vector-icons";
+import Comment from "../Comment/Comment";
 interface Props {
   pet: PetType;
   setReplyTo: React.Dispatch<
@@ -81,7 +82,7 @@ const PetComments: React.FunctionComponent<Props> = ({
           padding: 10,
         }}
       >
-        {!!pet.comments?.length ? (
+        {!!!pet.comments?.length ? (
           <Text
             style={{
               textAlign: "center",
@@ -92,7 +93,16 @@ const PetComments: React.FunctionComponent<Props> = ({
           >
             No comments about {pet.name}
           </Text>
-        ) : null}
+        ) : (
+          pet.comments?.map((comment) => (
+            <Comment
+              key={comment.id}
+              comment={comment as any}
+              setReplyTo={setReplyTo}
+              sold={pet.sold}
+            />
+          ))
+        )}
       </ScrollView>
 
       <KeyboardAvoidingView
