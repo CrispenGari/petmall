@@ -7,5 +7,6 @@ export { default as PetCategory } from "./PetCategory/PetCategory";
 export { default as PetButtons } from "./PetButtons/PetButtons";
 export { default as PetDetails } from "./PetDetails/PetDetails";
 export { default as BoxIndicator } from "./BoxIndicator/BoxIndicator";
+export { default as SellerCard } from "./SellerCard/SellerCard";
 export { default as ReactionsSummary } from "./ReactionsSummary/ReactionsSummary";
 export { default as CustomTextInput } from "./CustomTextInput/CustomTextInput";

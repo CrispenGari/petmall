@@ -35,7 +35,6 @@ class SellerCard extends React.Component<PropsType, StateType> {
             alt="profile"
             src={!!seller?.avatar ? seller.avatar : "/profile.png"}
           />
-          <div className="seller__card__bottom"></div>
         </div>
       </div>
     );

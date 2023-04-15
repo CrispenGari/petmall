@@ -74,6 +74,7 @@ const Pet: React.FunctionComponent<MarketNavProps<"Pet">> = ({
           pet={data?.getPetById?.pet as any}
           reaction={reaction}
           setReaction={setReaction}
+          navigation={navigation}
         />
       )}
       <PetComments />

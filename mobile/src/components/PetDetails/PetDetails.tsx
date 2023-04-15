@@ -18,6 +18,9 @@ import PetButtons from "../PetButtons/PetButtons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Reactions from "../Reactions/Reactions";
 import ReactionsSummary from "../ReactionsSummary/ReactionsSummary";
+import SellerCard from "../SellerCard/SellerCard";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { MarketParamList } from "../../params";
 dayjs.extend(relativeTime);
 dayjs.extend(updateLocale);
 
@@ -29,11 +32,13 @@ interface Props {
   pet: PetType;
   reaction: string;
   setReaction: React.Dispatch<React.SetStateAction<string>>;
+  navigation: StackNavigationProp<MarketParamList, "Pet">;
 }
 const PetDetails: React.FunctionComponent<Props> = ({
   pet,
   reaction,
   setReaction,
+  navigation,
 }) => {
   const repliesCount: number =
     pet.comments
@@ -85,7 +90,7 @@ const PetDetails: React.FunctionComponent<Props> = ({
       >
         {pet.description}
       </Text>
-      <PetButtons pet={pet} />
+      <PetButtons pet={pet} navigation={navigation} />
       <View
         style={{
           width: "100%",
@@ -226,6 +231,9 @@ const PetDetails: React.FunctionComponent<Props> = ({
           </Text>
         </View>
       </View>
+      {!!pet.seller && (
+        <SellerCard seller={pet.seller} navigation={navigation} />
+      )}
     </View>
   );
 };
