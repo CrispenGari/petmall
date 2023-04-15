@@ -9,7 +9,7 @@ export type MarketParamList = {
     petId: string;
   };
   Profile: {
-    sellerId: string;
+    userId: string;
   };
   Chat: {
     chatId: string;

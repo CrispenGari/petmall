@@ -17,6 +17,8 @@ import CustomTextInput from "../CustomTextInput/CustomTextInput";
 import { styles } from "../../styles";
 import { AntDesign } from "@expo/vector-icons";
 import Comment from "../Comment/Comment";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { MarketParamList } from "../../params";
 interface Props {
   pet: PetType;
   setReplyTo: React.Dispatch<
@@ -33,12 +35,14 @@ interface Props {
       })
     | undefined;
   petId: string;
+  navigation: StackNavigationProp<MarketParamList, "Pet">;
 }
 const PetComments: React.FunctionComponent<Props> = ({
   replyTo,
   petId,
   pet,
   setReplyTo,
+  navigation,
 }) => {
   const [{ fetching }, commentToPet] = useCommentToPetMutation();
   const [{ fetching: loading }, replyToComment] = useReplyCommentMutation();
@@ -100,6 +104,7 @@ const PetComments: React.FunctionComponent<Props> = ({
               comment={comment as any}
               setReplyTo={setReplyTo}
               sold={pet.sold}
+              navigation={navigation}
             />
           ))
         )}

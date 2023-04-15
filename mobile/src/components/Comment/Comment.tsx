@@ -17,6 +17,9 @@ import { useDevice } from "../../hooks";
 import { AntDesign, Entypo, FontAwesome5 } from "@expo/vector-icons";
 import ReactionsSummary from "../ReactionsSummary/ReactionsSummary";
 import CommentReactions from "../CommentReactions/CommentReactions";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { MarketParamList } from "../../params";
+import { encodeId } from "../../utils";
 dayjs.extend(relativeTime);
 dayjs.extend(updateLocale);
 
@@ -34,22 +37,35 @@ interface Props {
     >
   >;
   sold: boolean;
+  navigation: StackNavigationProp<MarketParamList, "Pet">;
 }
 const Comment: React.FunctionComponent<Props> = ({
   comment,
   setReplyTo,
   sold,
+  navigation,
 }) => {
   return (
-    <View>
+    <View
+      style={{
+        width: "100%",
+      }}
+    >
       <CommentChild
         parentCommentId={comment.id}
         comment={comment}
         withReply
         setReplyTo={setReplyTo}
         sold={sold}
+        navigation={navigation}
       />
-      <View style={{}}>
+      <View
+        style={{
+          width: "100%",
+          justifyContent: "flex-end",
+          flexDirection: "row",
+        }}
+      >
         {comment.replies?.map((reply, index) => (
           <CommentChild
             parentCommentId={comment.id}
@@ -58,6 +74,7 @@ const Comment: React.FunctionComponent<Props> = ({
             withReply
             setReplyTo={setReplyTo}
             sold={sold}
+            navigation={navigation}
           />
         ))}
       </View>
@@ -80,7 +97,15 @@ const CommentChild: React.FunctionComponent<{
     >
   >;
   sold: boolean;
-}> = ({ comment, withReply, setReplyTo, parentCommentId, sold }) => {
+  navigation: StackNavigationProp<MarketParamList, "Pet">;
+}> = ({
+  comment,
+  withReply,
+  setReplyTo,
+  parentCommentId,
+  sold,
+  navigation,
+}) => {
   const [reaction, setReaction] = React.useState<string>("");
   const { user } = useSelector((state: StateType) => state);
 
@@ -104,24 +129,42 @@ const CommentChild: React.FunctionComponent<{
   }, [user, comment]);
 
   return (
-    <View style={{}}>
+    <View
+      style={{
+        backgroundColor: COLORS.main,
+        width: "100%",
+        maxWidth: "70%",
+        padding: 5,
+        borderRadius: 10,
+        marginTop: 5,
+      }}
+    >
       <TouchableOpacity
         activeOpacity={0.7}
-        onPress={
-          () => {}
-          // navigate(`/app/profile/${encodeId(comment.user?.id || "")}`)
+        onPress={() =>
+          navigation.navigate("Profile", {
+            userId: encodeId(comment.user?.id || ""),
+          })
         }
       >
-        <Text>
+        <Text
+          style={{
+            color: COLORS.white,
+            fontFamily: FONTS.regularBold,
+            fontSize: 16,
+          }}
+        >
           {comment.user?.firstName} {comment.user?.lastName}
         </Text>
       </TouchableOpacity>
-      <View style={{}}>
+      <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
         <TouchableOpacity
           activeOpacity={0.7}
-          onPress={
-            () => {}
-            // navigate(`/app/profile/${encodeId(comment.user?.id || "")}`)
+          style={{ marginRight: 5 }}
+          onPress={() =>
+            navigation.navigate("Profile", {
+              userId: encodeId(comment.user?.id || ""),
+            })
           }
         >
           <Image
@@ -133,20 +176,36 @@ const CommentChild: React.FunctionComponent<{
                   ).uri,
             }}
             style={{
-              width: isIpad ? 100 : 50,
-              height: isIpad ? 100 : 50,
-              borderRadius: 5,
+              width: 20,
+              height: 20,
+              borderRadius: 20,
               marginVertical: 3,
               resizeMode: "cover",
             }}
           />
         </TouchableOpacity>
-        <Text>{comment.comment}</Text>
+        <Text
+          style={{
+            fontFamily: FONTS.regular,
+            color: COLORS.white,
+          }}
+        >
+          {comment.comment}
+        </Text>
       </View>
-      <View style={{}}>
+      <View
+        style={{ flexDirection: "row", alignItems: "center", marginTop: 3 }}
+      >
         {withReply && comment.user?.id !== user?.id ? (
           <TouchableOpacity
             activeOpacity={0.7}
+            style={[
+              styles.reaction__button,
+              {
+                padding: 3,
+                marginRight: 10,
+              },
+            ]}
             onPress={() => {
               if (sold) return;
               setReplyTo!({
@@ -155,10 +214,10 @@ const CommentChild: React.FunctionComponent<{
               });
             }}
           >
-            <Entypo name="reply" size={24} color="black" />
+            <Entypo name="reply" size={16} color="white" />
           </TouchableOpacity>
         ) : null}
-        <View style={{}}>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Popover
             from={
               reaction === "DISLIKE" ? (
@@ -173,7 +232,7 @@ const CommentChild: React.FunctionComponent<{
                   ]}
                   activeOpacity={0.7}
                 >
-                  <AntDesign name="dislike1" size={20} color="black" />
+                  <AntDesign name="dislike1" size={16} color="black" />
                 </TouchableOpacity>
               ) : reaction === "LOVE" ? (
                 <TouchableOpacity
@@ -187,7 +246,7 @@ const CommentChild: React.FunctionComponent<{
                   ]}
                   activeOpacity={0.7}
                 >
-                  <Entypo name="heart" size={20} color={COLORS.white} />
+                  <Entypo name="heart" size={16} color={COLORS.white} />
                 </TouchableOpacity>
               ) : reaction === "OFFER_LOVE" ? (
                 <TouchableOpacity
@@ -203,7 +262,7 @@ const CommentChild: React.FunctionComponent<{
                 >
                   <FontAwesome5
                     name="hand-holding-heart"
-                    size={20}
+                    size={16}
                     color={COLORS.white}
                   />
                 </TouchableOpacity>
@@ -221,7 +280,7 @@ const CommentChild: React.FunctionComponent<{
                 >
                   <FontAwesome5
                     name="hand-holding-usd"
-                    size={20}
+                    size={16}
                     color={COLORS.white}
                   />
                 </TouchableOpacity>
@@ -237,7 +296,7 @@ const CommentChild: React.FunctionComponent<{
                   ]}
                   activeOpacity={0.7}
                 >
-                  <AntDesign name="like1" size={20} color={COLORS.white} />
+                  <AntDesign name="like1" size={16} color={COLORS.white} />
                 </TouchableOpacity>
               )
             }
@@ -252,9 +311,7 @@ const CommentChild: React.FunctionComponent<{
           <Popover
             from={
               <TouchableOpacity activeOpacity={0.7} style={{ marginLeft: 5 }}>
-                <Text
-                  style={{ fontFamily: FONTS.regularBold, color: COLORS.white }}
-                >
+                <Text style={{ fontFamily: FONTS.regularBold, color: "gray" }}>
                   {comment.reactions?.length || 0} reactions
                 </Text>
               </TouchableOpacity>
@@ -262,7 +319,7 @@ const CommentChild: React.FunctionComponent<{
           >
             <ReactionsSummary reactions={comment.reactions || []} />
           </Popover>
-          <Text>
+          <Text style={{ color: "gray", fontFamily: FONTS.regular }}>
             {" • "}
             {dayjs(new Date(Number(comment.createdAt))).fromNow()} ago
           </Text>
@@ -274,9 +331,9 @@ const CommentChild: React.FunctionComponent<{
 
 const styles = StyleSheet.create({
   reaction__button: {
-    width: 40,
-    height: 40,
-    padding: 10,
+    width: 25,
+    height: 25,
+    padding: 3,
     borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",

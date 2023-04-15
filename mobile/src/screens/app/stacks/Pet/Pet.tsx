@@ -90,6 +90,7 @@ const Pet: React.FunctionComponent<MarketNavProps<"Pet">> = ({
           petId={petId}
           pet={data.getPetById.pet as any}
           replyTo={replyTo}
+          navigation={navigation}
         />
       )}
     </View>

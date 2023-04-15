@@ -26,7 +26,7 @@ const SellerCard: React.FunctionComponent<Props> = ({ seller, navigation }) => {
       <View style={{}}>
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate("Profile", { sellerId: encodeId(seller.id) })
+            navigation.navigate("Profile", { userId: encodeId(seller.id) })
           }
         >
           <Text
@@ -42,7 +42,7 @@ const SellerCard: React.FunctionComponent<Props> = ({ seller, navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate("Profile", { sellerId: encodeId(seller.id) })
+            navigation.navigate("Profile", { userId: encodeId(seller.id) })
           }
         >
           <Text
@@ -57,7 +57,7 @@ const SellerCard: React.FunctionComponent<Props> = ({ seller, navigation }) => {
       </View>
       <TouchableOpacity
         onPress={() =>
-          navigation.navigate("Profile", { sellerId: encodeId(seller.id) })
+          navigation.navigate("Profile", { userId: encodeId(seller.id) })
         }
       >
         <Image
