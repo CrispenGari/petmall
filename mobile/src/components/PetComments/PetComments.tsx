@@ -19,6 +19,8 @@ import { AntDesign } from "@expo/vector-icons";
 import Comment from "../Comment/Comment";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { MarketParamList } from "../../params";
+import { useKeyboardDimension, useMediaQuery } from "../../hooks";
+
 interface Props {
   pet: PetType;
   setReplyTo: React.Dispatch<
@@ -47,6 +49,8 @@ const PetComments: React.FunctionComponent<Props> = ({
   const [{ fetching }, commentToPet] = useCommentToPetMutation();
   const [{ fetching: loading }, replyToComment] = useReplyCommentMutation();
   const [comment, setComment] = React.useState<string>("");
+  const { dimension } = useMediaQuery();
+  const { keyboardHeight } = useKeyboardDimension();
   const onSubmit = async () => {
     if (!!!comment.trim()) return;
     if (!!replyTo) {
@@ -84,6 +88,7 @@ const PetComments: React.FunctionComponent<Props> = ({
           backgroundColor: COLORS.secondary,
           maxHeight: 500,
           padding: 10,
+          height: 500,
         }}
       >
         {!!!pet.comments?.length ? (
@@ -111,8 +116,10 @@ const PetComments: React.FunctionComponent<Props> = ({
       </ScrollView>
 
       <KeyboardAvoidingView
-        behavior="position"
-        keyboardVerticalOffset={130}
+        behavior={dimension.width >= 768 ? "position" : "padding"}
+        keyboardVerticalOffset={
+          dimension.width >= 768 ? 130 : keyboardHeight + 200
+        }
         style={{ width: "100%", marginVertical: 10 }}
       >
         {!!replyTo ? (

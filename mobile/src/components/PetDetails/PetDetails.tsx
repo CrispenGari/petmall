@@ -21,6 +21,8 @@ import ReactionsSummary from "../ReactionsSummary/ReactionsSummary";
 import SellerCard from "../SellerCard/SellerCard";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { MarketParamList } from "../../params";
+import { useMediaQuery } from "../../hooks";
+
 dayjs.extend(relativeTime);
 dayjs.extend(updateLocale);
 
@@ -40,13 +42,22 @@ const PetDetails: React.FunctionComponent<Props> = ({
   setReaction,
   navigation,
 }) => {
+  const { dimension } = useMediaQuery();
   const repliesCount: number =
     pet.comments
       ?.map((cmt) => cmt.replies?.length || 0)
       .reduce((a, b) => a + b, 0) || 0;
   const commentCount: number = pet.comments?.length || 0;
+
   return (
-    <View style={{ width: "100%", maxWidth: 500, height: SCREEN_HEIGHT * 0.8 }}>
+    <View
+      style={{
+        width: "100%",
+        maxWidth: 768,
+        height: dimension.width < 768 ? dimension.height : SCREEN_HEIGHT * 0.8,
+        maxHeight: dimension.height,
+      }}
+    >
       <Text
         style={{
           fontSize: 20,

@@ -12,6 +12,8 @@ import { useSelector } from "react-redux";
 import { StateType } from "../../../../types";
 import { COLORS } from "../../../../constants";
 import { useDevice } from "../../../../hooks";
+import { useMediaQuery } from "../../../../hooks/useMediaQuery";
+import { ScrollView } from "react-native-gesture-handler";
 
 const Pet: React.FunctionComponent<MarketNavProps<"Pet">> = ({
   navigation,
@@ -20,6 +22,7 @@ const Pet: React.FunctionComponent<MarketNavProps<"Pet">> = ({
   },
 }) => {
   const petId: string = decodeId(id);
+  const { dimension } = useMediaQuery();
   const { isIpad } = useDevice();
   const [{ data }, refetchPet] = useGetPetByIdQuery({
     variables: { input: { id: petId } },
@@ -65,12 +68,46 @@ const Pet: React.FunctionComponent<MarketNavProps<"Pet">> = ({
       mounted = false;
     };
   }, [user, data]);
+
+  if (dimension.width < 768) {
+    return (
+      <ScrollView
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        style={{
+          backgroundColor: COLORS.primary,
+          padding: isIpad ? 10 : 5,
+          flex: 1,
+        }}
+      >
+        {!!data?.getPetById?.pet && (
+          <PetDetails
+            pet={data?.getPetById?.pet as any}
+            reaction={reaction}
+            setReaction={setReaction}
+            navigation={navigation}
+          />
+        )}
+
+        {!!data?.getPetById?.pet && (
+          <PetComments
+            setReplyTo={setReplyTo}
+            petId={petId}
+            pet={data.getPetById.pet as any}
+            replyTo={replyTo}
+            navigation={navigation}
+          />
+        )}
+      </ScrollView>
+    );
+  }
+
   return (
     <View
       style={{
         backgroundColor: COLORS.primary,
         padding: isIpad ? 10 : 5,
-        flexDirection: isIpad ? "row" : "column",
+        flexDirection: "row",
         alignItems: "flex-start",
         flex: 1,
       }}
