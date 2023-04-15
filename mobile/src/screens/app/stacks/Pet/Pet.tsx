@@ -1,4 +1,4 @@
-import { ScrollView } from "react-native";
+import { View } from "react-native";
 import React from "react";
 import { MarketNavProps } from "../../../../params";
 import { decodeId } from "../../../../utils";
@@ -66,8 +66,14 @@ const Pet: React.FunctionComponent<MarketNavProps<"Pet">> = ({
     };
   }, [user, data]);
   return (
-    <ScrollView
-      style={{ backgroundColor: COLORS.primary, padding: isIpad ? 10 : 5 }}
+    <View
+      style={{
+        backgroundColor: COLORS.primary,
+        padding: isIpad ? 10 : 5,
+        flexDirection: isIpad ? "row" : "column",
+        alignItems: "flex-start",
+        flex: 1,
+      }}
     >
       {!!data?.getPetById?.pet && (
         <PetDetails
@@ -77,8 +83,16 @@ const Pet: React.FunctionComponent<MarketNavProps<"Pet">> = ({
           navigation={navigation}
         />
       )}
-      <PetComments />
-    </ScrollView>
+
+      {!!data?.getPetById?.pet && (
+        <PetComments
+          setReplyTo={setReplyTo}
+          petId={petId}
+          pet={data.getPetById.pet as any}
+          replyTo={replyTo}
+        />
+      )}
+    </View>
   );
 };
 
