@@ -34,6 +34,11 @@ export type AppDrawerParamList = {
   PreviewPet: {
     newPet: string;
   };
+  VerifyEmail: {
+    email: string;
+  };
+  ForgotPassword: undefined;
+  ResetPassword: undefined;
 };
 
 export type AppDrawerNavProps<T extends keyof AppDrawerParamList> = {

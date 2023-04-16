@@ -7,18 +7,18 @@ import {
   ScrollView,
 } from "react-native";
 import React, { useLayoutEffect } from "react";
-import { AppDrawerNavProps } from "../../params";
+import { AppDrawerNavProps } from "../../../params";
 import * as Animatable from "react-native-animatable";
 
-import { FONTS, COLORS, SCREEN_HEIGHT, TOKEN_KEY } from "../../constants";
-import { styles } from "../../styles";
+import { FONTS, COLORS, SCREEN_HEIGHT, TOKEN_KEY } from "../../../constants";
+import { styles } from "../../../styles";
 import { Entypo, FontAwesome } from "@expo/vector-icons";
-import { BoxIndicator, Footer, CustomTextInput } from "../../components";
-import Divider from "../../components/Divider/Divider";
-import { useLoginMutation } from "../../graphql/generated/graphql";
-import { store } from "../../utils";
+import { BoxIndicator, Footer, CustomTextInput } from "../../../components";
+import Divider from "../../../components/Divider/Divider";
+import { useLoginMutation } from "../../../graphql/generated/graphql";
+import { store } from "../../../utils";
 import { useDispatch } from "react-redux";
-import { setUser } from "../../actions";
+import { setUser } from "../../../actions";
 
 interface ErrorType {
   message: string;
@@ -133,7 +133,7 @@ const Login: React.FunctionComponent<AppDrawerNavProps<"Login">> = ({
                 useNativeDriver={false}
                 source={{
                   uri: Image.resolveAssetSource(
-                    require("../../../assets/icon.png")
+                    require("../../../../assets/icon.png")
                   ).uri,
                 }}
                 style={{
@@ -171,13 +171,6 @@ const Login: React.FunctionComponent<AppDrawerNavProps<"Login">> = ({
               }}
             >
               <CustomTextInput
-                label="Email Address"
-                labelStyle={{
-                  color: "white",
-                  fontFamily: FONTS.regularBold,
-                  fontSize: 20,
-                  marginBottom: 5,
-                }}
                 errorStyle={[styles.p, { color: "red", marginTop: 5 }]}
                 leftIcon={<Entypo name="email" size={24} color={COLORS.main} />}
                 keyboardType="email-address"
@@ -186,27 +179,24 @@ const Login: React.FunctionComponent<AppDrawerNavProps<"Login">> = ({
                 containerStyles={{
                   width: "100%",
                   maxWidth: 500,
+                  borderRadius: 0,
                 }}
                 text={email}
                 onChangeText={(text) => setEmail(text)}
               />
 
               <CustomTextInput
-                label="Password"
-                labelStyle={{
-                  color: "white",
-                  fontFamily: FONTS.regularBold,
-                  fontSize: 20,
-                  marginBottom: 5,
-                }}
                 error={error?.field === "password" ? error.message : ""}
                 errorStyle={[styles.p, { color: "red", marginTop: 5 }]}
-                leftIcon={<Entypo name="email" size={24} color={COLORS.main} />}
-                keyboardType="email-address"
+                leftIcon={
+                  <FontAwesome name="lock" size={24} color={COLORS.main} />
+                }
+                keyboardType="default"
                 placeholder="password"
                 containerStyles={{
                   width: "100%",
                   maxWidth: 500,
+                  borderRadius: 0,
                 }}
                 text={password}
                 rightIcon={

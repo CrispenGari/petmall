@@ -7,19 +7,18 @@ import {
   ScrollView,
 } from "react-native";
 import React, { useEffect, useLayoutEffect } from "react";
-import { AppDrawerNavProps } from "../../params";
-import { AntDesign } from "@expo/vector-icons";
+import { AppDrawerNavProps } from "../../../params";
 import * as Animatable from "react-native-animatable";
 
-import { FONTS, COLORS, SCREEN_HEIGHT, TOKEN_KEY } from "../../constants";
-import { styles } from "../../styles";
-import { Entypo, FontAwesome } from "@expo/vector-icons";
-import { BoxIndicator, Footer, CustomTextInput } from "../../components";
-import Divider from "../../components/Divider/Divider";
-import { useRegisterMutation } from "../../graphql/generated/graphql";
-import { store } from "../../utils";
+import { COLORS, SCREEN_HEIGHT, TOKEN_KEY } from "../../../constants";
+import { styles } from "../../../styles";
+import { Entypo, FontAwesome, Ionicons } from "@expo/vector-icons";
+import { BoxIndicator, Footer, CustomTextInput } from "../../../components";
+import Divider from "../../../components/Divider/Divider";
+import { useRegisterMutation } from "../../../graphql/generated/graphql";
+import { store } from "../../../utils";
 import { useDispatch } from "react-redux";
-import { setUser } from "../../actions";
+import { setUser } from "../../../actions";
 
 interface ErrorType {
   message: string;
@@ -31,6 +30,8 @@ const Register: React.FunctionComponent<AppDrawerNavProps<"Register">> = ({
   const [password, setPassword] = React.useState<string>("");
   const [hidePassword, setHidePassword] = React.useState<boolean>(true);
   const [email, setEmail] = React.useState<string>("");
+  const [firstName, setFirstName] = React.useState<string>("");
+  const [lastName, setLastName] = React.useState<string>("");
   const [hideConfPassword, setHideConfPassword] = React.useState<boolean>(true);
   const [conf, setConf] = React.useState<string>("");
   const [error, setError] = React.useState<ErrorType | undefined>();
@@ -64,8 +65,10 @@ const Register: React.FunctionComponent<AppDrawerNavProps<"Register">> = ({
         dispatch(setUser(data.register.me || null));
         (async () => {
           const success = await store(TOKEN_KEY, data.register.jwt ?? "");
-          if (success) {
-            navigation.navigate("Market");
+          if (success && !!data.register.me) {
+            navigation.navigate("VerifyEmail", {
+              email: data.register.me.email,
+            });
           }
         })();
       }
@@ -81,6 +84,8 @@ const Register: React.FunctionComponent<AppDrawerNavProps<"Register">> = ({
         email,
         confirmPassword: conf,
         password,
+        firstName,
+        lastName,
       },
     });
   };
@@ -139,7 +144,7 @@ const Register: React.FunctionComponent<AppDrawerNavProps<"Register">> = ({
                 useNativeDriver={false}
                 source={{
                   uri: Image.resolveAssetSource(
-                    require("../../../assets/icon.png")
+                    require("../../../../assets/icon.png")
                   ).uri,
                 }}
                 style={{
@@ -178,12 +183,6 @@ const Register: React.FunctionComponent<AppDrawerNavProps<"Register">> = ({
             >
               <CustomTextInput
                 label="Email Address"
-                labelStyle={{
-                  color: "white",
-                  fontFamily: FONTS.regularBold,
-                  fontSize: 20,
-                  marginBottom: 5,
-                }}
                 error={error?.field === "email" ? error.message : ""}
                 errorStyle={[styles.p, { color: "red", marginTop: 5 }]}
                 leftIcon={<Entypo name="email" size={24} color={COLORS.main} />}
@@ -192,27 +191,57 @@ const Register: React.FunctionComponent<AppDrawerNavProps<"Register">> = ({
                 containerStyles={{
                   width: "100%",
                   maxWidth: 500,
+                  borderRadius: 0,
                 }}
                 text={email}
                 onChangeText={(text) => setEmail(text)}
               />
 
               <CustomTextInput
-                label="Password"
-                labelStyle={{
-                  color: "white",
-                  fontFamily: FONTS.regularBold,
-                  fontSize: 20,
-                  marginBottom: 5,
+                error={error?.field === "firstName" ? error.message : ""}
+                errorStyle={[styles.p, { color: "red", marginTop: 5 }]}
+                leftIcon={
+                  <Ionicons name="person-sharp" size={24} color={COLORS.main} />
+                }
+                keyboardType="default"
+                placeholder="First Name(s)"
+                containerStyles={{
+                  width: "100%",
+                  maxWidth: 500,
+                  borderRadius: 0,
                 }}
+                text={firstName}
+                onChangeText={(text) => setFirstName(text)}
+              />
+              <CustomTextInput
+                error={error?.field === "lastName" ? error.message : ""}
+                errorStyle={[styles.p, { color: "red", marginTop: 5 }]}
+                leftIcon={
+                  <Ionicons name="person-sharp" size={24} color={COLORS.main} />
+                }
+                keyboardType="default"
+                placeholder="Last Name"
+                containerStyles={{
+                  width: "100%",
+                  maxWidth: 500,
+                  borderRadius: 0,
+                }}
+                text={lastName}
+                onChangeText={(text) => setLastName(text)}
+              />
+
+              <CustomTextInput
                 error={error?.field === "password" ? error.message : ""}
                 errorStyle={[styles.p, { color: "red", marginTop: 5 }]}
-                leftIcon={<Entypo name="email" size={24} color={COLORS.main} />}
-                keyboardType="email-address"
+                leftIcon={
+                  <FontAwesome name="lock" size={24} color={COLORS.main} />
+                }
+                keyboardType="default"
                 placeholder="password"
                 containerStyles={{
                   width: "100%",
                   maxWidth: 500,
+                  borderRadius: 0,
                 }}
                 text={password}
                 rightIcon={
@@ -230,23 +259,18 @@ const Register: React.FunctionComponent<AppDrawerNavProps<"Register">> = ({
                 secureTextEntry={hidePassword}
                 onChangeText={(text) => setPassword(text)}
               />
-
               <CustomTextInput
-                label="Confirm Password"
-                labelStyle={{
-                  color: "white",
-                  fontFamily: FONTS.regularBold,
-                  fontSize: 20,
-                  marginBottom: 5,
-                }}
                 error={error?.field === "confirm-password" ? error.message : ""}
                 errorStyle={[styles.p, { color: "red", marginTop: 5 }]}
-                leftIcon={<Entypo name="email" size={24} color={COLORS.main} />}
-                keyboardType="email-address"
+                leftIcon={
+                  <FontAwesome name="lock" size={24} color={COLORS.main} />
+                }
+                keyboardType="default"
                 placeholder="confirm password"
                 containerStyles={{
                   width: "100%",
                   maxWidth: 500,
+                  borderRadius: 0,
                 }}
                 text={conf}
                 rightIcon={
@@ -318,7 +342,7 @@ const Register: React.FunctionComponent<AppDrawerNavProps<"Register">> = ({
           </View>
           <View style={{ height: 100 }} />
         </ScrollView>
-        <Footer />
+        {/* <Footer /> */}
       </KeyboardAvoidingView>
     </View>
   );

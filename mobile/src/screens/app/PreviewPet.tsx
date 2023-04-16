@@ -18,7 +18,7 @@ const PreviewPet: React.FunctionComponent<AppDrawerNavProps<"PreviewPet">> = ({
       uri: string;
       name: string;
     };
-    location: Location.LocationGeocodedAddress | null;
+    location: { lat: number; lon: number } | null;
     description: string;
     category: string;
     gender: string;
@@ -78,10 +78,7 @@ const PreviewPet: React.FunctionComponent<AppDrawerNavProps<"PreviewPet">> = ({
         image: image,
         name: pet.name,
         price: pet.price,
-        location:
-          ({
-            ...pet.location,
-          } as any) ?? null,
+        location: pet.location,
       },
     });
   };
@@ -174,94 +171,6 @@ const PreviewPet: React.FunctionComponent<AppDrawerNavProps<"PreviewPet">> = ({
         <Text style={[styles.p, { fontSize: 18, color: "white" }]}>
           {pet.description}
         </Text>
-      </View>
-
-      <View>
-        <Text style={[styles.h1, { fontSize: 25, color: "white" }]}>
-          Seller Location
-        </Text>
-        {pet.location ? (
-          <>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <Text style={[styles.p, { fontSize: 20, color: "white" }]}>
-                City
-              </Text>
-              <Text style={[styles.p, { fontSize: 20, color: "white" }]}>
-                {pet.location.city}
-              </Text>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <Text style={[styles.p, { fontSize: 20, color: "white" }]}>
-                Street
-              </Text>
-              <Text style={[styles.p, { fontSize: 20, color: "white" }]}>
-                {pet.location.street}
-              </Text>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <Text style={[styles.p, { fontSize: 20, color: "white" }]}>
-                Region
-              </Text>
-              <Text style={[styles.p, { fontSize: 20, color: "white" }]}>
-                {pet.location.region}
-              </Text>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <Text style={[styles.p, { fontSize: 20, color: "white" }]}>
-                Street Name
-              </Text>
-              <Text style={[styles.p, { fontSize: 20, color: "white" }]}>
-                {pet.location.name}
-              </Text>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <Text style={[styles.p, { fontSize: 20, color: "white" }]}>
-                Street Number
-              </Text>
-              <Text style={[styles.p, { fontSize: 20, color: "white" }]}>
-                {pet.location.streetNumber}
-              </Text>
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <Text style={[styles.p, { fontSize: 20, color: "white" }]}>
-                Postal Code
-              </Text>
-              <Text style={[styles.p, { fontSize: 20, color: "white" }]}>
-                {pet.location.postalCode}
-              </Text>
-            </View>
-          </>
-        ) : null}
       </View>
 
       <TouchableOpacity

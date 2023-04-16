@@ -1,18 +1,36 @@
 import { constants } from "../constants";
-import { User } from "../types";
-import * as Location from "expo-location";
-
-export const setUser = (payload: User | null) => {
+import {
+  ChatsObjectType,
+  NotificationObjectType,
+  UserType,
+} from "../graphql/generated/graphql";
+export const setUser = (payload: UserType | null) => {
   return {
     type: constants.SET_USER,
     payload,
   };
 };
-export const setLocationAction = (
-  payload: Location.LocationGeocodedAddress | null
+export const setLocation = (
+  payload: {
+    lat: number;
+    lon: number;
+  } | null
 ) => {
   return {
     type: constants.SET_LOCATION,
+    payload,
+  };
+};
+export const setNotifications = (payload: NotificationObjectType) => {
+  return {
+    type: constants.SET_NOTIFICATIONS,
+    payload,
+  };
+};
+
+export const setChats = (payload: ChatsObjectType) => {
+  return {
+    type: constants.SET_CHATS,
     payload,
   };
 };

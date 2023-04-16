@@ -3,6 +3,8 @@ import { Dimensions } from "react-native";
 export const constants = {
   SET_USER: "SET_USER",
   SET_LOCATION: "SET_LOCATION",
+  SET_NOTIFICATIONS: "SET_NOTIFICATIONS",
+  SET_CHATS: "SET_CHATS",
 };
 
 export const REACTIONS = [
@@ -12,8 +14,7 @@ export const REACTIONS = [
   "OFFER_MONEY",
   "DISLIKE",
 ];
-export const ngrokDomain: string = "e804-154-66-252-33.ngrok-free.app";
-
+export const ngrokDomain: string = "bdb5-196-251-13-5.ngrok-free.app";
 export const PETS_CATEGORIES = [
   "CATS",
   "DOGS",
