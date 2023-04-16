@@ -45,7 +45,7 @@ const ForgotPassword: React.FC<Props> = () => {
 
   React.useEffect(() => {
     let mounted: boolean = true;
-    if (mounted && !!!data?.requestForgotPassword.success) {
+    if (mounted && !!data?.requestForgotPassword.success) {
       setError({ field: "", message: "" });
     }
     return () => {

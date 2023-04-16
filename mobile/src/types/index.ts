@@ -1,12 +1,7 @@
-export type User = {
-  id: string;
-  email: string;
-  createdAt: string;
-  updatedAt: string;
-};
+import { UserType } from "../graphql/generated/graphql";
 
 export interface StateType {
-  user: User | null;
+  user: UserType | null;
   location: {
     lat: number;
     lon: number;

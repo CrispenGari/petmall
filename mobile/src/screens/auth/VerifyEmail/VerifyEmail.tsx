@@ -234,7 +234,7 @@ const VerifyEmail: React.FunctionComponent<
               }}
             >
               <CustomTextInput
-                error={!!error ? error.message : ""}
+                error={!!error.field ? error.message : ""}
                 errorStyle={[styles.p, { color: "red", marginTop: 5 }]}
                 leftIcon={
                   <Ionicons name="person-sharp" size={24} color={COLORS.main} />

@@ -6,11 +6,18 @@ import {
 import { Image, Text, View } from "react-native";
 import DrawerProfile from "../DrawerProfile/DrawerProfile";
 import DrawerItem from "../DrawerItem/DrawerItem";
-import { Foundation, AntDesign, MaterialIcons } from "@expo/vector-icons";
+import {
+  Foundation,
+  AntDesign,
+  MaterialIcons,
+  Ionicons,
+  FontAwesome,
+} from "@expo/vector-icons";
 import { COLORS } from "../../constants";
 import { useSelector } from "react-redux";
 import { StateType } from "../../types";
 import { styles } from "../../styles";
+import { encodeId } from "../../utils";
 interface Props {
   props: DrawerContentComponentProps;
 }
@@ -56,6 +63,7 @@ const AppDrawer: React.FunctionComponent<Props> = ({
               width: 100,
               height: 100,
               marginVertical: 10,
+              resizeMode: "contain",
             }}
           />
         </View>
@@ -92,15 +100,37 @@ const AppDrawer: React.FunctionComponent<Props> = ({
           />
         </>
       ) : (
-        <DrawerItem
-          title="Market Pet"
-          onPress={() =>
-            navigation.navigate("NewPet", {
-              editPet: "",
-            })
-          }
-          icon={<MaterialIcons name="pets" size={24} color="white" />}
-        />
+        <>
+          <DrawerItem
+            title="Market Pet"
+            onPress={() =>
+              navigation.navigate("NewPet", {
+                editPet: "",
+              })
+            }
+            icon={<MaterialIcons name="pets" size={24} color="white" />}
+          />
+          <DrawerItem
+            title="Notifications"
+            onPress={() =>
+              navigation.navigate("Notifications", {
+                userId: encodeId(user.id),
+              })
+            }
+            icon={
+              <Ionicons name="notifications-sharp" size={24} color="white" />
+            }
+          />
+          <DrawerItem
+            title="Chats"
+            onPress={() =>
+              navigation.navigate("Chats", {
+                userId: encodeId(user.id),
+              })
+            }
+            icon={<FontAwesome name="comments-o" size={24} color="white" />}
+          />
+        </>
       )}
     </DrawerContentScrollView>
   );

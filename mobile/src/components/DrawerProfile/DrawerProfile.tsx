@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "../../types";
 import { useLogoutMutation } from "../../graphql/generated/graphql";
 import BoxIndicator from "../BoxIndicator/BoxIndicator";
-import { COLORS, TOKEN_KEY } from "../../constants";
+import { COLORS, TOKEN_KEY, ngrokDomain } from "../../constants";
 import { setUser } from "../../actions";
 import { del } from "../../utils";
 
@@ -16,13 +16,11 @@ const DrawerProfile: React.FunctionComponent<Props> = ({ onPress }) => {
   const { user } = useSelector((state: StateType) => state);
   const [{ data, fetching }, logoutHandler] = useLogoutMutation();
   const dispatch = useDispatch();
-
   React.useEffect(() => {
     let mounted: boolean = true;
     if (mounted && data?.logout) {
       (async () => {
         const success = await del(TOKEN_KEY);
-        console.log({ success });
         if (success) {
           dispatch(setUser(null));
         }
@@ -56,8 +54,10 @@ const DrawerProfile: React.FunctionComponent<Props> = ({ onPress }) => {
       </Text>
       <Image
         source={{
-          uri: Image.resolveAssetSource(require("../../../assets/profile.png"))
-            .uri,
+          uri: !!user?.avatar
+            ? user.avatar.replace("127.0.0.1:3001", ngrokDomain)
+            : Image.resolveAssetSource(require("../../../assets/profile.png"))
+                .uri,
         }}
         style={{
           width: 100,

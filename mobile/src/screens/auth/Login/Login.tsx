@@ -10,10 +10,10 @@ import React, { useLayoutEffect } from "react";
 import { AppDrawerNavProps } from "../../../params";
 import * as Animatable from "react-native-animatable";
 
-import { FONTS, COLORS, SCREEN_HEIGHT, TOKEN_KEY } from "../../../constants";
+import { COLORS, SCREEN_HEIGHT, TOKEN_KEY } from "../../../constants";
 import { styles } from "../../../styles";
 import { Entypo, FontAwesome } from "@expo/vector-icons";
-import { BoxIndicator, Footer, CustomTextInput } from "../../../components";
+import { BoxIndicator, CustomTextInput } from "../../../components";
 import Divider from "../../../components/Divider/Divider";
 import { useLoginMutation } from "../../../graphql/generated/graphql";
 import { store } from "../../../utils";
@@ -217,6 +217,26 @@ const Login: React.FunctionComponent<AppDrawerNavProps<"Login">> = ({
               />
               <TouchableOpacity
                 activeOpacity={0.7}
+                onPress={async () => {
+                  navigation.navigate("ForgotPassword");
+                }}
+                disabled={fetching}
+                style={{
+                  marginVertical: 20,
+                  alignSelf: "flex-end",
+                }}
+              >
+                <Text
+                  style={[
+                    styles.button__text,
+                    { fontSize: 20, textDecorationLine: "underline" },
+                  ]}
+                >
+                  Forgot Password?
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                activeOpacity={0.7}
                 onPress={login}
                 disabled={fetching}
                 style={[
@@ -267,7 +287,6 @@ const Login: React.FunctionComponent<AppDrawerNavProps<"Login">> = ({
             </View>
           </View>
         </ScrollView>
-        <Footer />
       </KeyboardAvoidingView>
     </View>
   );
