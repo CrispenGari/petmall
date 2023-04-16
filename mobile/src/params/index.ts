@@ -14,6 +14,8 @@ export type MarketParamList = {
   Chat: {
     chatId: string;
   };
+  Chats: { userId: string };
+  Notifications: { userId: string };
 };
 
 export type MarketNavProps<T extends keyof MarketParamList> = {
@@ -25,7 +27,7 @@ export type AppDrawerParamList = {
   Market: undefined;
   Login: undefined;
   Register: undefined;
-  Profile: undefined;
+  SellerProfile: undefined;
   NewPet: Partial<{
     editPet: string;
   }>;

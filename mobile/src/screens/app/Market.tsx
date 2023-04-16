@@ -5,6 +5,10 @@ import { AppDrawerNavProps, MarketParamList } from "../../params";
 import Pets from "./stacks/Pets/Pets";
 import Pet from "./stacks/Pet/Pet";
 import { AntDesign } from "@expo/vector-icons";
+import Chat from "./stacks/Chat/Chat";
+import Chats from "./stacks/Chats/Chats";
+import Profile from "./stacks/Profile/Profile";
+import Notifications from "./stacks/Notifications/Notifications";
 
 const Stack = createStackNavigator<MarketParamList>();
 const Market: React.FunctionComponent<AppDrawerNavProps<"Market">> = ({
@@ -41,6 +45,10 @@ const Market: React.FunctionComponent<AppDrawerNavProps<"Market">> = ({
     >
       <Stack.Screen name="Pets" component={Pets} />
       <Stack.Screen name="Pet" component={Pet} />
+      <Stack.Screen name="Chat" component={Chat} />
+      <Stack.Screen name="Chats" component={Chats} />
+      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="Notifications" component={Notifications} />
     </Stack.Navigator>
   );
 };

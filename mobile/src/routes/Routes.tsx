@@ -5,19 +5,16 @@ import { AppDrawerParamList } from "../params";
 import { Login, Register } from "../screens/auth";
 import Market from "../screens/app/Market";
 import { COLORS, FONTS, TOKEN_KEY } from "../constants";
-import Profile from "../screens/app/Profile";
 import AppDrawer from "../components/AppDrawer/AppDrawer";
-import { useMeQuery } from "../graphql/generated/graphql";
-import { View } from "react-native";
-import { BoxIndicator } from "../components";
 import { useDispatch, useSelector } from "react-redux";
-import { setLocationAction, setUser } from "../actions";
+import { setLocationAction } from "../actions";
 import NewPet from "../screens/app/NewPet";
-import { useLocationPermission, useMediaPermission } from "../hooks";
+import { useLocationPermission } from "../hooks";
 import * as Location from "expo-location";
 import { StateType } from "../types";
 import PreviewPet from "../screens/app/PreviewPet";
 import { retrieve } from "../utils";
+import SellerProfile from "../screens/app/SellerProfile";
 const Drawer = createDrawerNavigator<AppDrawerParamList>();
 
 const Routes = () => {
@@ -123,7 +120,7 @@ const Routes = () => {
         })}
       >
         <Drawer.Screen name="Market" component={Market} />
-        <Drawer.Screen name="Profile" component={Profile} />
+        <Drawer.Screen name="SellerProfile" component={SellerProfile} />
         <Drawer.Screen name="Login" component={Login} />
         <Drawer.Screen name="Register" component={Register} />
         <Drawer.Screen name="NewPet" component={NewPet} />

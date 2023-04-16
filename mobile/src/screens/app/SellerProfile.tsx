@@ -3,9 +3,9 @@ import React, { useLayoutEffect } from "react";
 import { AppDrawerNavProps } from "../../params";
 import { AntDesign } from "@expo/vector-icons";
 
-const Profile: React.FunctionComponent<AppDrawerNavProps<"Profile">> = ({
-  navigation,
-}) => {
+const SellerProfile: React.FunctionComponent<
+  AppDrawerNavProps<"SellerProfile">
+> = ({ navigation }) => {
   useLayoutEffect(() => {
     let mounted: boolean = true;
     if (mounted) {
@@ -26,9 +26,9 @@ const Profile: React.FunctionComponent<AppDrawerNavProps<"Profile">> = ({
   }, []);
   return (
     <View>
-      <Text>Profile</Text>
+      <Text>SellerProfile</Text>
     </View>
   );
 };
 
-export default Profile;
+export default SellerProfile;
