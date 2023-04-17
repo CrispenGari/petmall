@@ -158,6 +158,7 @@ const NewPet: React.FunctionComponent<AppDrawerNavProps<"NewPet">> = ({
       quality: 1,
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsMultipleSelection: false,
+      allowsEditing: true,
     });
     if (image.canceled) return;
     setImage({
@@ -221,274 +222,287 @@ const NewPet: React.FunctionComponent<AppDrawerNavProps<"NewPet">> = ({
         showsHorizontalScrollIndicator={false}
         style={{ padding: 10, backgroundColor: COLORS.secondary }}
       >
-        <Text
-          style={[
-            styles.h1,
-            {
-              textAlign: "center",
-              fontSize: 30,
-              marginVertical: 20,
-              color: COLORS.white,
-            },
-          ]}
-        >
-          Create Market for New Pet
-        </Text>
-        <CustomTextInput
-          label="Pet Name"
-          placeholder="Pet Name"
-          labelStyle={[styles.p, { color: COLORS.white }]}
-          containerStyles={{
-            backgroundColor: COLORS.main,
-            marginBottom: 10,
-            maxWidth: 500,
-          }}
-          text={name}
-          onChangeText={(text) => setName(text)}
-        />
-        <CustomTextInput
-          label="Pet Age (weeks)"
-          placeholder="Pet Age in weeks"
-          labelStyle={[styles.p, { color: COLORS.white }]}
-          keyboardType={"number-pad"}
-          containerStyles={{
-            marginBottom: 10,
-            maxWidth: 500,
-            backgroundColor: COLORS.main,
-          }}
-          text={age}
-          onChangeText={(text) => setAge(text)}
-        />
-        <CustomTextInput
-          leftIcon={<Text style={[styles.h1, { color: COLORS.white }]}>R</Text>}
-          label="Price"
-          placeholder="0.00"
-          labelStyle={[styles.p, { color: COLORS.white }]}
-          containerStyles={{
-            backgroundColor: COLORS.main,
-            marginBottom: 10,
-            maxWidth: 500,
-
-            borderWidth: 0,
-          }}
-          text={price}
-          keyboardType={"decimal-pad"}
-          onChangeText={(text) => setPrice(text)}
-        />
-        <CustomTextInput
-          label="Pet Description"
-          placeholder="Pet Description"
-          multiline
-          labelStyle={[styles.p, { color: COLORS.white }]}
-          containerStyles={{
-            backgroundColor: COLORS.main,
-            marginBottom: 10,
-            maxWidth: 500,
-          }}
-          inputStyle={{ height: 100 }}
-          text={description}
-          onChangeText={(text) => setDescription(text)}
-        />
-        <SelectDropdown
-          data={GENDERS}
-          onSelect={(selectedItem, index) => {
-            setGender(selectedItem);
-          }}
-          buttonTextAfterSelection={(selectedItem, index) => {
-            return selectedItem;
-          }}
-          rowTextForSelection={(item, index) => {
-            return item;
-          }}
-          buttonStyle={{
-            width: "100%",
-            borderColor: COLORS.main,
-            borderRadius: 5,
-            backgroundColor: COLORS.main,
-            maxWidth: 500,
-          }}
-          buttonTextStyle={{
-            color: COLORS.white,
-            fontFamily: FONTS.regular,
-          }}
-          defaultButtonText="Select Pet Gender"
-          rowTextStyle={{
-            textTransform: "lowercase",
-          }}
-          rowStyle={{
-            padding: 0,
-            height: 40,
-          }}
-        />
-
-        <SelectDropdown
-          data={PETS_CATEGORIES}
-          onSelect={(selectedItem, index) => {
-            setCategory(selectedItem);
-          }}
-          buttonTextAfterSelection={(selectedItem, index) => {
-            return selectedItem;
-          }}
-          rowTextForSelection={(item, index) => {
-            return item;
-          }}
-          buttonStyle={{
-            width: "100%",
-            borderColor: COLORS.main,
-            borderRadius: 5,
-            backgroundColor: COLORS.main,
-            maxWidth: 500,
-            marginVertical: 10,
-          }}
-          buttonTextStyle={{
-            color: COLORS.white,
-            fontFamily: FONTS.regular,
-          }}
-          defaultButtonText="Select Pet Category"
-          rowTextStyle={{
-            textTransform: "lowercase",
-          }}
-          rowStyle={{
-            padding: 0,
-            height: 40,
-          }}
-        />
-
         <View
           style={{
-            padding: 10,
-            backgroundColor: COLORS.main,
-            borderRadius: 5,
+            flex: 1,
+            alignItems: "center",
+            width: "100%",
+            alignSelf: "center",
             maxWidth: 500,
           }}
         >
-          <BouncyCheckbox
-            size={25}
-            fillColor={COLORS.secondary}
-            unfillColor={COLORS.white}
-            isChecked={location}
-            text="Enable current location and city."
-            iconStyle={{ borderColor: COLORS.main }}
-            innerIconStyle={{ borderWidth: 2 }}
-            textStyle={[
-              styles.p,
+          <Text
+            style={[
+              styles.h1,
               {
-                flex: 1,
-                marginLeft: 10,
-                fontSize: 20,
-                textDecorationColor: "transparent",
+                textAlign: "center",
+                fontSize: 30,
+                marginVertical: 20,
+                color: COLORS.white,
               },
             ]}
-            onPress={(isChecked: boolean) => {
-              setLocation(isChecked);
+          >
+            Create Market for New Pet
+          </Text>
+          <CustomTextInput
+            label="Pet Name"
+            placeholder="Pet Name"
+            labelStyle={[styles.p, { color: COLORS.white }]}
+            containerStyles={{
+              backgroundColor: COLORS.main,
+              marginBottom: 10,
+              maxWidth: 500,
+            }}
+            text={name}
+            onChangeText={(text) => setName(text)}
+          />
+          <CustomTextInput
+            label="Pet Age (weeks)"
+            placeholder="Pet Age in weeks"
+            labelStyle={[styles.p, { color: COLORS.white }]}
+            keyboardType={"number-pad"}
+            containerStyles={{
+              marginBottom: 10,
+              maxWidth: 500,
+              backgroundColor: COLORS.main,
+            }}
+            text={age}
+            onChangeText={(text) => setAge(text)}
+          />
+          <CustomTextInput
+            leftIcon={
+              <Text style={[styles.h1, { color: COLORS.white }]}>R</Text>
+            }
+            label="Price"
+            placeholder="0.00"
+            labelStyle={[styles.p, { color: COLORS.white }]}
+            containerStyles={{
+              backgroundColor: COLORS.main,
+              marginBottom: 10,
+              maxWidth: 500,
+
+              borderWidth: 0,
+            }}
+            text={price}
+            keyboardType={"decimal-pad"}
+            onChangeText={(text) => setPrice(text)}
+          />
+          <CustomTextInput
+            label="Pet Description"
+            placeholder="Pet Description"
+            multiline
+            labelStyle={[styles.p, { color: COLORS.white }]}
+            containerStyles={{
+              backgroundColor: COLORS.main,
+              marginBottom: 10,
+              maxWidth: 500,
+            }}
+            inputStyle={{ height: 100 }}
+            text={description}
+            onChangeText={(text) => setDescription(text)}
+          />
+          <SelectDropdown
+            data={GENDERS}
+            onSelect={(selectedItem, index) => {
+              setGender(selectedItem);
+            }}
+            buttonTextAfterSelection={(selectedItem, index) => {
+              return selectedItem;
+            }}
+            rowTextForSelection={(item, index) => {
+              return item;
+            }}
+            buttonStyle={{
+              width: "100%",
+              borderColor: COLORS.main,
+              borderRadius: 5,
+              backgroundColor: COLORS.main,
+              maxWidth: 500,
+            }}
+            buttonTextStyle={{
+              color: COLORS.white,
+              fontFamily: FONTS.regular,
+            }}
+            defaultButtonText="Select Pet Gender"
+            rowTextStyle={{
+              textTransform: "lowercase",
+            }}
+            rowStyle={{
+              padding: 0,
+              height: 40,
             }}
           />
-        </View>
-        <Text
-          style={[
-            styles.p,
-            { marginTop: 20, fontSize: 20, color: COLORS.white },
-          ]}
-        >
-          Select a pet image.
-        </Text>
-        <View
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            padding: 10,
-            backgroundColor: COLORS.main,
-            borderRadius: 5,
-            maxWidth: 500,
-            marginBottom: 10,
-            height: 400,
-          }}
-        >
-          {!!!image ? null : (
-            <Image
-              style={{
-                width: "100%",
-                height: 300,
-                marginBottom: 20,
-                borderRadius: 5,
-              }}
-              source={{
-                uri: image.uri,
+
+          <SelectDropdown
+            data={PETS_CATEGORIES}
+            onSelect={(selectedItem, index) => {
+              setCategory(selectedItem);
+            }}
+            buttonTextAfterSelection={(selectedItem, index) => {
+              return selectedItem;
+            }}
+            rowTextForSelection={(item, index) => {
+              return item;
+            }}
+            buttonStyle={{
+              width: "100%",
+              borderColor: COLORS.main,
+              borderRadius: 5,
+              backgroundColor: COLORS.main,
+              maxWidth: 500,
+              marginVertical: 10,
+            }}
+            buttonTextStyle={{
+              color: COLORS.white,
+              fontFamily: FONTS.regular,
+            }}
+            defaultButtonText="Select Pet Category"
+            rowTextStyle={{
+              textTransform: "lowercase",
+            }}
+            rowStyle={{
+              padding: 0,
+              height: 40,
+            }}
+          />
+
+          <View
+            style={{
+              padding: 10,
+              backgroundColor: COLORS.main,
+              borderRadius: 5,
+              maxWidth: 500,
+              width: "100%",
+            }}
+          >
+            <BouncyCheckbox
+              size={25}
+              fillColor={COLORS.secondary}
+              unfillColor={COLORS.white}
+              isChecked={location}
+              text="Enable current location and city."
+              iconStyle={{ borderColor: COLORS.main }}
+              innerIconStyle={{ borderWidth: 2 }}
+              textStyle={[
+                styles.p,
+                {
+                  flex: 1,
+                  marginLeft: 10,
+                  fontSize: 20,
+                  textDecorationColor: "transparent",
+                },
+              ]}
+              onPress={(isChecked: boolean) => {
+                setLocation(isChecked);
               }}
             />
-          )}
-          <View style={{ flexDirection: "row", justifyContent: "center" }}>
-            <TouchableOpacity
-              style={[
-                styles.button,
-                {
-                  width: 50,
-                  height: 50,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderRadius: 50,
-                },
-              ]}
-              activeOpacity={0.7}
-              onPress={takeImage}
-            >
-              <Entypo name="camera" size={24} color={COLORS.white} />
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[
-                styles.button,
-                {
-                  width: 50,
-                  height: 50,
-                  justifyContent: "center",
-                  alignItems: "center",
-                  borderRadius: 50,
-                  marginLeft: 20,
-                },
-              ]}
-              activeOpacity={0.7}
-              onPress={selectImage}
-            >
-              <Entypo name="images" size={24} color={COLORS.white} />
-            </TouchableOpacity>
           </View>
+          <Text
+            style={[
+              styles.p,
+              { marginTop: 20, fontSize: 20, color: COLORS.white },
+            ]}
+          >
+            Select a pet image.
+          </Text>
+          <View
+            style={{
+              alignItems: "center",
+              justifyContent: "center",
+              padding: 10,
+              backgroundColor: COLORS.main,
+              borderRadius: 5,
+              maxWidth: 500,
+              marginBottom: 10,
+              height: 400,
+              width: "100%",
+            }}
+          >
+            {!!!image ? null : (
+              <Image
+                style={{
+                  width: "100%",
+                  height: 300,
+                  marginBottom: 20,
+                  borderRadius: 5,
+                }}
+                source={{
+                  uri: image.uri,
+                }}
+              />
+            )}
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  {
+                    width: 50,
+                    height: 50,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: 50,
+                  },
+                ]}
+                activeOpacity={0.7}
+                onPress={takeImage}
+              >
+                <Entypo name="camera" size={24} color={COLORS.white} />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.button,
+                  {
+                    width: 50,
+                    height: 50,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    borderRadius: 50,
+                    marginLeft: 20,
+                  },
+                ]}
+                activeOpacity={0.7}
+                onPress={selectImage}
+              >
+                <Entypo name="images" size={24} color={COLORS.white} />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              {
+                alignSelf: "center",
+                borderColor: COLORS.tertiary,
+                backgroundColor: "transparent",
+                borderWidth: 1,
+              },
+            ]}
+            activeOpacity={0.7}
+            onPress={() => {
+              setName("");
+              setAge("1");
+              setImage(undefined);
+              setDescription("");
+              setPrice("");
+              setGender(GENDERS[0]);
+              setCategory(PETS_CATEGORIES[0]);
+              setError("");
+              setLocation(false);
+              navigation.navigate("Market");
+            }}
+          >
+            <Text style={[styles.h1, { color: "white" }]}>Cancel</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.button, { alignSelf: "center", marginTop: 30 }]}
+            activeOpacity={0.7}
+            onPress={previewPet}
+          >
+            <Text style={[styles.h1, { color: "white" }]}>Preview</Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          style={[
-            styles.button,
-            {
-              alignSelf: "center",
-              borderColor: COLORS.tertiary,
-              backgroundColor: "transparent",
-              borderWidth: 1,
-            },
-          ]}
-          activeOpacity={0.7}
-          onPress={() => {
-            setName("");
-            setAge("1");
-            setImage(undefined);
-            setDescription("");
-            setPrice("");
-            setGender(GENDERS[0]);
-            setCategory(PETS_CATEGORIES[0]);
-            setError("");
-            setLocation(false);
-            navigation.navigate("Market");
-          }}
-        >
-          <Text style={[styles.h1, { color: "white" }]}>Cancel</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.button, { alignSelf: "center", marginTop: 30 }]}
-          activeOpacity={0.7}
-          onPress={previewPet}
-        >
-          <Text style={[styles.h1, { color: "white" }]}>Preview</Text>
-        </TouchableOpacity>
-
         <View style={{ height: 100 }} />
       </ScrollView>
     </KeyboardAvoidingView>

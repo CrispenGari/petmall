@@ -1,10 +1,8 @@
-import { View, Text, Button, ScrollView } from "react-native";
+import { ScrollView } from "react-native";
 import React from "react";
 import { MarketNavProps } from "../../../../params";
 import Banner from "../../../../components/Banner/Banner";
 import { COLORS, PETS_CATEGORIES } from "../../../../constants";
-import { useGetPetsByCategoryQuery } from "../../../../graphql/generated/graphql";
-import { styles } from "../../../../styles";
 import { PetCategory } from "../../../../components";
 
 const Pets: React.FunctionComponent<MarketNavProps<"Pets">> = ({

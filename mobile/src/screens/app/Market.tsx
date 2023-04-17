@@ -9,6 +9,7 @@ import Chat from "./stacks/Chat/Chat";
 import Chats from "./stacks/Chats/Chats";
 import Profile from "./stacks/Profile/Profile";
 import Notifications from "./stacks/Notifications/Notifications";
+import { COLORS } from "../../constants";
 
 const Stack = createStackNavigator<MarketParamList>();
 const Market: React.FunctionComponent<AppDrawerNavProps<"Market">> = ({
@@ -21,10 +22,26 @@ const Market: React.FunctionComponent<AppDrawerNavProps<"Market">> = ({
         headerLeft: (props) => {
           return (
             <TouchableOpacity
-              style={{ paddingHorizontal: 10 }}
+              style={{
+                paddingHorizontal: 10,
+                position: "relative",
+                display: "none",
+              }}
               activeOpacity={0.7}
               onPress={() => navigation.toggleDrawer()}
             >
+              <View
+                style={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: 10,
+                  backgroundColor: COLORS.tertiary,
+                  position: "absolute",
+                  top: 0,
+                  right: 0,
+                  zIndex: 1,
+                }}
+              />
               <AntDesign name="menuunfold" size={24} color="white" />
             </TouchableOpacity>
           );

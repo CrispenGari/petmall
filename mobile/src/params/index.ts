@@ -27,7 +27,9 @@ export type AppDrawerParamList = {
   Market: undefined;
   Login: undefined;
   Register: undefined;
-  SellerProfile: undefined;
+  SellerProfile: {
+    userId: string;
+  };
   NewPet: Partial<{
     editPet: string;
   }>;

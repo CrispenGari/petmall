@@ -1,4 +1,4 @@
-import { TouchableOpacity, Text } from "react-native";
+import { TouchableOpacity, Text, View } from "react-native";
 import React from "react";
 import { styles } from "../../styles";
 import { COLORS } from "../../constants";
@@ -8,6 +8,7 @@ interface Props {
   title?: string;
   active?: boolean;
   icon?: React.ReactNode;
+  notification?: Boolean;
 }
 
 const DrawerItem: React.FunctionComponent<Props> = ({
@@ -15,6 +16,7 @@ const DrawerItem: React.FunctionComponent<Props> = ({
   active,
   onPress,
   icon,
+  notification,
 }) => {
   return (
     <TouchableOpacity
@@ -28,8 +30,22 @@ const DrawerItem: React.FunctionComponent<Props> = ({
         backgroundColor: COLORS.primary,
         paddingHorizontal: 10,
         marginBottom: 1,
+        position: "relative",
       }}
     >
+      {notification && (
+        <View
+          style={{
+            width: 10,
+            height: 10,
+            backgroundColor: COLORS.tertiary,
+            borderRadius: 10,
+            position: "absolute",
+            right: 10,
+            top: 5,
+          }}
+        />
+      )}
       <Text style={[styles.h2, { color: "white", letterSpacing: 1 }]}>
         {title}
       </Text>

@@ -1,15 +1,32 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { ScrollView, Text, TouchableOpacity } from "react-native";
 import React, { useLayoutEffect } from "react";
 import { AppDrawerNavProps } from "../../params";
 import { AntDesign } from "@expo/vector-icons";
+import { useSelector } from "react-redux";
+import { StateType } from "../../types";
+import { COLORS } from "../../constants";
+import {
+  Footer,
+  ProfileCard,
+  ProfileChangePassword,
+  ProfileDeleteAccount,
+  ProfileLogoutButton,
+  ProfilePetsFlatList,
+} from "../../components";
+import { decodeId } from "../../utils";
 
 const SellerProfile: React.FunctionComponent<
   AppDrawerNavProps<"SellerProfile">
-> = ({ navigation }) => {
-  useLayoutEffect(() => {
+> = ({ navigation, route: { params } }) => {
+  const { user } = useSelector((state: StateType) => state);
+  const userId: string = decodeId(params?.userId as string);
+  const [category, setCategory] = React.useState<string>("ALL PETS");
+
+  React.useLayoutEffect(() => {
     let mounted: boolean = true;
     if (mounted) {
       navigation.setOptions({
+        headerTitle: !!user ? `${user.firstName} ${user.lastName}` : "Profile",
         headerLeft: (props) => {
           return (
             <TouchableOpacity
@@ -23,11 +40,33 @@ const SellerProfile: React.FunctionComponent<
         },
       });
     }
-  }, []);
+    return () => {
+      mounted = false;
+    };
+  }, [user]);
   return (
-    <View>
-      <Text>SellerProfile</Text>
-    </View>
+    <ScrollView style={{ flex: 1, backgroundColor: COLORS.primary }}>
+      <ProfileCard
+        userId={userId}
+        setCategory={setCategory}
+        category={category}
+      />
+      <ProfilePetsFlatList
+        userId={userId}
+        category={category}
+        subtitle={`Pet in the market.`}
+        setCategory={setCategory}
+      />
+      {user?.id === userId && (
+        <>
+          <ProfileChangePassword />
+          <ProfileDeleteAccount />
+          <ProfileLogoutButton />
+        </>
+      )}
+
+      <Footer />
+    </ScrollView>
   );
 };
 

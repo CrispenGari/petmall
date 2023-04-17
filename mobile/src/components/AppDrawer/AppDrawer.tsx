@@ -21,11 +21,12 @@ import { encodeId } from "../../utils";
 interface Props {
   props: DrawerContentComponentProps;
 }
-
 const AppDrawer: React.FunctionComponent<Props> = ({
   props: { navigation },
 }) => {
-  const { user } = useSelector((state: StateType) => state);
+  const { user, chats, notifications } = useSelector(
+    (state: StateType) => state
+  );
   return (
     <DrawerContentScrollView
       style={{
@@ -34,7 +35,13 @@ const AppDrawer: React.FunctionComponent<Props> = ({
       }}
     >
       {user ? (
-        <DrawerProfile />
+        <DrawerProfile
+          onPress={() => {
+            navigation.navigate("SellerProfile", {
+              userId: encodeId(user.id),
+            });
+          }}
+        />
       ) : (
         <View
           style={{
@@ -117,12 +124,14 @@ const AppDrawer: React.FunctionComponent<Props> = ({
                 userId: encodeId(user.id),
               })
             }
+            notification={!!notifications.unread}
             icon={
               <Ionicons name="notifications-sharp" size={24} color="white" />
             }
           />
           <DrawerItem
             title="Chats"
+            notification={!!chats.unopened}
             onPress={() =>
               navigation.navigate("Chats", {
                 userId: encodeId(user.id),

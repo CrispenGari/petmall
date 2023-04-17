@@ -1,4 +1,8 @@
-import { UserType } from "../graphql/generated/graphql";
+import {
+  ChatsObjectType,
+  NotificationObjectType,
+  UserType,
+} from "../graphql/generated/graphql";
 
 export interface StateType {
   user: UserType | null;
@@ -6,6 +10,9 @@ export interface StateType {
     lat: number;
     lon: number;
   } | null;
+  notifications: NotificationObjectType;
+  reloadCount: number;
+  chats: ChatsObjectType;
 }
 
 export interface ActionType<T> {
