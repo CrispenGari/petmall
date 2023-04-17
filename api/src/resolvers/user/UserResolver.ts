@@ -763,17 +763,6 @@ export class UserResolver {
         success: false,
       };
     }
-
-    if (!isValidPassword(password.trim())) {
-      return {
-        error: {
-          field: "password",
-          message:
-            "the password must contain minimum eight characters, at least one letter and one number.",
-        },
-        success: false,
-      };
-    }
     const correct = await argon2.verify(user.password, password.trim());
     if (!correct)
       return {

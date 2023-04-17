@@ -15,10 +15,7 @@ import { styles } from "../../../styles";
 import { Entypo, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { BoxIndicator, Footer, CustomTextInput } from "../../../components";
 import Divider from "../../../components/Divider/Divider";
-import {
-  useMeQuery,
-  useRegisterMutation,
-} from "../../../graphql/generated/graphql";
+import { useRegisterMutation } from "../../../graphql/generated/graphql";
 import { store } from "../../../utils";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../../actions";

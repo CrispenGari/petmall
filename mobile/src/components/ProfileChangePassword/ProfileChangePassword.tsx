@@ -18,7 +18,7 @@ import { del } from "../../utils";
 import { useMediaQuery } from "../../hooks";
 import CustomTextInput from "../CustomTextInput/CustomTextInput";
 import { styles } from "../../styles";
-import { Entypo, FontAwesome, Ionicons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import BoxIndicator from "../BoxIndicator/BoxIndicator";
 const ProfileChangePassword = () => {
   const [{ fetching, data }, changeAccountPassword] =
@@ -101,12 +101,17 @@ const ProfileChangePassword = () => {
 
   return (
     <KeyboardAvoidingView
-      style={{ backgroundColor: COLORS.main, marginVertical: 3 }}
+      style={{
+        backgroundColor: COLORS.main,
+        marginVertical: 3,
+        paddingVertical: 10,
+        paddingHorizontal: 5,
+      }}
     >
       <Text
         style={{ fontFamily: FONTS.regular, color: COLORS.white, fontSize: 20 }}
       >
-        Change Account Password
+        CHANGE ACCOUNT PASSWORD
       </Text>
       <Text
         style={{ fontFamily: FONTS.regular, fontSize: 16, color: COLORS.white }}
