@@ -15,10 +15,14 @@ import { styles } from "../../../styles";
 import { Entypo, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { BoxIndicator, Footer, CustomTextInput } from "../../../components";
 import Divider from "../../../components/Divider/Divider";
-import { useRegisterMutation } from "../../../graphql/generated/graphql";
+import {
+  useMeQuery,
+  useRegisterMutation,
+} from "../../../graphql/generated/graphql";
 import { store } from "../../../utils";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../../actions";
+import { useMediaQuery } from "../../../hooks";
 
 interface ErrorType {
   message: string;
@@ -27,6 +31,7 @@ interface ErrorType {
 const Register: React.FunctionComponent<AppDrawerNavProps<"Register">> = ({
   navigation,
 }) => {
+  const { dimension } = useMediaQuery();
   const [password, setPassword] = React.useState<string>("");
   const [hidePassword, setHidePassword] = React.useState<boolean>(true);
   const [email, setEmail] = React.useState<string>("");
@@ -36,6 +41,7 @@ const Register: React.FunctionComponent<AppDrawerNavProps<"Register">> = ({
   const [conf, setConf] = React.useState<string>("");
   const [error, setError] = React.useState<ErrorType | undefined>();
   const [{ fetching, data }, registerHandler] = useRegisterMutation();
+
   const dispatch = useDispatch();
 
   useLayoutEffect(() => {
@@ -182,7 +188,6 @@ const Register: React.FunctionComponent<AppDrawerNavProps<"Register">> = ({
               }}
             >
               <CustomTextInput
-                label="Email Address"
                 error={error?.field === "email" ? error.message : ""}
                 errorStyle={[styles.p, { color: "red", marginTop: 5 }]}
                 leftIcon={<Entypo name="email" size={24} color={COLORS.main} />}

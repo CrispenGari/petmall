@@ -1,10 +1,16 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+} from "react-native";
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setUser } from "../../actions";
 import { COLORS, FONTS, TOKEN_KEY, ngrokDomain } from "../../constants";
 import * as ImagePicker from "expo-image-picker";
-import { Entypo } from "@expo/vector-icons";
+import { Entypo, Ionicons } from "@expo/vector-icons";
 import {
   useUpdateProfileAvatarMutation,
   useUpdateUserInfoMutation,
@@ -14,8 +20,9 @@ import {
 import { StateType } from "../../types";
 import { generateRNFile, store } from "../../utils";
 import { styles } from "../../styles";
-import { useMediaPermission } from "../../hooks";
+import { useMediaPermission, useMediaQuery } from "../../hooks";
 import BoxIndicator from "../BoxIndicator/BoxIndicator";
+import CustomTextInput from "../CustomTextInput/CustomTextInput";
 
 interface Props {
   userId: string;
@@ -27,6 +34,7 @@ const ProfileCard: React.FC<Props> = ({
   category,
   setCategory,
 }) => {
+  const { dimension } = useMediaQuery();
   const { camera, gallery } = useMediaPermission();
   const { user: me } = useSelector((state: StateType) => state);
   const [
@@ -316,6 +324,157 @@ const ProfileCard: React.FC<Props> = ({
           </>
         )}
       </View>
+
+      <KeyboardAvoidingView
+        style={{}}
+        behavior="padding"
+        keyboardVerticalOffset={130}
+      >
+        <Text
+          style={{
+            fontFamily: FONTS.regularBold,
+            fontSize: 20,
+            marginBottom: 10,
+            color: COLORS.white,
+          }}
+        >
+          Profile
+        </Text>
+        <CustomTextInput
+          editable={enableEdit}
+          error={error?.field === "email" ? error.message : ""}
+          errorStyle={[styles.p, { color: "red", marginTop: 5 }]}
+          leftIcon={<Entypo name="email" size={24} color={COLORS.main} />}
+          keyboardType="email-address"
+          placeholder="johndoe@petmall.com"
+          containerStyles={{
+            width: "100%",
+            borderRadius: 5,
+            marginBottom: 2,
+          }}
+          text={email}
+          onChangeText={(text) =>
+            setForm((state) => ({ ...state, email: text }))
+          }
+        />
+        <View
+          style={{
+            flexDirection: dimension.width >= 600 ? "row" : "column",
+            justifyContent: "space-between",
+          }}
+        >
+          <CustomTextInput
+            editable={enableEdit}
+            error={error?.field === "firstName" ? error.message : ""}
+            errorStyle={[styles.p, { color: "red", marginTop: 5 }]}
+            leftIcon={
+              <Ionicons name="person-sharp" size={24} color={COLORS.main} />
+            }
+            keyboardType="default"
+            placeholder="First Name(s)"
+            containerStyles={{
+              borderRadius: 5,
+              marginBottom: 2,
+            }}
+            outerContainerStyles={{
+              width: "100%",
+              flex: 1,
+            }}
+            text={firstName}
+            onChangeText={(text) =>
+              setForm((state) => ({ ...state, firstName: text }))
+            }
+          />
+          <CustomTextInput
+            editable={enableEdit}
+            error={error?.field === "lastName" ? error.message : ""}
+            errorStyle={[styles.p, { color: "red", marginTop: 5 }]}
+            leftIcon={
+              <Ionicons name="person-sharp" size={24} color={COLORS.main} />
+            }
+            keyboardType="default"
+            placeholder="Last Name"
+            containerStyles={{
+              width: "100%",
+              borderRadius: 5,
+              marginBottom: 2,
+            }}
+            outerContainerStyles={{
+              width: "100%",
+              flex: 1,
+              marginLeft: dimension.width >= 600 ? 5 : 0,
+            }}
+            text={lastName}
+            onChangeText={(text) =>
+              setForm((state) => ({ ...state, lastName: text }))
+            }
+          />
+        </View>
+
+        <View
+          style={{
+            flexDirection: "row",
+            paddingVertical: 10,
+            alignItems: "center",
+            justifyContent:
+              dimension.width < 600 ? "space-between" : "flex-start",
+          }}
+        >
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => {
+              setEnableEdit(true);
+            }}
+            style={[
+              styles.button,
+              {
+                backgroundColor: COLORS.tertiary,
+                width: 150,
+                borderRadius: 5,
+
+                marginTop: 0,
+              },
+            ]}
+          >
+            <Text
+              style={[styles.button__text, { fontFamily: FONTS.regularBold }]}
+            >
+              EDIT
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={[
+              styles.button,
+              {
+                backgroundColor: COLORS.primary,
+                width: 150,
+                borderRadius: 5,
+                marginTop: 0,
+                marginLeft: 5,
+                alignItems: "center",
+              },
+            ]}
+            disabled={updatingInfo || !enableEdit}
+            onPress={updateProfileInfo}
+          >
+            <Text
+              style={[
+                styles.button__text,
+                {
+                  fontFamily: FONTS.regularBold,
+                  marginRight: updatingInfo ? 10 : 0,
+                },
+              ]}
+            >
+              UPDATE
+            </Text>
+            {updatingAvatar ? (
+              <BoxIndicator color={COLORS.main} size={5} />
+            ) : null}
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
     </View>
   );
 };

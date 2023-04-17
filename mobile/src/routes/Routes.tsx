@@ -14,7 +14,7 @@ import { COLORS, FONTS, TOKEN_KEY } from "../constants";
 import AppDrawer from "../components/AppDrawer/AppDrawer";
 import { useDispatch, useSelector } from "react-redux";
 import NewPet from "../screens/app/NewPet";
-import { useLocationPermission } from "../hooks";
+import { useLocationPermission, useMediaQuery } from "../hooks";
 import * as Location from "expo-location";
 import { StateType } from "../types";
 import PreviewPet from "../screens/app/PreviewPet";
@@ -34,6 +34,7 @@ import {
 const Drawer = createDrawerNavigator<AppDrawerParamList>();
 
 const Routes = () => {
+  const { dimension } = useMediaQuery();
   const { user } = useSelector((state: StateType) => state);
   const dispatch = useDispatch();
   const { granted } = useLocationPermission();
@@ -189,7 +190,7 @@ const Routes = () => {
           headerTitleStyle: {
             color: "white",
             fontFamily: FONTS.regularBold,
-            fontSize: 30,
+            fontSize: dimension.width >= 600 ? 30 : 20,
             letterSpacing: 1,
           },
           drawerStyle: {

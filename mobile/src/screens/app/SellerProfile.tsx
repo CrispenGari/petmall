@@ -26,7 +26,7 @@ const SellerProfile: React.FunctionComponent<
     let mounted: boolean = true;
     if (mounted) {
       navigation.setOptions({
-        headerTitle: !!user ? `${user.firstName} ${user.lastName}` : "Profile",
+        headerTitle: !!user ? `${user.firstName}` : "Profile",
         headerLeft: (props) => {
           return (
             <TouchableOpacity
