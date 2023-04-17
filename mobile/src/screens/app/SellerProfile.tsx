@@ -67,7 +67,7 @@ const SellerProfile: React.FunctionComponent<
       {user?.id === userId && (
         <>
           <ProfileChangePassword navigation={navigation as any} />
-          <ProfileDeleteAccount />
+          <ProfileDeleteAccount navigation={navigation as any} />
           <ProfileLogoutButton navigation={navigation as any} />
         </>
       )}

@@ -18,7 +18,16 @@ import BoxIndicator from "../BoxIndicator/BoxIndicator";
 import CustomTextInput from "../CustomTextInput/CustomTextInput";
 import { FontAwesome } from "@expo/vector-icons";
 import { useMediaQuery } from "../../hooks";
-const ProfileDeleteAccount = () => {
+
+import { StackNavigationProp } from "@react-navigation/stack";
+import { MarketParamList } from "../../params";
+
+interface Props {
+  navigation: StackNavigationProp<MarketParamList, "Pets">;
+}
+const ProfileDeleteAccount: React.FunctionComponent<Props> = ({
+  navigation,
+}) => {
   const { dimension } = useMediaQuery();
   const [error, setError] = React.useState<ErrorType>({
     field: "",
@@ -77,12 +86,13 @@ const ProfileDeleteAccount = () => {
       (async () => {
         await del(TOKEN_KEY);
         dispatch(setUser(null));
+        navigation.navigate("Pets");
       })();
     }
     return () => {
       mounted = false;
     };
-  }, [dispatch, count]);
+  }, [dispatch, count, navigation]);
   return (
     <KeyboardAvoidingView
       style={{
