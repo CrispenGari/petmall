@@ -1,4 +1,4 @@
-import { ScrollView, Text, TouchableOpacity } from "react-native";
+import { ScrollView, View, TouchableOpacity } from "react-native";
 import React, { useLayoutEffect } from "react";
 import { AppDrawerNavProps } from "../../params";
 import { AntDesign } from "@expo/vector-icons";
@@ -14,6 +14,7 @@ import {
   ProfilePetsFlatList,
 } from "../../components";
 import { decodeId } from "../../utils";
+import { useKeyboardDimension } from "../../hooks";
 
 const SellerProfile: React.FunctionComponent<
   AppDrawerNavProps<"SellerProfile">
@@ -21,6 +22,7 @@ const SellerProfile: React.FunctionComponent<
   const { user } = useSelector((state: StateType) => state);
   const userId: string = decodeId(params?.userId as string);
   const [category, setCategory] = React.useState<string>("ALL PETS");
+  const { keyboardHeight } = useKeyboardDimension();
 
   React.useLayoutEffect(() => {
     let mounted: boolean = true;
@@ -45,7 +47,11 @@ const SellerProfile: React.FunctionComponent<
     };
   }, [user]);
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: COLORS.primary }}>
+    <ScrollView
+      style={{ flex: 1, backgroundColor: COLORS.primary }}
+      showsHorizontalScrollIndicator={false}
+      showsVerticalScrollIndicator={false}
+    >
       <ProfileCard
         userId={userId}
         setCategory={setCategory}
@@ -65,7 +71,7 @@ const SellerProfile: React.FunctionComponent<
           <ProfileLogoutButton />
         </>
       )}
-
+      <View style={{ height: keyboardHeight, backgroundColor: COLORS.main }} />
       <Footer />
     </ScrollView>
   );

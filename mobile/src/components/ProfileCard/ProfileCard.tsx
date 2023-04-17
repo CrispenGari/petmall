@@ -307,11 +307,7 @@ const ProfileCard: React.FC<Props> = ({
         )}
       </View>
 
-      <KeyboardAvoidingView
-        style={{}}
-        behavior="padding"
-        keyboardVerticalOffset={130}
-      >
+      <KeyboardAvoidingView>
         <Text
           style={{
             fontFamily: FONTS.regularBold,
@@ -450,7 +446,7 @@ const ProfileCard: React.FC<Props> = ({
             >
               UPDATE
             </Text>
-            {updatingAvatar ? (
+            {updatingInfo ? (
               <BoxIndicator color={COLORS.main} size={5} />
             ) : null}
           </TouchableOpacity>
