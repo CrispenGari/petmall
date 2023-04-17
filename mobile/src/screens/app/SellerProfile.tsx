@@ -52,6 +52,7 @@ const SellerProfile: React.FunctionComponent<
         category={category}
       />
       <ProfilePetsFlatList
+        navigation={navigation as any}
         userId={userId}
         category={category}
         subtitle={`Pet in the market.`}

@@ -43,7 +43,7 @@ const ProfileCard: React.FC<Props> = ({
   ] = useUpdateProfileAvatarMutation();
   const [{ fetching: updatingInfo, data: updatedUserInfo }, updateUserInfo] =
     useUpdateUserInfoMutation();
-  const [{ data, fetching }, refetchUser] = useGetUserQuery({
+  const [{ data }, refetchUser] = useGetUserQuery({
     variables: { input: { id } },
   });
   const [{ email, image, firstName, lastName }, setForm] = React.useState<{
@@ -57,7 +57,6 @@ const ProfileCard: React.FC<Props> = ({
     firstName: "",
     lastName: "",
   });
-  const [readonly, setReadonly] = React.useState<boolean>(true);
   const [error, setError] = React.useState<ErrorType>({
     field: "",
     message: "",
@@ -76,23 +75,6 @@ const ProfileCard: React.FC<Props> = ({
       mounted = false;
     };
   }, [data]);
-  React.useEffect(() => {
-    let mounted: boolean = true;
-    if (mounted && !!data?.user.id && !!me) {
-      setReadonly(data.user.id !== me.id);
-    }
-    return () => {
-      mounted = false;
-    };
-  }, [data, me]);
-
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value, name } = e.target;
-    setForm((state) => ({
-      ...state,
-      [name]: value,
-    }));
-  };
 
   const updateProfileAvatar = async () => {
     if (!!!image) {
@@ -410,7 +392,6 @@ const ProfileCard: React.FC<Props> = ({
             }
           />
         </View>
-
         <View
           style={{
             flexDirection: "row",
