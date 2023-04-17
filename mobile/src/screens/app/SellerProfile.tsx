@@ -66,9 +66,9 @@ const SellerProfile: React.FunctionComponent<
       />
       {user?.id === userId && (
         <>
-          <ProfileChangePassword />
+          <ProfileChangePassword navigation={navigation as any} />
           <ProfileDeleteAccount />
-          <ProfileLogoutButton />
+          <ProfileLogoutButton navigation={navigation as any} />
         </>
       )}
       <View style={{ height: keyboardHeight, backgroundColor: COLORS.main }} />

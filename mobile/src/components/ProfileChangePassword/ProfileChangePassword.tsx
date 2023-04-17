@@ -20,7 +20,15 @@ import CustomTextInput from "../CustomTextInput/CustomTextInput";
 import { styles } from "../../styles";
 import { FontAwesome } from "@expo/vector-icons";
 import BoxIndicator from "../BoxIndicator/BoxIndicator";
-const ProfileChangePassword = () => {
+import { StackNavigationProp } from "@react-navigation/stack";
+import { MarketParamList } from "../../params";
+
+interface Props {
+  navigation: StackNavigationProp<MarketParamList, "Pets">;
+}
+const ProfileChangePassword: React.FunctionComponent<Props> = ({
+  navigation,
+}) => {
   const [{ fetching, data }, changeAccountPassword] =
     useChangeAccountPasswordMutation();
   const { dimension } = useMediaQuery();
@@ -91,13 +99,14 @@ const ProfileChangePassword = () => {
         if (data.logout) {
           await del(TOKEN_KEY);
           dispatch(setUser(null));
+          navigation.navigate("Pets");
         }
       })();
     }
     return () => {
       mounted = false;
     };
-  }, [dispatch, count, data]);
+  }, [dispatch, count, data, navigation]);
 
   return (
     <KeyboardAvoidingView
