@@ -219,7 +219,7 @@ const Chat: React.FC<Props> = () => {
               <BiCurrentLocation />
             </div>
             <TextArea
-              placeholder="Write a message to the seller..."
+              placeholder="Write a message..."
               fluid
               className="chat__page__main__input"
               onChange={(e) => setMessage(e.target.value)}

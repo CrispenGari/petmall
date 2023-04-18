@@ -2,6 +2,7 @@ export { default as Footer } from "./Footer/Footer";
 export { default as NoPets } from "./NoPets/NoPets";
 export { default as Pet } from "./Pet/Pet";
 export { default as Chat } from "./Chat/Chat";
+export { default as Message } from "./Message/Message";
 export { default as Notification } from "./Notification/Notification";
 export { default as PetComments } from "./PetComments/PetComments";
 export { default as Reactions } from "./Reactions/Reactions";

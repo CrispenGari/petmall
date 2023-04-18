@@ -11,6 +11,7 @@ const Footer = () => {
         padding: 10,
         paddingHorizontal: 10,
         width: "100%",
+        marginTop: 10,
       }}
     >
       <Text style={[styles.p, { color: "white", textAlign: "center" }]}>

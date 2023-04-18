@@ -50,6 +50,8 @@ const Profile: React.FunctionComponent<MarketNavProps<"Profile">> = ({
         </>
       )}
       <View style={{ height: keyboardHeight, backgroundColor: COLORS.main }} />
+
+      <View style={{ height: 30 }} />
       <Footer />
     </ScrollView>
   );
