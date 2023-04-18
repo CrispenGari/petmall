@@ -199,6 +199,9 @@ export class ReactionResolver {
       await pubsub.publish(Events.NEW_REACTION_TO_PET, {
         petId: pet.id,
       });
+      await pubsub.publish(Events.ON_REACT_TO_CATEGORY_PET_UPDATE, {
+        category: pet.category,
+      });
       if (pet.sellerId !== user.id) {
         const notification = await prisma.notification.create({
           data: {

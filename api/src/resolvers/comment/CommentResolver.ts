@@ -69,6 +69,9 @@ export class CommentResolver {
           },
         },
       });
+      await pubsub.publish(Events.ON_COMMENT_TO_CATEGORY_PET_UPDATE, {
+        category: pet.category,
+      });
       await pubsub.publish(Events.NEW_COMMENT, {
         petId: pet.id,
       });

@@ -232,7 +232,7 @@ const CommentChild: React.FunctionComponent<{
                   ]}
                   activeOpacity={0.7}
                 >
-                  <AntDesign name="dislike1" size={16} color="black" />
+                  <AntDesign name="dislike1" size={16} color="white" />
                 </TouchableOpacity>
               ) : reaction === "LOVE" ? (
                 <TouchableOpacity

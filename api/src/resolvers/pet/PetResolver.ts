@@ -491,6 +491,8 @@ export class PetResolver {
       Events.ON_NEW_CATEGORY_PET,
       Events.ON_CATEGORY_PET_DELETE,
       Events.ON_CATEGORY_PET_UPDATE,
+      Events.ON_REACT_TO_CATEGORY_PET_UPDATE,
+      Events.ON_COMMENT_TO_CATEGORY_PET_UPDATE,
     ],
     nullable: false,
   })

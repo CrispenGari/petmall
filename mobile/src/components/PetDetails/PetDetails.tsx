@@ -131,7 +131,7 @@ const PetDetails: React.FunctionComponent<Props> = ({
                   ]}
                   activeOpacity={0.7}
                 >
-                  <AntDesign name="dislike1" size={20} color="black" />
+                  <AntDesign name="dislike1" size={20} color="white" />
                 </TouchableOpacity>
               ) : reaction === "LOVE" ? (
                 <TouchableOpacity
