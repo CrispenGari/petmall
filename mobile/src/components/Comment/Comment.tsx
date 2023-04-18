@@ -133,7 +133,7 @@ const CommentChild: React.FunctionComponent<{
       style={{
         backgroundColor: COLORS.main,
         width: "100%",
-        maxWidth: "70%",
+        maxWidth: "90%",
         padding: 5,
         borderRadius: 10,
         marginTop: 5,

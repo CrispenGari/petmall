@@ -20,6 +20,7 @@ import Comment from "../Comment/Comment";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { MarketParamList } from "../../params";
 import { useKeyboardDimension, useMediaQuery } from "../../hooks";
+import BoxIndicator from "../BoxIndicator/BoxIndicator";
 
 interface Props {
   pet: PetType;
@@ -51,7 +52,7 @@ const PetComments: React.FunctionComponent<Props> = ({
   const [comment, setComment] = React.useState<string>("");
   const { dimension } = useMediaQuery();
   const { keyboardHeight } = useKeyboardDimension();
-  const onSubmit = async () => {
+  const commentToPetOrReplyToComment = async () => {
     if (!!!comment.trim()) return;
     if (!!replyTo) {
       await replyToComment({
@@ -159,12 +160,19 @@ const PetComments: React.FunctionComponent<Props> = ({
           }}
         >
           <CustomTextInput
-            placeholder="write a comment about this pet.."
+            placeholder={
+              !!!replyTo
+                ? "Write a comment about this pet..."
+                : `replying to: @${replyTo.user?.firstName} on "${replyTo.comment}"`
+            }
             numberOfLines={4}
-            multiline
+            multiline={true}
             inputStyle={{ height: 50 }}
             containerStyles={{ padding: 0 }}
             outerContainerStyles={{ flex: 1 }}
+            onSubmitEditing={commentToPetOrReplyToComment}
+            text={comment}
+            onChangeText={(text) => setComment(text)}
           />
           <TouchableOpacity
             style={[
@@ -177,13 +185,24 @@ const PetComments: React.FunctionComponent<Props> = ({
                 marginLeft: 5,
               },
             ]}
-            disabled={pet.sold}
+            disabled={pet.sold || !!!comment}
+            onPress={commentToPetOrReplyToComment}
+            activeOpacity={0.7}
           >
             <Text
-              style={[styles.button__text, { fontFamily: FONTS.regularBold }]}
+              style={[
+                styles.button__text,
+                {
+                  fontFamily: FONTS.regularBold,
+                  marginRight: fetching ? 3 : 0,
+                },
+              ]}
             >
-              SEND
+              COMMENT
             </Text>
+            {fetching ? (
+              <BoxIndicator color={COLORS.secondary} size={5} />
+            ) : null}
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
