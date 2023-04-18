@@ -7,18 +7,13 @@ import { StateType } from "../../../../types";
 import { CustomTextInput, Notification } from "../../../../components";
 import Divider from "../../../../components/Divider/Divider";
 import { Feather } from "@expo/vector-icons";
-import { color } from "react-native-reanimated";
 
 const Notifications: React.FunctionComponent<
   MarketNavProps<"Notifications">
-> = ({
-  navigation,
-  route: {
-    params: { userId },
-  },
-}) => {
+> = ({ navigation }) => {
   const [filter, setFilter] = React.useState<string>("");
   const { notifications, user } = useSelector((state: StateType) => state);
+
   React.useEffect(() => {
     let mounted: boolean = true;
     if (mounted && !!!user?.emailVerified && !!!user?.isLoggedIn) {
@@ -28,6 +23,30 @@ const Notifications: React.FunctionComponent<
       mounted = false;
     };
   }, [navigation, user]);
+
+  const [_notifications, set_Notifications] = React.useState(
+    notifications.notifications
+  );
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted) {
+      if (!!filter) {
+        set_Notifications(
+          notifications.notifications.filter((notification) =>
+            notification.title
+              .toLowerCase()
+              .includes(filter.trim().toLowerCase())
+          )
+        );
+      } else {
+        set_Notifications(notifications.notifications.filter(Boolean));
+      }
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [filter, notifications]);
 
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.primary }}>
@@ -50,9 +69,8 @@ const Notifications: React.FunctionComponent<
         style={{ padding: 10, backgroundColor: COLORS.main, flex: 1 }}
       >
         <Divider title="Unread" />
-        {notifications.notifications.filter(
-          (notification) => !notification.read
-        ).length === 0 ? (
+        {_notifications.filter((notification) => !notification.read).length ===
+        0 ? (
           <View
             style={{
               justifyContent: "center",
@@ -65,7 +83,7 @@ const Notifications: React.FunctionComponent<
             </Text>
           </View>
         ) : (
-          notifications.notifications
+          _notifications
             .filter((notification) => !notification.read)
             .map((notification) => (
               <Notification
@@ -76,8 +94,8 @@ const Notifications: React.FunctionComponent<
             ))
         )}
         <Divider title="Read" />
-        {notifications.notifications.filter((notification) => notification.read)
-          .length === 0 ? (
+        {_notifications.filter((notification) => notification.read).length ===
+        0 ? (
           <View
             style={{
               justifyContent: "center",
@@ -90,7 +108,7 @@ const Notifications: React.FunctionComponent<
             </Text>
           </View>
         ) : (
-          notifications.notifications
+          _notifications
             .filter((notification) => notification.read)
             .map((notification) => (
               <Notification

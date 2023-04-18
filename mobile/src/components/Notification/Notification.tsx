@@ -34,7 +34,12 @@ const Notification: React.FC<Props> = ({ notification, navigation }) => {
   };
   return (
     <TouchableOpacity
-      style={{ backgroundColor: COLORS.primary, padding: 5 }}
+      style={{
+        backgroundColor: COLORS.primary,
+        padding: 5,
+        marginBottom: 2,
+        borderRadius: 5,
+      }}
       activeOpacity={0.7}
       onPress={readNotificationAndOpen}
     >

@@ -19,6 +19,30 @@ const Notifications: React.FC<Props> = () => {
       mounted = false;
     };
   }, [navigator, user]);
+
+  const [_notifications, set_Notifications] = React.useState(
+    notifications.notifications
+  );
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted) {
+      if (!!filter) {
+        set_Notifications(
+          notifications.notifications.filter((notification) =>
+            notification.title
+              .toLowerCase()
+              .includes(filter.trim().toLowerCase())
+          )
+        );
+      } else {
+        set_Notifications(notifications.notifications.filter(Boolean));
+      }
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [filter, notifications]);
   return (
     <div className="notifications">
       <Header />
@@ -37,14 +61,13 @@ const Notifications: React.FC<Props> = () => {
         <div className="notifications__main__lists">
           <Divider title="Unread" />
 
-          {notifications.notifications.filter(
-            (notification) => !notification.read
-          ).length === 0 ? (
+          {_notifications.filter((notification) => !notification.read)
+            .length === 0 ? (
             <div className="notifications__main__empty">
               <p>No new notifications.</p>
             </div>
           ) : (
-            notifications.notifications
+            _notifications
               .filter((notification) => !notification.read)
               .map((notification) => (
                 <Notification
@@ -54,14 +77,13 @@ const Notifications: React.FC<Props> = () => {
               ))
           )}
           <Divider title="Read" />
-          {notifications.notifications.filter(
-            (notification) => notification.read
-          ).length === 0 ? (
+          {_notifications.filter((notification) => notification.read).length ===
+          0 ? (
             <div className="notifications__main__empty">
               <p>No old notifications.</p>
             </div>
           ) : (
-            notifications.notifications
+            _notifications
               .filter((notification) => notification.read)
               .map((notification) => (
                 <Notification
