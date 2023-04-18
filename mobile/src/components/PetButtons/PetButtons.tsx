@@ -21,6 +21,7 @@ import { MarketParamList } from "../../params";
 import { encodeId } from "../../utils";
 import { useMediaQuery } from "../../hooks";
 import BoxIndicator from "../BoxIndicator/BoxIndicator";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface Props {
   pet: PetType;
@@ -57,15 +58,13 @@ const PetButtons: React.FunctionComponent<Props> = ({ pet, navigation }) => {
   };
   if (dimension.width < 768) {
     return (
-      <KeyboardAvoidingView
+      <SafeAreaView
         style={{
           width: "100%",
           flexDirection: "row",
           alignItems: "flex-start",
           marginVertical: 10,
         }}
-        behavior={"height"}
-        keyboardVerticalOffset={-130}
       >
         {user?.id !== pet.seller?.id ? (
           <>
@@ -156,7 +155,7 @@ const PetButtons: React.FunctionComponent<Props> = ({ pet, navigation }) => {
             </TouchableOpacity>
           </>
         )}
-      </KeyboardAvoidingView>
+      </SafeAreaView>
     );
   }
 

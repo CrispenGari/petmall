@@ -61,9 +61,9 @@ const Comment: React.FunctionComponent<Props> = ({
       />
       <View
         style={{
-          width: "100%",
+          maxWidth: "100%",
           justifyContent: "flex-end",
-          flexDirection: "row",
+          alignItems: "flex-end",
         }}
       >
         {comment.replies?.map((reply, index) => (
@@ -108,8 +108,6 @@ const CommentChild: React.FunctionComponent<{
 }) => {
   const [reaction, setReaction] = React.useState<string>("");
   const { user } = useSelector((state: StateType) => state);
-
-  const { isIpad } = useDevice();
 
   React.useEffect(() => {
     let mounted: boolean = true;
@@ -157,7 +155,13 @@ const CommentChild: React.FunctionComponent<{
           {comment.user?.firstName} {comment.user?.lastName}
         </Text>
       </TouchableOpacity>
-      <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "flex-start",
+          justifyContent: "flex-start",
+        }}
+      >
         <TouchableOpacity
           activeOpacity={0.7}
           style={{ marginRight: 5 }}
@@ -188,6 +192,7 @@ const CommentChild: React.FunctionComponent<{
           style={{
             fontFamily: FONTS.regular,
             color: COLORS.white,
+            maxWidth: "95%",
           }}
         >
           {comment.comment}

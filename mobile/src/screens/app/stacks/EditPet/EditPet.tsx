@@ -20,7 +20,7 @@ import {
 import { StateType } from "../../../../types";
 import { decodeId, encodeId, generateRNFile } from "../../../../utils";
 import SelectDropdown from "react-native-select-dropdown";
-import { Entypo, AntDesign } from "@expo/vector-icons";
+import { Entypo } from "@expo/vector-icons";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import * as ImagePicker from "expo-image-picker";
 import { BoxIndicator, CustomTextInput } from "../../../../components";
@@ -257,19 +257,6 @@ const EditPet: React.FunctionComponent<MarketNavProps<"EditPet">> = ({
     };
   }, [error]);
 
-  if (fetching)
-    return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: COLORS.primary,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <BoxIndicator size={20} color={COLORS.main} />
-      </View>
-    );
   return (
     <KeyboardAvoidingView
       keyboardVerticalOffset={0}

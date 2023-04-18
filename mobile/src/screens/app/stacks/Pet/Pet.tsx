@@ -2,7 +2,7 @@ import { View, Text } from "react-native";
 import React from "react";
 import { MarketNavProps } from "../../../../params";
 import { decodeId } from "../../../../utils";
-import { BoxIndicator, PetComments, PetDetails } from "../../../../components";
+import { PetComments, PetDetails } from "../../../../components";
 import {
   CommentType,
   useGetPetByIdQuery,
@@ -25,10 +25,10 @@ const Pet: React.FunctionComponent<MarketNavProps<"Pet">> = ({
   const petId: string = decodeId(id);
   const { dimension } = useMediaQuery();
   const { isIpad } = useDevice();
-  const [{ data, fetching }, refetchPet] = useGetPetByIdQuery({
+  const [{ data }, refetchPet] = useGetPetByIdQuery({
     variables: { input: { id: petId } },
   });
-
+  const scrollViewRef = React.useRef<React.LegacyRef<ScrollView> | any>();
   const [{ data: petModification }] = usePetInteractionSubscription();
   const { user } = useSelector((state: StateType) => state);
   const [reaction, setReaction] = React.useState<string>("");
@@ -69,20 +69,6 @@ const Pet: React.FunctionComponent<MarketNavProps<"Pet">> = ({
       mounted = false;
     };
   }, [user, data]);
-
-  if (fetching)
-    return (
-      <View
-        style={{
-          flex: 1,
-          backgroundColor: COLORS.primary,
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <BoxIndicator size={20} color={COLORS.main} />
-      </View>
-    );
 
   if (!!!data?.getPetById?.pet)
     return (
@@ -130,6 +116,11 @@ const Pet: React.FunctionComponent<MarketNavProps<"Pet">> = ({
       <ScrollView
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
+        bounces={false}
+        ref={scrollViewRef}
+        onContentSizeChange={() =>
+          scrollViewRef.current.scrollToEnd({ animated: true })
+        }
         style={{
           backgroundColor: COLORS.primary,
           padding: isIpad ? 10 : 5,

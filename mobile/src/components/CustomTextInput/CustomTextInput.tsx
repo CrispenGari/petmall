@@ -9,6 +9,7 @@ import {
   NativeSyntheticEvent,
   Text,
   TextStyle,
+  TextInputFocusEventData,
 } from "react-native";
 import React from "react";
 import { FONTS } from "../../constants";
@@ -35,6 +36,9 @@ interface Props {
   multiline: boolean;
   label: string;
   error: string;
+  onFocus?:
+    | ((e: NativeSyntheticEvent<TextInputFocusEventData>) => void)
+    | undefined;
 }
 const CustomTextInput: React.FunctionComponent<Partial<Props>> = ({
   placeholder,
@@ -56,6 +60,8 @@ const CustomTextInput: React.FunctionComponent<Partial<Props>> = ({
   error,
   errorStyle,
   outerContainerStyles,
+
+  onFocus,
 }) => {
   return (
     <View style={[{ width: "100%" }, outerContainerStyles]}>
@@ -99,6 +105,7 @@ const CustomTextInput: React.FunctionComponent<Partial<Props>> = ({
           secureTextEntry={secureTextEntry}
           numberOfLines={numberOfLines}
           multiline={multiline}
+          onFocus={onFocus}
         />
         <TouchableOpacity activeOpacity={0.7} onPress={onRightIconPress}>
           {rightIcon}
