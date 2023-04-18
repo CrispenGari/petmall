@@ -50,23 +50,24 @@ const Notifications: React.FunctionComponent<
 
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.primary }}>
-      <CustomTextInput
-        placeholder="filter notifications"
-        containerStyles={{}}
-        outerContainerStyles={{
-          maxWidth: 400,
-          backgroundColor: COLORS.primary,
-          margin: 10,
-        }}
-        text={filter}
-        onChangeText={(text) => setFilter(text)}
-        keyboardType="default"
-        leftIcon={<Feather name="search" size={24} color="gray" />}
-      />
+      <View style={{ padding: 10 }}>
+        <CustomTextInput
+          placeholder="filter notifications"
+          outerContainerStyles={{
+            maxWidth: 400,
+            backgroundColor: COLORS.primary,
+          }}
+          text={filter}
+          onChangeText={(text) => setFilter(text)}
+          keyboardType="default"
+          leftIcon={<Feather name="search" size={24} color="gray" />}
+        />
+      </View>
+
       <ScrollView
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
-        style={{ padding: 10, backgroundColor: COLORS.main, flex: 1 }}
+        style={{ paddingVertical: 10, backgroundColor: COLORS.main, flex: 1 }}
       >
         <Divider title="Unread" />
         {_notifications.filter((notification) => !notification.read).length ===

@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   ImageBackground,
+  SafeAreaView,
 } from "react-native";
 import React, { useRef } from "react";
 import { MarketNavProps } from "../../../../params";
@@ -28,7 +29,7 @@ import {
   CustomChatHeader,
   Message,
 } from "../../../../components";
-import { useMediaQuery } from "../../../../hooks";
+import { useKeyboardDimension, useMediaQuery } from "../../../../hooks";
 
 const Chat: React.FunctionComponent<MarketNavProps<"Chat">> = ({
   navigation,
@@ -40,7 +41,8 @@ const Chat: React.FunctionComponent<MarketNavProps<"Chat">> = ({
   const { user: me } = useSelector((state: StateType) => state);
   const [{ fetching: sending }, sendMessage] = useSendMessageMutation();
   const [{ fetching: reading }, readMessages] = useMarkMessagesAsReadMutation();
-
+  const { keyboardHeight } = useKeyboardDimension();
+  const { dimension } = useMediaQuery();
   const [{ data: chatMessage }] = useNewChatMessageSubscription({
     variables: {
       input: {
@@ -49,7 +51,6 @@ const Chat: React.FunctionComponent<MarketNavProps<"Chat">> = ({
     },
   });
   const chatId = decodeId(id);
-
   const scrollRef = React.useRef<HTMLDivElement | undefined>();
   const [{ data: chat, fetching }, refetchChatMessages] = useChatMessagesQuery({
     variables: { input: { id: chatId } },
@@ -116,8 +117,6 @@ const Chat: React.FunctionComponent<MarketNavProps<"Chat">> = ({
       mounted = false;
     };
   }, [chat]);
-
-  const { dimension } = useMediaQuery();
 
   React.useLayoutEffect(() => {
     let mounted: boolean = true;
@@ -230,18 +229,16 @@ const Chat: React.FunctionComponent<MarketNavProps<"Chat">> = ({
                 navigation={navigation}
               />
             ))}
-            <View style={{ height: 100 }} />
+            <View style={{ height: keyboardHeight + 100 }} />
           </ScrollView>
-
-          <KeyboardAvoidingView
+          <SafeAreaView
             style={{
               flexDirection: "row",
               alignItems: "flex-start",
               justifyContent: "space-between",
+              position: "absolute",
+              bottom: keyboardHeight + 5,
             }}
-            keyboardVerticalOffset={100 + 20}
-            behavior="padding"
-            enabled
           >
             <TextInput
               multiline
@@ -287,7 +284,7 @@ const Chat: React.FunctionComponent<MarketNavProps<"Chat">> = ({
               </Text>
               {sending ? <BoxIndicator size={5} color={COLORS.main} /> : null}
             </TouchableOpacity>
-          </KeyboardAvoidingView>
+          </SafeAreaView>
         </ImageBackground>
       </TouchableWithoutFeedback>
     </View>
