@@ -8,10 +8,18 @@ import Routes from "./src/routes/Routes";
 import { BoxIndicator } from "./src/components";
 import ReduxProvider from "./src/providers/ReduxProvider";
 import React from "react";
+import * as Notifications from "expo-notifications";
 
 LogBox.ignoreLogs;
 LogBox.ignoreAllLogs();
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
 const PetMall = () => {
   const [loaded] = useFonts(Fonts);
 

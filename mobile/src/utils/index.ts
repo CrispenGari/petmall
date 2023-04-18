@@ -2,6 +2,30 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ReactNativeFile } from "apollo-upload-client";
 import { Buffer } from "buffer";
 
+export const sendPushNotification = async (
+  expoPushToken: string,
+  title: string,
+  body: string
+) => {
+  const message = {
+    to: expoPushToken,
+    sound: "default",
+    title,
+    body,
+    data: { testData: "test data" },
+  };
+
+  await fetch("https://exp.host/--/api/v2/push/send", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Accept-encoding": "gzip, deflate",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(message),
+  });
+};
+
 export const encodeId = (data: string): string => {
   return Buffer.from(data, "utf-8").toString("base64");
 };

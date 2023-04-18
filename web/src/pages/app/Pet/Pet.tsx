@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Header, Loading, PetComments, PetDetails } from "../../../components";
+import { Header, PetComments, PetDetails } from "../../../components";
 import {
   CommentType,
   useGetPetByIdQuery,
@@ -16,7 +16,7 @@ interface Props {
 }
 const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
   const petId: string = decodeId(params.petId as string);
-  const [{ data, fetching }, refetchPet] = useGetPetByIdQuery({
+  const [{ data }, refetchPet] = useGetPetByIdQuery({
     variables: { input: { id: petId } },
   });
 
@@ -70,7 +70,6 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
         </div>
       </div>
     );
-  if (fetching) return <Loading />;
   return (
     <div className="pet__page">
       <Header />

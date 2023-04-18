@@ -18,7 +18,7 @@ import { useLocationPermission, useMediaQuery } from "../hooks";
 import * as Location from "expo-location";
 import { StateType } from "../types";
 import PreviewPet from "../screens/app/PreviewPet";
-import { retrieve } from "../utils";
+import { retrieve, sendPushNotification } from "../utils";
 import SellerProfile from "../screens/app/SellerProfile";
 import { View } from "react-native";
 import { BoxIndicator } from "../components";
@@ -31,6 +31,7 @@ import {
   useNotificationsQuery,
   useOnUserStateChangeSubscription,
 } from "../graphql/generated/graphql";
+import useNotificationsToken from "../hooks/useNotificationsToken";
 const Drawer = createDrawerNavigator<AppDrawerParamList>();
 
 const Routes = () => {
@@ -39,6 +40,7 @@ const Routes = () => {
   const dispatch = useDispatch();
   const { granted } = useLocationPermission();
   const [loading, setLoading] = React.useState<boolean>(false);
+  const { token } = useNotificationsToken();
 
   const [{ data: notification }] = useNewNotificationSubscription({
     variables: {
@@ -55,10 +57,8 @@ const Routes = () => {
     },
   });
   const [{ data: chats }, refetchChats] = useMyChatsQuery({});
-
   const [{ data: notifications }, refetchNotifications] =
     useNotificationsQuery();
-
   React.useEffect(() => {
     let mounted: boolean = true;
     if (mounted && granted && !!user) {
@@ -95,13 +95,20 @@ const Routes = () => {
     let mounted: boolean = true;
     if (mounted && !!notification?.newNotification) {
       (async () => {
+        if (token && !!notification.newNotification.notification) {
+          await sendPushNotification(
+            token,
+            `New Notification - PetMall`,
+            notification.newNotification.notification.notification
+          );
+        }
         await refetchNotifications();
       })();
     }
     return () => {
       mounted = false;
     };
-  }, [refetchNotifications, notification]);
+  }, [refetchNotifications, notification, token]);
 
   React.useEffect(() => {
     let mounted: boolean = true;
@@ -137,18 +144,24 @@ const Routes = () => {
       mounted = false;
     };
   }, [refetchUser, data]);
-
   React.useEffect(() => {
     let mounted: boolean = true;
     if (mounted && !!chatMessage?.newChatMessage.userId) {
       (async () => {
+        if (!!token && !!chatMessage.newChatMessage) {
+          await sendPushNotification(
+            token,
+            `New Market Message - PetMall`,
+            "You have a new chat message."
+          );
+        }
         await refetchChats();
       })();
     }
     return () => {
       mounted = false;
     };
-  }, [chatMessage, refetchChats]);
+  }, [chatMessage, refetchChats, token]);
   React.useEffect(() => {
     let mounted: boolean = true;
     if (mounted && !!newUser?.me) {
