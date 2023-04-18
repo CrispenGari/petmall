@@ -1,9 +1,6 @@
 import {
   View,
   Text,
-  StatusBar,
-  SafeAreaView,
-  Image,
   ScrollView,
   Alert,
   Keyboard,
@@ -11,7 +8,6 @@ import {
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  Dimensions,
   ImageBackground,
 } from "react-native";
 import React, { useRef } from "react";
@@ -27,7 +23,11 @@ import {
   useChatMessagesQuery,
 } from "../../../../graphql/generated/graphql";
 import { StateType } from "../../../../types";
-import { Message } from "../../../../components";
+import {
+  BoxIndicator,
+  CustomChatHeader,
+  Message,
+} from "../../../../components";
 import { useMediaQuery } from "../../../../hooks";
 
 const Chat: React.FunctionComponent<MarketNavProps<"Chat">> = ({
@@ -37,11 +37,9 @@ const Chat: React.FunctionComponent<MarketNavProps<"Chat">> = ({
   },
 }) => {
   const scrollViewRef = useRef<React.LegacyRef<ScrollView> | any>();
-
   const { user: me } = useSelector((state: StateType) => state);
   const [{ fetching: sending }, sendMessage] = useSendMessageMutation();
   const [{ fetching: reading }, readMessages] = useMarkMessagesAsReadMutation();
-  const [{ fetching: marking }, markAsSold] = useMarkAsSoldMutation();
 
   const [{ data: chatMessage }] = useNewChatMessageSubscription({
     variables: {
@@ -53,7 +51,7 @@ const Chat: React.FunctionComponent<MarketNavProps<"Chat">> = ({
   const chatId = decodeId(id);
 
   const scrollRef = React.useRef<HTMLDivElement | undefined>();
-  const [{ data: chat }, refetchChatMessages] = useChatMessagesQuery({
+  const [{ data: chat, fetching }, refetchChatMessages] = useChatMessagesQuery({
     variables: { input: { id: chatId } },
   });
   const [message, setMessage] = React.useState<string>(``);
@@ -121,9 +119,24 @@ const Chat: React.FunctionComponent<MarketNavProps<"Chat">> = ({
 
   const { dimension } = useMediaQuery();
 
-  const markAsSoldHandler = async () => {
-    await markAsSold({ input: { id: chat?.chat.chat?.pet?.id || "" } });
-  };
+  React.useLayoutEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!chat?.chat.chat) {
+      navigation.setOptions({
+        headerShown: true,
+        header: () => (
+          <CustomChatHeader
+            navigation={navigation}
+            chat={chat.chat.chat as any}
+          />
+        ),
+      });
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [navigation, chat]);
+
   return (
     <View
       style={{
@@ -203,6 +216,12 @@ const Chat: React.FunctionComponent<MarketNavProps<"Chat">> = ({
                 </Text>
               </TouchableOpacity>
             </View>
+            {reading ||
+              (fetching && (
+                <View style={{ alignSelf: "center", marginVertical: 10 }}>
+                  <BoxIndicator size={5} color={COLORS.main} />
+                </View>
+              ))}
 
             {chat?.chat.chat?.messages?.map((message) => (
               <Message
@@ -251,6 +270,8 @@ const Chat: React.FunctionComponent<MarketNavProps<"Chat">> = ({
                 borderRadius: 5,
                 width: 100,
                 alignItems: "center",
+                flexDirection: "row",
+                justifyContent: "center",
               }}
               disabled={!!!message || sending}
               onPress={sendMessageHandler}
@@ -259,10 +280,12 @@ const Chat: React.FunctionComponent<MarketNavProps<"Chat">> = ({
                 style={{
                   color: "white",
                   fontFamily: FONTS.regular,
+                  marginRight: sending ? 5 : 0,
                 }}
               >
                 Send
               </Text>
+              {sending ? <BoxIndicator size={5} color={COLORS.main} /> : null}
             </TouchableOpacity>
           </KeyboardAvoidingView>
         </ImageBackground>
