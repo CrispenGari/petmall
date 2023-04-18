@@ -25,6 +25,20 @@
   margin: 0 auto;
   flex: 1;
 }
+.pet__page__no__pet {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+.pet__page__no__pet > p {
+  user-select: none !important;
+  color: white;
+  font-size: 1.1rem !important
+  ;
+}
 
 @media only screen and (max-width: 768px) {
   /* iPads, Tablets */

@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import React from "react";
 import { MarketNavProps } from "../../../../params";
 import { decodeId } from "../../../../utils";
@@ -10,10 +10,11 @@ import {
 } from "../../../../graphql/generated/graphql";
 import { useSelector } from "react-redux";
 import { StateType } from "../../../../types";
-import { COLORS } from "../../../../constants";
+import { COLORS, FONTS } from "../../../../constants";
 import { useDevice } from "../../../../hooks";
 import { useMediaQuery } from "../../../../hooks/useMediaQuery";
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
+import { styles } from "../../../../styles";
 
 const Pet: React.FunctionComponent<MarketNavProps<"Pet">> = ({
   navigation,
@@ -80,6 +81,47 @@ const Pet: React.FunctionComponent<MarketNavProps<"Pet">> = ({
         }}
       >
         <BoxIndicator size={20} color={COLORS.main} />
+      </View>
+    );
+
+  if (!!!data?.getPetById?.pet)
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: COLORS.primary,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text
+          style={{
+            marginHorizontal: 5,
+            textAlign: "center",
+            color: COLORS.white,
+            fontFamily: FONTS.regular,
+            fontSize: 16,
+          }}
+        >
+          Ops the pet is no longer available in the market.
+        </Text>
+
+        <TouchableOpacity
+          style={[
+            styles.button,
+            {
+              marginTop: 30,
+              backgroundColor: COLORS.main,
+              width: 200,
+            },
+          ]}
+          activeOpacity={0.7}
+          onPress={() => navigation.replace("Pets")}
+        >
+          <Text style={[styles.button__text, { fontSize: 16 }]}>
+            Go to Pet Market
+          </Text>
+        </TouchableOpacity>
       </View>
     );
 
