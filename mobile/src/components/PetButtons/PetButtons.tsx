@@ -215,10 +215,14 @@ const PetButtons: React.FunctionComponent<Props> = ({ pet, navigation }) => {
       ) : (
         <>
           <TouchableOpacity
+            activeOpacity={0.7}
             style={[
               styles.button,
               { backgroundColor: COLORS.main, flex: 1, marginRight: 10 },
             ]}
+            onPress={() =>
+              navigation.navigate("EditPet", { petId: encodeId(pet.id) })
+            }
           >
             <Text
               style={[styles.button__text, { fontFamily: FONTS.regularBold }]}

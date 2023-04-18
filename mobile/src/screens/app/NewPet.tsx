@@ -9,12 +9,11 @@ import {
 } from "react-native";
 import React, { useLayoutEffect } from "react";
 import { AppDrawerNavProps } from "../../params";
-import { AntDesign } from "@expo/vector-icons";
 import { styles } from "../../styles";
 import { CustomTextInput } from "../../components";
 import { COLORS, FONTS, GENDERS, PETS_CATEGORIES } from "../../constants";
 import SelectDropdown from "react-native-select-dropdown";
-import { Entypo } from "@expo/vector-icons";
+import { Entypo, AntDesign } from "@expo/vector-icons";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import * as ImagePicker from "expo-image-picker";
 import { useMediaPermission } from "../../hooks";

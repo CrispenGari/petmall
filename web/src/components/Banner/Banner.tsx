@@ -62,7 +62,11 @@ class Banner extends React.Component<PropsType, StateType> {
         className="banner"
         style={{ backgroundImage: `url(${banners[index]})` }}
       >
-        <h1>Welcome to PetMall, where you can explore, buy and sell Pets.</h1>
+        <h1>Welcome to PetMall.</h1>
+        <p>
+          Pet marketing made easy for you. Buy and sell pets using our
+          application.
+        </p>
       </div>
     );
   }

@@ -121,7 +121,7 @@ export class PetResolver {
       await pubsub.publish(Events.DELETE_PET, {
         petId: pet.id,
       });
-      await pubsub.publish(Events.NEW_PET_DELETE, {
+      await pubsub.publish(Events.ON_CATEGORY_PET_DELETE, {
         category: pet.category,
       });
       return {
@@ -228,6 +228,10 @@ export class PetResolver {
       await pubsub.publish(Events.NEW_PET_UPDATE, {
         petId: pet.id,
       });
+
+      await pubsub.publish(Events.ON_CATEGORY_PET_DELETE, {
+        category: pet.category,
+      });
       return {
         success: true,
       };
@@ -305,7 +309,7 @@ export class PetResolver {
           image: petImage,
         },
       });
-      await pubsub.publish(Events.NEW_PET, {
+      await pubsub.publish(Events.ON_NEW_CATEGORY_PET, {
         category: pet.category,
       });
       return {
@@ -449,6 +453,9 @@ export class PetResolver {
       await pubsub.publish(Events.NEW_PET_UPDATE, {
         petId: pet.id,
       });
+      await pubsub.publish(Events.ON_CATEGORY_PET_UPDATE, {
+        category: pet.category,
+      });
     } catch (error) {
       console.log({ error });
       return {
@@ -480,7 +487,11 @@ export class PetResolver {
   }
 
   @Subscription(() => CategoryPetSubscription, {
-    topics: [Events.NEW_PET, Events.NEW_PET_DELETE],
+    topics: [
+      Events.ON_NEW_CATEGORY_PET,
+      Events.ON_CATEGORY_PET_DELETE,
+      Events.ON_CATEGORY_PET_UPDATE,
+    ],
     nullable: false,
   })
   async categoryPetSubscription(

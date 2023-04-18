@@ -16,4 +16,13 @@
   color: white;
   font-size: 3rem;
   text-align: center;
+  margin-bottom: 0 !important;
+}
+
+.banner > p {
+  color: white;
+  font-size: 1rem !important;
+  text-align: center !important;
+  user-select: none;
+  margin-top: 10px !important;
 }

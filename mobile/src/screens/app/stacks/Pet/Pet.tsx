@@ -2,7 +2,7 @@ import { View } from "react-native";
 import React from "react";
 import { MarketNavProps } from "../../../../params";
 import { decodeId } from "../../../../utils";
-import { PetComments, PetDetails } from "../../../../components";
+import { BoxIndicator, PetComments, PetDetails } from "../../../../components";
 import {
   CommentType,
   useGetPetByIdQuery,
@@ -24,7 +24,7 @@ const Pet: React.FunctionComponent<MarketNavProps<"Pet">> = ({
   const petId: string = decodeId(id);
   const { dimension } = useMediaQuery();
   const { isIpad } = useDevice();
-  const [{ data }, refetchPet] = useGetPetByIdQuery({
+  const [{ data, fetching }, refetchPet] = useGetPetByIdQuery({
     variables: { input: { id: petId } },
   });
 
@@ -68,6 +68,20 @@ const Pet: React.FunctionComponent<MarketNavProps<"Pet">> = ({
       mounted = false;
     };
   }, [user, data]);
+
+  if (fetching)
+    return (
+      <View
+        style={{
+          flex: 1,
+          backgroundColor: COLORS.primary,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <BoxIndicator size={20} color={COLORS.main} />
+      </View>
+    );
 
   if (dimension.width < 768) {
     return (

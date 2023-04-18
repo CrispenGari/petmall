@@ -15,8 +15,8 @@ import fastifyWebsocket from "@fastify/websocket";
 import fastifyStatic from "@fastify/static";
 import path from "path";
 import MercuriusGQLUpload from "mercurius-upload";
+process.setMaxListeners(0)
 _();
-
 const PORT: any = process.env.PORT || 3001;
 const HOST =
   process.env.NODE_ENV === "production"
