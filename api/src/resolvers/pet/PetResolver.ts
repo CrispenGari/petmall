@@ -25,6 +25,7 @@ import { Events, __storageBaseURL__ } from "../../constants";
 import { CtxType } from "../../types";
 import { verifyJwt } from "../../utils";
 import {
+  CategoryPetSubscription,
   PetInteractionType,
   PetObjectType,
   PetsObjectType,
@@ -119,6 +120,9 @@ export class PetResolver {
       });
       await pubsub.publish(Events.DELETE_PET, {
         petId: pet.id,
+      });
+      await pubsub.publish(Events.NEW_PET_DELETE, {
+        category: pet.category,
       });
       return {
         success: true,
@@ -237,6 +241,7 @@ export class PetResolver {
 
   @Mutation(() => PetObjectType, { nullable: false })
   async add(
+    @PubSub() pubsub: PubSubEngine,
     @Arg("input", () => NewPetInputType)
     {
       image,
@@ -300,7 +305,9 @@ export class PetResolver {
           image: petImage,
         },
       });
-
+      await pubsub.publish(Events.NEW_PET, {
+        category: pet.category,
+      });
       return {
         success: true,
         pet: {
@@ -469,6 +476,18 @@ export class PetResolver {
   }> {
     return {
       petId,
+    };
+  }
+
+  @Subscription(() => CategoryPetSubscription, {
+    topics: [Events.NEW_PET, Events.NEW_PET_DELETE],
+    nullable: false,
+  })
+  async categoryPetSubscription(
+    @Root() { category }: { category: string }
+  ): Promise<CategoryPetSubscription> {
+    return {
+      category,
     };
   }
 }

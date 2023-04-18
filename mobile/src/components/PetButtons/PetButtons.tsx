@@ -20,6 +20,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { MarketParamList } from "../../params";
 import { encodeId } from "../../utils";
 import { useMediaQuery } from "../../hooks";
+import BoxIndicator from "../BoxIndicator/BoxIndicator";
 
 interface Props {
   pet: PetType;
@@ -77,6 +78,7 @@ const PetButtons: React.FunctionComponent<Props> = ({ pet, navigation }) => {
               containerStyles={{ padding: 5 }}
               inputStyle={{ margin: 0 }}
               numberOfLines={2}
+              onSubmitEditing={sendMessage}
             />
             <TouchableOpacity
               style={[
@@ -89,23 +91,38 @@ const PetButtons: React.FunctionComponent<Props> = ({ pet, navigation }) => {
                   marginLeft: 5,
                 },
               ]}
-              onPress={markAsSoldHandler}
+              onPress={sendMessage}
               disabled={pet.sold}
             >
               <Text
-                style={[styles.button__text, { fontFamily: FONTS.regularBold }]}
+                style={[
+                  styles.button__text,
+                  {
+                    fontFamily: FONTS.regularBold,
+                    marginRight: sending ? 5 : 0,
+                  },
+                ]}
               >
                 SEND
               </Text>
+              {sending ? (
+                <BoxIndicator color={COLORS.secondary} size={5} />
+              ) : null}
             </TouchableOpacity>
           </>
         ) : (
           <>
             <TouchableOpacity
+              activeOpacity={0.7}
               style={[
                 styles.button,
                 { backgroundColor: COLORS.main, flex: 1, marginRight: 10 },
               ]}
+              onPress={() =>
+                navigation.navigate("EditPet", {
+                  petId: encodeId(pet.id),
+                })
+              }
             >
               <Text
                 style={[styles.button__text, { fontFamily: FONTS.regularBold }]}
@@ -114,6 +131,7 @@ const PetButtons: React.FunctionComponent<Props> = ({ pet, navigation }) => {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
+              activeOpacity={0.7}
               style={[
                 styles.button,
                 { backgroundColor: COLORS.tertiary, flex: 1 },
@@ -122,10 +140,19 @@ const PetButtons: React.FunctionComponent<Props> = ({ pet, navigation }) => {
               disabled={pet.sold}
             >
               <Text
-                style={[styles.button__text, { fontFamily: FONTS.regularBold }]}
+                style={[
+                  styles.button__text,
+                  {
+                    fontFamily: FONTS.regularBold,
+                    marginRight: marking ? 5 : 0,
+                  },
+                ]}
               >
                 SOLD
               </Text>
+              {marking ? (
+                <BoxIndicator color={COLORS.secondary} size={5} />
+              ) : null}
             </TouchableOpacity>
           </>
         )}
@@ -155,8 +182,11 @@ const PetButtons: React.FunctionComponent<Props> = ({ pet, navigation }) => {
             containerStyles={{ padding: 5 }}
             inputStyle={{ margin: 0 }}
             numberOfLines={2}
+            onSubmitEditing={sendMessage}
           />
           <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={sendMessage}
             style={[
               styles.button,
               {
@@ -167,14 +197,19 @@ const PetButtons: React.FunctionComponent<Props> = ({ pet, navigation }) => {
                 marginLeft: 5,
               },
             ]}
-            onPress={markAsSoldHandler}
-            disabled={pet.sold}
+            disabled={pet.sold || sending}
           >
             <Text
-              style={[styles.button__text, { fontFamily: FONTS.regularBold }]}
+              style={[
+                styles.button__text,
+                { fontFamily: FONTS.regularBold, marginRight: sending ? 5 : 0 },
+              ]}
             >
               SEND
             </Text>
+            {sending ? (
+              <BoxIndicator color={COLORS.secondary} size={5} />
+            ) : null}
           </TouchableOpacity>
         </>
       ) : (
@@ -200,10 +235,16 @@ const PetButtons: React.FunctionComponent<Props> = ({ pet, navigation }) => {
             disabled={pet.sold}
           >
             <Text
-              style={[styles.button__text, { fontFamily: FONTS.regularBold }]}
+              style={[
+                styles.button__text,
+                { fontFamily: FONTS.regularBold, marginRight: marking ? 5 : 0 },
+              ]}
             >
               SOLD
             </Text>
+            {marking ? (
+              <BoxIndicator color={COLORS.secondary} size={5} />
+            ) : null}
           </TouchableOpacity>
         </>
       )}

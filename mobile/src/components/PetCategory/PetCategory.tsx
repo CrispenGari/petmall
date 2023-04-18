@@ -1,6 +1,9 @@
 import { View, Text } from "react-native";
 import React from "react";
-import { useGetPetsByCategoryQuery } from "../../graphql/generated/graphql";
+import {
+  useGetPetsByCategoryQuery,
+  useNewCategoryPetSubscription,
+} from "../../graphql/generated/graphql";
 import NoPets from "../NoPets/NoPets";
 import Pet from "../Pet/Pet";
 import { COLORS, FONTS } from "../../constants";
@@ -16,13 +19,30 @@ interface Props {
 }
 const PetCategory: React.FC<Props> = ({ subtitle, title, navigation }) => {
   const { isIpad } = useDevice();
-  const [{ data }] = useGetPetsByCategoryQuery({
+  const [{ data }, refetchCategoryPets] = useGetPetsByCategoryQuery({
     variables: {
       input: {
         category: title.toUpperCase(),
       },
     },
   });
+  const [{ data: categoryPet }] = useNewCategoryPetSubscription({
+    variables: {},
+  });
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (
+      mounted &&
+      title.toUpperCase() === categoryPet?.categoryPetSubscription.category
+    ) {
+      (async () => {
+        await refetchCategoryPets();
+      })();
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [title, refetchCategoryPets, categoryPet]);
   return (
     <View
       style={{

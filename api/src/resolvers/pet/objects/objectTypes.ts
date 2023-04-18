@@ -24,3 +24,9 @@ export class PetInteractionType {
   @Field(() => String, { nullable: false })
   petId: String;
 }
+
+@ObjectType()
+export class CategoryPetSubscription {
+  @Field(() => String, { nullable: false })
+  category: String;
+}

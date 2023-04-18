@@ -10,6 +10,7 @@ import { FontAwesome, Foundation } from "@expo/vector-icons";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { MarketParamList } from "../../params";
 import { encodeId } from "../../utils";
+import { useMediaQuery } from "../../hooks";
 dayjs.extend(relativeTime);
 dayjs.extend(updateLocale);
 
@@ -21,6 +22,7 @@ interface Props {
   pet: PetType;
 }
 const Pet: React.FunctionComponent<Props> = ({ pet, navigation }) => {
+  const { dimension } = useMediaQuery();
   const repliesCount: number =
     pet.comments
       ?.map((cmt) => cmt.replies?.length || 0)
@@ -30,13 +32,13 @@ const Pet: React.FunctionComponent<Props> = ({ pet, navigation }) => {
     <TouchableOpacity
       onPress={() => navigation.navigate("Pet", { petId: encodeId(pet.id) })}
       style={{
-        width: 180,
-        minWidth: 180,
+        width: dimension.width < 600 ? 170 : 180,
+        minWidth: dimension.width < 600 ? 170 : 180,
         height: 280,
         backgroundColor: COLORS.primary,
         borderRadius: 5,
         padding: 5,
-        margin: 5,
+        margin: dimension.width < 600 ? 2 : 5,
       }}
       activeOpacity={0.7}
     >

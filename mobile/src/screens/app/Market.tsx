@@ -10,6 +10,7 @@ import Chats from "./stacks/Chats/Chats";
 import Profile from "./stacks/Profile/Profile";
 import Notifications from "./stacks/Notifications/Notifications";
 import { COLORS } from "../../constants";
+import EditPet from "./stacks/EditPet/EditPet";
 
 const Stack = createStackNavigator<MarketParamList>();
 const Market: React.FunctionComponent<AppDrawerNavProps<"Market">> = ({
@@ -63,6 +64,7 @@ const Market: React.FunctionComponent<AppDrawerNavProps<"Market">> = ({
       <Stack.Screen name="Pets" component={Pets} />
       <Stack.Screen name="Pet" component={Pet} />
       <Stack.Screen name="Chat" component={Chat} />
+      <Stack.Screen name="EditPet" component={EditPet} />
       <Stack.Screen name="Chats" component={Chats} />
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="Notifications" component={Notifications} />

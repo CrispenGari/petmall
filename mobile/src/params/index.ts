@@ -16,6 +16,9 @@ export type MarketParamList = {
   };
   Chats: { userId: string };
   Notifications: { userId: string };
+  EditPet: {
+    petId: string;
+  };
 };
 
 export type MarketNavProps<T extends keyof MarketParamList> = {

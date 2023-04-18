@@ -1,5 +1,5 @@
 import { ScrollView, View, TouchableOpacity } from "react-native";
-import React, { useLayoutEffect } from "react";
+import React from "react";
 import { AppDrawerNavProps } from "../../params";
 import { AntDesign } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
@@ -53,6 +53,7 @@ const SellerProfile: React.FunctionComponent<
       showsVerticalScrollIndicator={false}
     >
       <ProfileCard
+        editable={user?.id === userId}
         userId={userId}
         setCategory={setCategory}
         category={category}

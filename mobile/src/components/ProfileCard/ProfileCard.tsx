@@ -28,11 +28,13 @@ interface Props {
   userId: string;
   category: string;
   setCategory: React.Dispatch<React.SetStateAction<string>>;
+  editable: boolean;
 }
 const ProfileCard: React.FC<Props> = ({
   userId: id,
   category,
   setCategory,
+  editable,
 }) => {
   const { dimension } = useMediaQuery();
   const { camera, gallery } = useMediaPermission();
@@ -206,48 +208,49 @@ const ProfileCard: React.FC<Props> = ({
           }}
         />
 
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <TouchableOpacity
-            style={[
-              styles.button,
-              {
-                width: 40,
-                height: 40,
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 40,
-              },
-            ]}
-            activeOpacity={0.7}
-            onPress={() => handleSelectImage("camera")}
+        {editable && (
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
           >
-            <Entypo name="camera" size={16} color={COLORS.white} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.button,
-              {
-                width: 40,
-                height: 40,
-                justifyContent: "center",
-                alignItems: "center",
-                borderRadius: 40,
-                marginLeft: 20,
-              },
-            ]}
-            activeOpacity={0.7}
-            onPress={() => handleSelectImage("gallery")}
-          >
-            <Entypo name="images" size={16} color={COLORS.white} />
-          </TouchableOpacity>
-        </View>
-
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {
+                  width: 40,
+                  height: 40,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 40,
+                },
+              ]}
+              activeOpacity={0.7}
+              onPress={() => handleSelectImage("camera")}
+            >
+              <Entypo name="camera" size={16} color={COLORS.white} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {
+                  width: 40,
+                  height: 40,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  borderRadius: 40,
+                  marginLeft: 20,
+                },
+              ]}
+              activeOpacity={0.7}
+              onPress={() => handleSelectImage("gallery")}
+            >
+              <Entypo name="images" size={16} color={COLORS.white} />
+            </TouchableOpacity>
+          </View>
+        )}
         {!!!previewImage.startsWith("http") && (
           <>
             <TouchableOpacity
@@ -388,69 +391,71 @@ const ProfileCard: React.FC<Props> = ({
             }
           />
         </View>
-        <View
-          style={{
-            flexDirection: "row",
-            paddingVertical: 10,
-            alignItems: "center",
-            justifyContent:
-              dimension.width < 600 ? "space-between" : "flex-start",
-          }}
-        >
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => {
-              setEnableEdit(true);
+        {editable && (
+          <View
+            style={{
+              flexDirection: "row",
+              paddingVertical: 10,
+              alignItems: "center",
+              justifyContent:
+                dimension.width < 600 ? "space-between" : "flex-start",
             }}
-            style={[
-              styles.button,
-              {
-                backgroundColor: COLORS.tertiary,
-                width: 150,
-                borderRadius: 5,
-
-                marginTop: 0,
-              },
-            ]}
           >
-            <Text
-              style={[styles.button__text, { fontFamily: FONTS.regularBold }]}
-            >
-              EDIT
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={[
-              styles.button,
-              {
-                backgroundColor: COLORS.primary,
-                width: 150,
-                borderRadius: 5,
-                marginTop: 0,
-                marginLeft: 5,
-                alignItems: "center",
-              },
-            ]}
-            disabled={updatingInfo || !enableEdit}
-            onPress={updateProfileInfo}
-          >
-            <Text
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => {
+                setEnableEdit(true);
+              }}
               style={[
-                styles.button__text,
+                styles.button,
                 {
-                  fontFamily: FONTS.regularBold,
-                  marginRight: updatingInfo ? 10 : 0,
+                  backgroundColor: COLORS.tertiary,
+                  width: 150,
+                  borderRadius: 5,
+
+                  marginTop: 0,
                 },
               ]}
             >
-              UPDATE
-            </Text>
-            {updatingInfo ? (
-              <BoxIndicator color={COLORS.main} size={5} />
-            ) : null}
-          </TouchableOpacity>
-        </View>
+              <Text
+                style={[styles.button__text, { fontFamily: FONTS.regularBold }]}
+              >
+                EDIT
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={[
+                styles.button,
+                {
+                  backgroundColor: COLORS.primary,
+                  width: 150,
+                  borderRadius: 5,
+                  marginTop: 0,
+                  marginLeft: 5,
+                  alignItems: "center",
+                },
+              ]}
+              disabled={updatingInfo || !enableEdit}
+              onPress={updateProfileInfo}
+            >
+              <Text
+                style={[
+                  styles.button__text,
+                  {
+                    fontFamily: FONTS.regularBold,
+                    marginRight: updatingInfo ? 10 : 0,
+                  },
+                ]}
+              >
+                UPDATE
+              </Text>
+              {updatingInfo ? (
+                <BoxIndicator color={COLORS.main} size={5} />
+              ) : null}
+            </TouchableOpacity>
+          </View>
+        )}
       </KeyboardAvoidingView>
     </View>
   );

@@ -1,5 +1,8 @@
 import React from "react";
-import { useGetPetsByCategoryQuery } from "../../graphql/generated/graphql";
+import {
+  useGetPetsByCategoryQuery,
+  useNewCategoryPetSubscription,
+} from "../../graphql/generated/graphql";
 import "./FlatList.css";
 import { NoPets, Pet } from "..";
 
@@ -8,13 +11,29 @@ interface Props {
   subtitle: string;
 }
 const FlatList: React.FC<Props> = ({ title, subtitle }) => {
-  const [{ data }] = useGetPetsByCategoryQuery({
+  const [{ data }, refetchCategoryPets] = useGetPetsByCategoryQuery({
     variables: {
       input: {
         category: title.toUpperCase(),
       },
     },
   });
+  const [{ data: categoryPet }] = useNewCategoryPetSubscription();
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (
+      mounted &&
+      title.toUpperCase() === categoryPet?.categoryPetSubscription.category
+    ) {
+      (async () => {
+        await refetchCategoryPets();
+      })();
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [title, refetchCategoryPets, categoryPet]);
+
   return (
     <div className="flatlist">
       <h1>{title.replace(/_/g, " ")}</h1>

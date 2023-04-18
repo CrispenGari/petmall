@@ -16,6 +16,11 @@ export type Scalars = {
   Upload: any;
 };
 
+export type CategoryPetSubscription = {
+  __typename?: 'CategoryPetSubscription';
+  category: Scalars['String'];
+};
+
 export type ChangeAccountPasswordInputType = {
   confirmPassword: Scalars['String'];
   currentAccountPassword: Scalars['String'];
@@ -553,6 +558,7 @@ export type SendMessageObjectType = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  categoryPetSubscription: CategoryPetSubscription;
   newChatMessage: NewChatMessageType;
   newMessage: NewMessageType;
   newNotification: NewNotificationType;
@@ -879,6 +885,11 @@ export type GetUserQueryVariables = Exact<{
 
 
 export type GetUserQuery = { __typename?: 'Query', user: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null, pets?: Array<{ __typename?: 'PetType', id: string, name: string, age: number, description: string, gender: string, image: string, category: string, sold: boolean, price: number, createdAt: string, updatedAt: string, seller?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null, location?: { __typename?: 'LocationType', id: string, lat?: number | null, lon?: number | null, createAt?: string | null, updateAt?: string | null } | null, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, createdAt: string, updatedAt: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, comments?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, replies?: Array<{ __typename?: 'CommentType', id: string, comment: string, createdAt: string, updatedAt: string, reactions?: Array<{ __typename?: 'ReactionType', id: string, reaction: string, userId: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null }> | null }> | null } };
+
+export type NewCategoryPetSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type NewCategoryPetSubscription = { __typename?: 'Subscription', categoryPetSubscription: { __typename?: 'CategoryPetSubscription', category: string } };
 
 export type NewChatMessageSubscriptionVariables = Exact<{
   input: NewChatMessageSubscriptionInput;
@@ -1559,6 +1570,17 @@ export const GetUserDocument = gql`
 
 export function useGetUserQuery(options: Omit<Urql.UseQueryArgs<GetUserQueryVariables>, 'query'>) {
   return Urql.useQuery<GetUserQuery, GetUserQueryVariables>({ query: GetUserDocument, ...options });
+};
+export const NewCategoryPetDocument = gql`
+    subscription NewCategoryPet {
+  categoryPetSubscription {
+    category
+  }
+}
+    `;
+
+export function useNewCategoryPetSubscription<TData = NewCategoryPetSubscription>(options: Omit<Urql.UseSubscriptionArgs<NewCategoryPetSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<NewCategoryPetSubscription, TData>) {
+  return Urql.useSubscription<NewCategoryPetSubscription, TData, NewCategoryPetSubscriptionVariables>({ query: NewCategoryPetDocument, ...options }, handler);
 };
 export const NewChatMessageDocument = gql`
     subscription NewChatMessage($input: NewChatMessageSubscriptionInput!) {
