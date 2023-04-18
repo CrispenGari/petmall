@@ -22,8 +22,6 @@ export const client = createClient({
     authExchange({
       getAuth: async ({ authState }: any) => {
         const token = await retrieve(TOKEN_KEY);
-
-        console.log({ token });
         return {
           token,
         };

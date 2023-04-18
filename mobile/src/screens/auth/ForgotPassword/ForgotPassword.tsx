@@ -31,8 +31,6 @@ const ForgotPassword: React.FunctionComponent<
   const [{ fetching, data }, requestForgotPasswordLink] =
     useRequestForgotPasswordLinkMutation();
 
-  console.log(JSON.stringify({ data }, null, 2));
-
   React.useLayoutEffect(() => {
     let mounted: boolean = true;
     if (mounted) {

@@ -84,7 +84,6 @@ const Routes = () => {
     if (mounted) {
       (async () => {
         const jwt = await retrieve(TOKEN_KEY);
-        console.log({ jwt });
       })();
     }
     return () => {

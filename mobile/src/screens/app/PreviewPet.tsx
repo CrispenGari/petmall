@@ -39,7 +39,6 @@ const PreviewPet: React.FunctionComponent<AppDrawerNavProps<"PreviewPet">> = ({
       mounted = false;
     };
   }, [data, navigation]);
-  console.log({ data: data?.add });
 
   useLayoutEffect(() => {
     let mounted: boolean = true;

@@ -1,8 +1,7 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 
 export const petMallRoute = async (fastify: FastifyInstance) => {
-  fastify.setErrorHandler(async (err) => {
-    console.log(err.message);
+  fastify.setErrorHandler(async (_err) => {
     throw new Error("caught");
   });
   fastify.post("/", async (_request: FastifyRequest, reply: FastifyReply) => {

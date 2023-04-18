@@ -138,7 +138,6 @@ export class ChatResolver {
     try {
       await prisma.chat.delete({ where: { id: chat.id } });
     } catch (error) {
-      console.log(error);
       return {
         success: false,
       };

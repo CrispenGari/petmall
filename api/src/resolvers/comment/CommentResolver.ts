@@ -95,7 +95,6 @@ export class CommentResolver {
         });
       }
     } catch (error) {
-      console.log({ error });
       return {
         success: false,
       };
@@ -190,7 +189,6 @@ export class CommentResolver {
         });
       }
     } catch (error) {
-      console.log({ error });
       return {
         success: false,
       };

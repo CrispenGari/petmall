@@ -119,7 +119,6 @@ export class ReactionResolver {
         });
       }
     } catch (error) {
-      console.log({ error });
       return {
         success: false,
       };
@@ -223,7 +222,6 @@ export class ReactionResolver {
         });
       }
     } catch (error) {
-      console.log({ error });
       return {
         success: false,
       };

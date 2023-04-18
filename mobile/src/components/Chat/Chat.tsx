@@ -3,6 +3,7 @@ import React from "react";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import updateLocale from "dayjs/plugin/updateLocale";
+import { Swipeable } from "react-native-gesture-handler";
 import {
   ChatType,
   useDeleteChatMutation,
@@ -42,102 +43,110 @@ const Chat: React.FunctionComponent<Props> = ({ chat, navigation }) => {
   };
 
   return (
-    <View
-      style={{
-        backgroundColor: COLORS.primary,
-        padding: 5,
-        marginBottom: 2,
-        borderRadius: 5,
-        flexDirection: "row",
+    <Swipeable
+      renderRightActions={(progress, dragX) => {
+        return (
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              minWidth: 50,
+              backgroundColor: COLORS.tertiary,
+              borderRadius: 5,
+            }}
+            onPress={deleteChatHandler}
+          >
+            <MaterialIcons name="delete" size={24} color="white" />
+          </TouchableOpacity>
+        );
       }}
     >
-      <TouchableOpacity
-        activeOpacity={0.7}
-        onPress={() =>
-          navigation.navigate("Pet", { petId: encodeId(chat.pet?.id || "") })
-        }
+      <View
+        style={{
+          backgroundColor: COLORS.primary,
+          padding: 5,
+          marginBottom: 2,
+          borderRadius: 5,
+          flexDirection: "row",
+        }}
       >
-        <Image
-          source={{
-            uri: !!chat.pet?.image
-              ? chat.pet.image.replace("127.0.0.1:3001", ngrokDomain)
-              : Image.resolveAssetSource(require("../../../assets/profile.png"))
-                  .uri,
-          }}
-          style={{
-            width: 50,
-            height: 50,
-            borderRadius: 5,
-            marginVertical: 3,
-            resizeMode: "cover",
-          }}
-        />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{ flex: 1, marginHorizontal: 5 }}
-        activeOpacity={0.7}
-        onPress={() =>
-          navigation.navigate("Chat", { chatId: encodeId(chat.id) })
-        }
-      >
-        <Text
-          style={{
-            fontFamily: FONTS.regularBold,
-            fontSize: 20,
-            color: COLORS.white,
-          }}
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() =>
+            navigation.navigate("Pet", { petId: encodeId(chat.pet?.id || "") })
+          }
         >
-          {chat.chatTitle}
-        </Text>
-        <Text
-          style={{
-            fontFamily: FONTS.regular,
-            fontSize: 16,
-            color: COLORS.white,
-          }}
-        >
-          {lastMessage?.senderId === me?.id && "you: "}
-          {!!lastMessage
-            ? lastMessage.message
-            : "no messages in this chat yet"}{" "}
-        </Text>
-        {lastMessage?.senderId ===
-        me?.id ? null : lastMessage?.opened ? null : (
-          <View
+          <Image
+            source={{
+              uri: !!chat.pet?.image
+                ? chat.pet.image.replace("127.0.0.1:3001", ngrokDomain)
+                : Image.resolveAssetSource(
+                    require("../../../assets/profile.png")
+                  ).uri,
+            }}
             style={{
-              width: 10,
-              height: 10,
-              backgroundColor: COLORS.tertiary,
-              borderRadius: 10,
-              position: "absolute",
-              right: 10,
-              top: 5,
+              width: 50,
+              height: 50,
+              borderRadius: 5,
+              marginVertical: 3,
+              resizeMode: "cover",
             }}
           />
-        )}
-        <View style={{}}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{ flex: 1, marginHorizontal: 5 }}
+          activeOpacity={0.7}
+          onPress={() =>
+            navigation.navigate("Chat", { chatId: encodeId(chat.id) })
+          }
+        >
           <Text
-            style={{ fontFamily: FONTS.regular, fontSize: 15, color: "gray" }}
+            style={{
+              fontFamily: FONTS.regularBold,
+              fontSize: 20,
+              color: COLORS.white,
+            }}
           >
-            {dayjs(new Date(Number(lastMessage?.createdAt ?? ""))).fromNow()}{" "}
-            ago
+            {chat.chatTitle}
           </Text>
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity
-        activeOpacity={0.7}
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          minWidth: 50,
-          backgroundColor: COLORS.tertiary,
-          borderRadius: 5,
-        }}
-        onPress={deleteChatHandler}
-      >
-        <MaterialIcons name="delete" size={24} color="white" />
-      </TouchableOpacity>
-    </View>
+          <Text
+            style={{
+              fontFamily: FONTS.regular,
+              fontSize: 16,
+              color: COLORS.white,
+            }}
+          >
+            {lastMessage?.senderId === me?.id && "you: "}
+            {!!lastMessage
+              ? lastMessage.message
+              : "no messages in this chat yet"}{" "}
+          </Text>
+          {lastMessage?.senderId ===
+          me?.id ? null : lastMessage?.opened ? null : (
+            <View
+              style={{
+                width: 10,
+                height: 10,
+                backgroundColor: COLORS.tertiary,
+                borderRadius: 10,
+                position: "absolute",
+                right: 10,
+                top: 5,
+              }}
+            />
+          )}
+          <View style={{}}>
+            <Text
+              style={{ fontFamily: FONTS.regular, fontSize: 15, color: "gray" }}
+            >
+              {dayjs(new Date(Number(lastMessage?.createdAt ?? ""))).fromNow()}{" "}
+              ago
+            </Text>
+          </View>
+        </TouchableOpacity>
+      </View>
+    </Swipeable>
   );
 };
 

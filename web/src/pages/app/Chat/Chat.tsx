@@ -11,8 +11,6 @@ import {
   useNewChatMessageSubscription,
   useSendMessageMutation,
 } from "../../../graphql/generated/graphql";
-import axios from "axios";
-import { BiCurrentLocation } from "react-icons/bi";
 import { StateType } from "../../../types";
 import { decodeId, encodeId } from "../../../utils";
 import CountUp from "react-countup";
@@ -104,23 +102,6 @@ const Chat: React.FC<Props> = () => {
     };
   }, [chat]);
 
-  const sendCurrentAddress = () => {
-    window.navigator.geolocation.getCurrentPosition(
-      async ({ coords: { latitude, longitude } }) => {
-        console.log({ latitude, longitude });
-        // const geocoder = new Geocoder()
-        const data = await axios.get(
-          `http://www.geoplugin.net/extras/location.gp?lat=-32.972404&long=27.908321&format=json`
-        );
-        console.log(data);
-      },
-      (error) => console.error(error),
-      {
-        enableHighAccuracy: true,
-      }
-    );
-  };
-
   const markAsSoldHandler = async () => {
     await markAsSold({ input: { id: chat?.chat.chat?.pet?.id || "" } });
   };
@@ -209,15 +190,6 @@ const Chat: React.FC<Props> = () => {
         </div>
         <Form onSubmit={onSubmit}>
           <div className="chat__page__form__inputs">
-            <div
-              className="chat__page__main__location__btn"
-              tabIndex={1}
-              role={"button"}
-              title="send current address"
-              onClick={sendCurrentAddress}
-            >
-              <BiCurrentLocation />
-            </div>
             <TextArea
               placeholder="Write a message..."
               fluid

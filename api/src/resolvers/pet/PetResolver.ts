@@ -128,7 +128,6 @@ export class PetResolver {
         success: true,
       };
     } catch (error) {
-      console.log(error.message);
       return {
         success: false,
       };
@@ -236,7 +235,6 @@ export class PetResolver {
         success: true,
       };
     } catch (error) {
-      console.log(error);
       return {
         success: false,
       };
@@ -329,7 +327,6 @@ export class PetResolver {
         },
       };
     } catch (error) {
-      console.log(error);
       return {
         success: false,
       };
@@ -457,7 +454,6 @@ export class PetResolver {
         category: pet.category,
       });
     } catch (error) {
-      console.log({ error });
       return {
         success: false,
       };

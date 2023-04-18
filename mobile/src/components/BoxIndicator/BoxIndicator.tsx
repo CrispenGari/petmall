@@ -1,4 +1,4 @@
-import { Animated, View, StyleSheet } from "react-native";
+import { Animated, View } from "react-native";
 import React from "react";
 
 interface Props {
