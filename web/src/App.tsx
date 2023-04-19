@@ -82,7 +82,7 @@ const App: React.FC<Props> = () => {
   }, [refetchUser, data]);
   React.useEffect(() => {
     let mounted: boolean = true;
-    if (mounted && !!chatMessage?.newChatMessage?.userId) {
+    if (mounted && !!chatMessage?.newChatMessage?.chatId) {
       (async () => {
         await refetchChats();
       })();

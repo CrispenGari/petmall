@@ -138,18 +138,6 @@ const Routes = () => {
 
   React.useEffect(() => {
     let mounted: boolean = true;
-    if (mounted) {
-      (async () => {
-        const jwt = await retrieve(TOKEN_KEY);
-      })();
-    }
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  React.useEffect(() => {
-    let mounted: boolean = true;
     if (mounted && !!notification?.newNotification) {
       (async () => {
         if (!!notification.newNotification.notification) {
@@ -191,7 +179,9 @@ const Routes = () => {
       mounted = false;
     };
   }, [dispatch, chats]);
-  const [{ data: newUser }, refetchUser] = useMeQuery();
+  const [{ data: newUser }, refetchUser] = useMeQuery({
+    requestPolicy: "network-only",
+  });
   const [{ data }] = useOnUserStateChangeSubscription({
     variables: { userId: user?.id || "" },
   });
@@ -220,8 +210,18 @@ const Routes = () => {
 
   React.useEffect(() => {
     let mounted: boolean = true;
-    if (mounted && !!newUser?.me) {
-      dispatch(setUser(newUser.me));
+    if (mounted) {
+      (async () => {
+        const jwt = await retrieve(TOKEN_KEY);
+        const me = newUser?.me || null;
+        const isLoggedIn = !!!me ? false : me.isLoggedIn ? true : false;
+
+        if (!!!jwt || !!!me || !isLoggedIn) {
+          dispatch(setUser(null));
+        } else {
+          dispatch(setUser(me));
+        }
+      })();
     }
     return () => {
       mounted = false;

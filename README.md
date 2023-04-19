@@ -149,7 +149,72 @@ This page is shown when you are authenticated.
 
 ### 2. mobile
 
-- still coming
+The following are the basic screens of the mobile app of petmall.
+
+1. Landing
+
+<p align="center">
+<img src="/images/mobile/0.jpeg" alt="demo" width="200"/>
+<img src="/images/mobile/1.jpeg" alt="demo" width="200"/>
+</p>
+
+2. Auth Pages/Screens
+
+<p align="center">
+<img src="/images/mobile/2.jpeg" alt="demo" width="200"/>
+<img src="/images/mobile/3.jpeg" alt="demo" width="200"/>
+<img src="/images/mobile/4.jpeg" alt="demo" width="200"/>
+<img src="/images/mobile/5.jpeg" alt="demo" width="200"/>
+<img src="/images/mobile/21.jpeg" alt="demo" width="200"/>
+
+</p>
+
+3. App Home
+
+<p align="center">
+<img src="/images/mobile/7.jpeg" alt="demo" width="200"/>
+</p>
+
+4.  Profile
+
+This page is shown when you are authenticated.
+
+<p align="center">
+<img src="/images/mobile/6.jpeg" alt="demo" width="200"/>
+<img src="/images/mobile/8.jpeg" alt="demo" width="200"/>
+
+</p>
+
+5. Creating a New Pet
+
+<p align="center">
+<img src="/images/mobile/9.jpeg" alt="demo" width="200"/>
+<img src="/images/mobile/10.jpeg" alt="demo" width="200"/>
+
+6. Opening a Pet
+
+<p align="center">
+<img src="/images/mobile/11.jpeg" alt="demo" width="200"/>
+<img src="/images/mobile/12.jpeg" alt="demo" width="200"/>
+
+</p>
+
+7. Notifications and Chats
+
+<p align="center">
+<img src="/images/mobile/13.jpeg" alt="demo" width="200"/>
+<img src="/images/mobile/14.jpeg" alt="demo" width="200"/><img src="/images/mobile/15.jpeg" alt="demo" width="200"/>
+</p>
+
+8. Push Notifications
+
+<p align="center">
+<img src="/images/mobile/16.jpeg" alt="demo" width="200"/>
+<img src="/images/mobile/17.jpeg" alt="demo" width="200"/>
+<img src="/images/mobile/18.jpeg" alt="demo" width="200"/>
+<img src="/images/mobile/19.jpeg" alt="demo" width="200"/>
+<img src="/images/mobile/20.jpeg" alt="demo" width="200"/>
+</p>
 
 ### Languages used
 

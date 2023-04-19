@@ -1,13 +1,16 @@
-import { TouchableOpacity, Text, Image, View } from "react-native";
+import { TouchableOpacity, Text, Image } from "react-native";
 import React from "react";
 import { styles } from "../../styles";
 import { useDispatch, useSelector } from "react-redux";
 import { StateType } from "../../types";
-import { useLogoutMutation } from "../../graphql/generated/graphql";
+import {
+  useHelloQuery,
+  useLogoutMutation,
+} from "../../graphql/generated/graphql";
 import BoxIndicator from "../BoxIndicator/BoxIndicator";
 import { COLORS, TOKEN_KEY, ngrokDomain } from "../../constants";
 import { setUser } from "../../actions";
-import { del } from "../../utils";
+import { del, retrieve } from "../../utils";
 
 interface Props {
   onPress?: () => void;
@@ -15,6 +18,7 @@ interface Props {
 const DrawerProfile: React.FunctionComponent<Props> = ({ onPress }) => {
   const { user } = useSelector((state: StateType) => state);
   const [{ data, fetching }, logoutHandler] = useLogoutMutation();
+  const [{}, refetchHello] = useHelloQuery({ variables: { name: "bye" } });
   const dispatch = useDispatch();
   React.useEffect(() => {
     let mounted: boolean = true;
@@ -22,6 +26,7 @@ const DrawerProfile: React.FunctionComponent<Props> = ({ onPress }) => {
       (async () => {
         const success = await del(TOKEN_KEY);
         if (success) {
+          await refetchHello();
           dispatch(setUser(null));
         }
       })();
@@ -29,7 +34,7 @@ const DrawerProfile: React.FunctionComponent<Props> = ({ onPress }) => {
     return () => {
       mounted = false;
     };
-  }, [data, dispatch]);
+  }, [data, dispatch, refetchHello]);
 
   const logout = async () => {
     await logoutHandler({});
