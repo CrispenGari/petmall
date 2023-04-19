@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { StateType } from "../../../types";
 import {
   useNewNotificationSubscription,
-  useNewChatMessageSubscription,
+  useNewMessageSubscription,
 } from "../../../graphql/generated/graphql";
 import { useNavigate } from "react-router-dom";
 interface Props {}
@@ -35,7 +35,8 @@ const Home: React.FC<Props> = () => {
       },
     },
   });
-  const [{ data: chatMessage }] = useNewChatMessageSubscription({
+
+  const [{ data: newMessage }] = useNewMessageSubscription({
     variables: {
       input: {
         userId: me?.id || "",
@@ -45,26 +46,21 @@ const Home: React.FC<Props> = () => {
 
   React.useEffect(() => {
     let mounted: boolean = true;
-    if (mounted && !!chatMessage?.newChatMessage.userId) {
-      (async () => {
-        if (!!chatMessage.newChatMessage) {
-          if (!!chatMessage.newChatMessage.chatId) {
-            setNoti({
-              title: `New Market Message - PetMall`,
-              message: "You have a new chat message.",
-              data: {
-                id: chatMessage.newChatMessage.chatId,
-                type: "new-message",
-              },
-            });
-          }
-        }
-      })();
+    if (mounted && newMessage?.newMessage.chatId) {
+      setNoti({
+        title: `New Market Message - PetMall`,
+        message: `${newMessage.newMessage.message?.message}`,
+        data: {
+          id: newMessage.newMessage.chatId,
+          type: "new-message",
+        },
+      });
     }
     return () => {
       mounted = false;
     };
-  }, [chatMessage]);
+  }, [newMessage]);
+
   React.useEffect(() => {
     let mounted: boolean = true;
     if (mounted && !!notification?.newNotification) {
@@ -91,19 +87,18 @@ const Home: React.FC<Props> = () => {
   React.useEffect(() => {
     let mounted: boolean = true;
     if (mounted && !!noti.title && !!navigator) {
-      (async () => {
-        sendNotification(noti.title, noti.message, noti.data, navigator);
-        setNoti({
-          message: "",
-          title: "",
-          data: { id: "", type: "pet-interaction" },
-        });
-      })();
+      sendNotification(noti.title, noti.message, noti.data, navigator);
+      setNoti({
+        message: "",
+        title: "",
+        data: { id: "", type: "pet-interaction" },
+      });
     }
     return () => {
       mounted = false;
     };
   }, [noti, navigator]);
+
   React.useEffect(() => {
     let mounted: boolean = true;
     if (mounted) {

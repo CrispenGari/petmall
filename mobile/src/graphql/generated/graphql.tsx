@@ -371,7 +371,7 @@ export type NewMessageSubscriptionInput = {
 
 export type NewMessageType = {
   __typename?: 'NewMessageType';
-  chatId: Scalars['String'];
+  chatId?: Maybe<Scalars['String']>;
   message?: Maybe<MessageType>;
   userId: Scalars['String'];
 };
@@ -383,7 +383,7 @@ export type NewNotificationSubscriptionInput = {
 export type NewNotificationType = {
   __typename?: 'NewNotificationType';
   notification?: Maybe<NotificationType>;
-  petId: Scalars['String'];
+  petId?: Maybe<Scalars['String']>;
   userId: Scalars['String'];
 };
 
@@ -562,7 +562,7 @@ export type SendMessageObjectType = {
 export type Subscription = {
   __typename?: 'Subscription';
   categoryPetSubscription: CategoryPetSubscription;
-  newChatMessage: NewChatMessageType;
+  newChatMessage?: Maybe<NewChatMessageType>;
   newMessage: NewMessageType;
   newNotification: NewNotificationType;
   notify: Scalars['String'];
@@ -899,14 +899,21 @@ export type NewChatMessageSubscriptionVariables = Exact<{
 }>;
 
 
-export type NewChatMessageSubscription = { __typename?: 'Subscription', newChatMessage: { __typename?: 'NewChatMessageType', userId: string, chatId: string } };
+export type NewChatMessageSubscription = { __typename?: 'Subscription', newChatMessage?: { __typename?: 'NewChatMessageType', userId: string, chatId: string } | null };
+
+export type NewMessageSubscriptionVariables = Exact<{
+  input: NewMessageSubscriptionInput;
+}>;
+
+
+export type NewMessageSubscription = { __typename?: 'Subscription', newMessage: { __typename?: 'NewMessageType', userId: string, chatId?: string | null, message?: { __typename?: 'MessageType', id: string, message: string, chatId: string, senderId: string, opened: boolean, createdAt: string, updatedAt: string, sender?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null } | null } };
 
 export type NewNotificationSubscriptionVariables = Exact<{
   input: NewNotificationSubscriptionInput;
 }>;
 
 
-export type NewNotificationSubscription = { __typename?: 'Subscription', newNotification: { __typename?: 'NewNotificationType', userId: string, petId: string, notification?: { __typename?: 'NotificationType', id: string, notification: string, userId: string, read: boolean, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null } | null } };
+export type NewNotificationSubscription = { __typename?: 'Subscription', newNotification: { __typename?: 'NewNotificationType', userId: string, petId?: string | null, notification?: { __typename?: 'NotificationType', id: string, notification: string, userId: string, read: boolean, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null } | null } };
 
 export type PetInteractionSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
@@ -1596,6 +1603,21 @@ export const NewChatMessageDocument = gql`
 
 export function useNewChatMessageSubscription<TData = NewChatMessageSubscription>(options: Omit<Urql.UseSubscriptionArgs<NewChatMessageSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<NewChatMessageSubscription, TData>) {
   return Urql.useSubscription<NewChatMessageSubscription, TData, NewChatMessageSubscriptionVariables>({ query: NewChatMessageDocument, ...options }, handler);
+};
+export const NewMessageDocument = gql`
+    subscription NewMessage($input: NewMessageSubscriptionInput!) {
+  newMessage(input: $input) {
+    userId
+    chatId
+    message {
+      ...MessageFragment
+    }
+  }
+}
+    ${MessageFragmentFragmentDoc}`;
+
+export function useNewMessageSubscription<TData = NewMessageSubscription>(options: Omit<Urql.UseSubscriptionArgs<NewMessageSubscriptionVariables>, 'query'> = {}, handler?: Urql.SubscriptionHandler<NewMessageSubscription, TData>) {
+  return Urql.useSubscription<NewMessageSubscription, TData, NewMessageSubscriptionVariables>({ query: NewMessageDocument, ...options }, handler);
 };
 export const NewNotificationDocument = gql`
     subscription NewNotification($input: NewNotificationSubscriptionInput!) {

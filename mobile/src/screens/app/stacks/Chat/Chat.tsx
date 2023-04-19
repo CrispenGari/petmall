@@ -51,7 +51,6 @@ const Chat: React.FunctionComponent<MarketNavProps<"Chat">> = ({
     },
   });
   const chatId = decodeId(id);
-  const scrollRef = React.useRef<HTMLDivElement | undefined>();
   const [{ data: chat, fetching }, refetchChatMessages] = useChatMessagesQuery({
     variables: { input: { id: chatId } },
   });
@@ -87,36 +86,15 @@ const Chat: React.FunctionComponent<MarketNavProps<"Chat">> = ({
 
   React.useEffect(() => {
     let mounted: boolean = true;
-    if (mounted && !!chatMessage?.newChatMessage.userId) {
+    if (mounted && !!chatMessage?.newChatMessage?.userId) {
       (async () => {
         await refetchChatMessages();
-        if (scrollRef?.current) {
-          scrollRef.current.scrollTo({
-            top: scrollRef.current.scrollHeight,
-            behavior: "smooth",
-          });
-        }
       })();
     }
     return () => {
       mounted = false;
     };
   }, [refetchChatMessages, chatMessage]);
-
-  React.useEffect(() => {
-    let mounted: boolean = true;
-    if (mounted && !!chat?.chat.chat?.messages) {
-      if (scrollRef?.current) {
-        scrollRef.current.scrollTo({
-          top: scrollRef.current.scrollHeight,
-          behavior: "smooth",
-        });
-      }
-    }
-    return () => {
-      mounted = false;
-    };
-  }, [chat]);
 
   React.useLayoutEffect(() => {
     let mounted: boolean = true;

@@ -70,6 +70,7 @@ export class ChatResolver {
       },
     });
 
+    let msg: any;
     if (!!!chat) {
       const _chat = await prisma.chat.create({
         data: {
@@ -79,7 +80,7 @@ export class ChatResolver {
           chatTitle,
         },
       });
-      await prisma.message.create({
+      msg = await prisma.message.create({
         data: {
           message,
           sender: { connect: { id: me.id } },
@@ -88,18 +89,20 @@ export class ChatResolver {
       });
       await pubsub.publish(Events.NEW_CHAT_MESSAGE, {
         userId: me.id,
-        chatId: _chat.id,
+        chatId: "",
+        message: msg,
       });
       await pubsub.publish(Events.NEW_CHAT_MESSAGE, {
         userId: friend.id,
         chatId: _chat.id,
+        message: msg,
       });
       return {
         success: true,
         chatId: _chat.id,
       };
     } else {
-      await prisma.message.create({
+      msg = await prisma.message.create({
         data: {
           message,
           sender: { connect: { id: me.id } },
@@ -107,8 +110,15 @@ export class ChatResolver {
         },
       });
     }
-    await pubsub.publish(Events.NEW_CHAT_MESSAGE, { userId: me.id });
-    await pubsub.publish(Events.NEW_CHAT_MESSAGE, { userId: friend.id });
+    await pubsub.publish(Events.NEW_CHAT_MESSAGE, {
+      userId: me.id,
+      message: msg,
+    });
+    await pubsub.publish(Events.NEW_CHAT_MESSAGE, {
+      userId: friend.id,
+      message: msg,
+      chatId,
+    });
     return {
       success: true,
       chatId: chat.id,
@@ -257,7 +267,7 @@ export class ChatResolver {
       Events.READ_CHAT_MESSAGE,
       Events.DELETE_CHAT,
     ],
-    nullable: false,
+    nullable: true,
   })
   async newChatMessage(
     @Arg("input", () => NewChatMessageSubscriptionInput)

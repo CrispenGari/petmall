@@ -27,6 +27,7 @@ import {
   useMeQuery,
   useMyChatsQuery,
   useNewChatMessageSubscription,
+  useNewMessageSubscription,
   useNewNotificationSubscription,
   useNotificationsQuery,
   useOnUserStateChangeSubscription,
@@ -61,6 +62,7 @@ const Routes = () => {
       },
     },
   });
+
   const [{ data: chatMessage }] = useNewChatMessageSubscription({
     variables: {
       input: {
@@ -68,6 +70,32 @@ const Routes = () => {
       },
     },
   });
+
+  const [{ data: newMessage }] = useNewMessageSubscription({
+    variables: {
+      input: {
+        userId: user?.id || "",
+      },
+    },
+  });
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && newMessage?.newMessage.chatId) {
+      setNoti({
+        title: `New Market Message - PetMall`,
+        message: `${newMessage.newMessage.message?.message}`,
+        data: {
+          id: newMessage.newMessage.chatId,
+          type: "new-message",
+        },
+      });
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [newMessage]);
+
   const [{ data: chats }, refetchChats] = useMyChatsQuery({});
   const [{ data: notifications }, refetchNotifications] =
     useNotificationsQuery();
@@ -180,20 +208,8 @@ const Routes = () => {
   }, [refetchUser, data]);
   React.useEffect(() => {
     let mounted: boolean = true;
-    if (mounted && !!chatMessage?.newChatMessage.userId) {
+    if (mounted && !!chatMessage?.newChatMessage?.chatId) {
       (async () => {
-        if (!!chatMessage.newChatMessage) {
-          if (!!chatMessage.newChatMessage.chatId) {
-            setNoti({
-              title: `New Market Message - PetMall`,
-              message: "You have a new chat message.",
-              data: {
-                id: chatMessage.newChatMessage.chatId,
-                type: "new-message",
-              },
-            });
-          }
-        }
         await refetchChats();
       })();
     }
@@ -201,6 +217,7 @@ const Routes = () => {
       mounted = false;
     };
   }, [chatMessage, refetchChats]);
+
   React.useEffect(() => {
     let mounted: boolean = true;
     if (mounted && !!newUser?.me) {

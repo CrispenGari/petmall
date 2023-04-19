@@ -1,0 +1,9 @@
+subscription NewMessage($input: NewMessageSubscriptionInput!) {
+  newMessage(input: $input) {
+    userId
+    chatId
+    message {
+      ...MessageFragment
+    }
+  }
+}

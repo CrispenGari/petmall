@@ -9,8 +9,8 @@ export class NewNotificationType {
   @Field(() => NotificationType, { nullable: true })
   notification?: NotificationType;
 
-  @Field(() => String, { nullable: false })
-  petId: string;
+  @Field(() => String, { nullable: true })
+  petId?: string;
 }
 
 @ObjectType()

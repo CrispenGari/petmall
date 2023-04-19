@@ -63,9 +63,13 @@ export class MessageResolver {
       },
       data: { opened: true },
     });
-
-    await pubsub.publish(Events.READ_CHAT_MESSAGE, { userId: me.id });
-    await pubsub.publish(Events.READ_CHAT_MESSAGE, { userId: friendId });
+    await pubsub.publish(Events.READ_CHAT_MESSAGE, {
+      userId: me.id,
+      chatId,
+    });
+    await pubsub.publish(Events.READ_CHAT_MESSAGE, {
+      userId: friendId,
+    });
     return {
       success: true,
     };
@@ -113,11 +117,13 @@ export class MessageResolver {
     });
     await pubsub.publish(Events.NEW_CHAT_MESSAGE, {
       userId: msg.senderId,
-      chatId: chat.id,
+      chatId: "",
+      message: msg,
     });
     await pubsub.publish(Events.NEW_CHAT_MESSAGE, {
       userId: friendId,
       chatId: chat.id,
+      message: msg,
     });
     return {
       success: true,
@@ -125,7 +131,7 @@ export class MessageResolver {
   }
 
   @Subscription(() => NewMessageType, {
-    topics: [Events.NEW_CHAT_MESSAGE, Events.READ_CHAT_MESSAGE],
+    topics: [Events.NEW_CHAT_MESSAGE],
     nullable: false,
   })
   async newMessage(

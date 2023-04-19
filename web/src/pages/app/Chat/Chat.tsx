@@ -9,11 +9,10 @@ import {
   useMarkAsSoldMutation,
   useMarkMessagesAsReadMutation,
   useNewChatMessageSubscription,
-  useNewNotificationSubscription,
   useSendMessageMutation,
 } from "../../../graphql/generated/graphql";
 import { StateType } from "../../../types";
-import { decodeId, encodeId, sendNotification } from "../../../utils";
+import { decodeId, encodeId } from "../../../utils";
 import CountUp from "react-countup";
 import "./Chat.css";
 import { COLORS } from "../../../constants";
@@ -33,90 +32,7 @@ const Chat: React.FC<Props> = () => {
     },
   });
   const chatId = decodeId(params.chatId || "");
-
   const navigator = useNavigate();
-  const [noti, setNoti] = React.useState<{
-    message: string;
-    title: string;
-    data: {
-      type: "pet-interaction" | "new-message";
-      id: string;
-    };
-  }>({
-    message: "",
-    title: "",
-    data: { id: "", type: "pet-interaction" },
-  });
-
-  const [{ data: notification }] = useNewNotificationSubscription({
-    variables: {
-      input: {
-        userId: me?.id || "",
-      },
-    },
-  });
-
-  React.useEffect(() => {
-    let mounted: boolean = true;
-    if (mounted && !!chatMessage?.newChatMessage.userId) {
-      (async () => {
-        if (!!chatMessage.newChatMessage) {
-          if (!!chatMessage.newChatMessage.chatId) {
-            setNoti({
-              title: `New Market Message - PetMall`,
-              message: "You have a new chat message.",
-              data: {
-                id: chatMessage.newChatMessage.chatId,
-                type: "new-message",
-              },
-            });
-          }
-        }
-      })();
-    }
-    return () => {
-      mounted = false;
-    };
-  }, [chatMessage]);
-  React.useEffect(() => {
-    let mounted: boolean = true;
-    if (mounted && !!notification?.newNotification) {
-      (async () => {
-        if (!!notification.newNotification.notification) {
-          if (!!notification.newNotification.petId) {
-            setNoti({
-              title: `New Notification - PetMall`,
-              message: notification.newNotification.notification.notification,
-              data: {
-                id: notification.newNotification.petId,
-                type: "pet-interaction",
-              },
-            });
-          }
-        }
-      })();
-    }
-    return () => {
-      mounted = false;
-    };
-  }, [notification]);
-
-  React.useEffect(() => {
-    let mounted: boolean = true;
-    if (mounted && !!noti.title && !!navigator) {
-      (async () => {
-        sendNotification(noti.title, noti.message, noti.data, navigator);
-        setNoti({
-          message: "",
-          title: "",
-          data: { id: "", type: "pet-interaction" },
-        });
-      })();
-    }
-    return () => {
-      mounted = false;
-    };
-  }, [noti, navigator]);
 
   const scrollRef = React.useRef<HTMLDivElement | undefined>();
   const [{ data: chat }, refetchChatMessages] = useChatMessagesQuery({
@@ -155,7 +71,7 @@ const Chat: React.FC<Props> = () => {
 
   React.useEffect(() => {
     let mounted: boolean = true;
-    if (mounted && !!chatMessage?.newChatMessage.userId) {
+    if (mounted && !!chatMessage?.newChatMessage?.chatId) {
       (async () => {
         await refetchChatMessages();
         if (scrollRef?.current) {

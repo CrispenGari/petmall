@@ -17,9 +17,9 @@ export class NewMessageType {
   @Field(() => String, { nullable: false })
   userId: string;
 
-  @Field(() => String, { nullable: false })
-  chatId: string;
+  @Field(() => String, { nullable: true })
+  chatId?: string;
 
-  @Field(() => MessageType, { nullable: true })
-  message?: MessageType;
+  @Field(() => MessageType, { nullable: false })
+  message: MessageType;
 }

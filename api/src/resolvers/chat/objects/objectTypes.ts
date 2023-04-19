@@ -37,5 +37,5 @@ export class NewChatMessageType {
   userId: string;
 
   @Field(() => String, { nullable: false })
-  chatId: string;
+  chatId?: string;
 }
