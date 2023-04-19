@@ -2,12 +2,15 @@ import React from "react";
 import {
   ChatType,
   useDeleteChatMutation,
+  useMarkMessageAsUnReadMutation,
+  useMarkMessagesAsReadMutation,
 } from "../../graphql/generated/graphql";
 import "./Chat.css";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import updateLocale from "dayjs/plugin/updateLocale";
 import { AiOutlineDelete } from "react-icons/ai";
+import { HiOutlineMail, HiOutlineMailOpen } from "react-icons/hi";
 import { relativeTimeObject } from "../../constants";
 import { useNavigate } from "react-router-dom";
 import { encodeId } from "../../utils";
@@ -25,11 +28,26 @@ interface Props {
 const Chat: React.FC<Props> = ({ chat }) => {
   const { user: me } = useSelector((state: StateType) => state);
   const [, deleteChat] = useDeleteChatMutation();
+
   const lastMessage = chat.messages
     ? chat.messages[chat.messages.length - 1]
     : undefined;
+  const [, markAsUnRead] = useMarkMessageAsUnReadMutation();
+  const [, markAsRead] = useMarkMessagesAsReadMutation();
+
   const deleteChatHandler = async () => {
     await deleteChat({ input: { id: chat.id } });
+  };
+  const markAsReadHandler = async () => {
+    await markAsRead({ input: { chatId: chat.id } });
+  };
+  const markAsUnReadHandler = async () => {
+    await markAsUnRead({
+      input: {
+        chatId: chat.id,
+        messageId: lastMessage?.id || "",
+      },
+    });
   };
   const navigate = useNavigate();
   return (
@@ -65,6 +83,23 @@ const Chat: React.FC<Props> = ({ chat }) => {
         <div className="chat__delete__button" onClick={deleteChatHandler}>
           <AiOutlineDelete />
         </div>
+        {lastMessage?.senderId !== me?.id ? null : !!!lastMessage?.opened ? (
+          <div
+            className="chat__delete__button"
+            title="mark as read"
+            onClick={markAsReadHandler}
+          >
+            <HiOutlineMailOpen />
+          </div>
+        ) : (
+          <div
+            title="mark as unread"
+            className="chat__delete__button"
+            onClick={markAsUnReadHandler}
+          >
+            <HiOutlineMail />
+          </div>
+        )}
       </div>
     </div>
   );

@@ -7,6 +7,8 @@ import { Swipeable } from "react-native-gesture-handler";
 import {
   ChatType,
   useDeleteChatMutation,
+  useMarkMessageAsUnReadMutation,
+  useMarkMessagesAsReadMutation,
 } from "../../graphql/generated/graphql";
 import {
   COLORS,
@@ -19,7 +21,7 @@ import { StateType } from "../../types";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { MarketParamList } from "../../params";
 import { encodeId } from "../../utils";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 
 dayjs.extend(relativeTime);
 dayjs.extend(updateLocale);
@@ -35,30 +37,96 @@ interface Props {
 const Chat: React.FunctionComponent<Props> = ({ chat, navigation }) => {
   const { user: me } = useSelector((state: StateType) => state);
   const [, deleteChat] = useDeleteChatMutation();
+  const swipeableRef = React.useRef<Swipeable | undefined>();
+
   const lastMessage = chat.messages
     ? chat.messages[chat.messages.length - 1]
     : undefined;
+
+  const [{}, markAsUnRead] = useMarkMessageAsUnReadMutation();
+
+  const [{}, markAsRead] = useMarkMessagesAsReadMutation();
+
   const deleteChatHandler = async () => {
     await deleteChat({ input: { id: chat.id } });
+
+    if (swipeableRef.current) {
+      swipeableRef.current.close();
+    }
+  };
+  const markAsReadHandler = async () => {
+    await markAsRead({ input: { chatId: chat.id } });
+    if (swipeableRef.current) {
+      swipeableRef.current.close();
+    }
+  };
+  const markAsUnReadHandler = async () => {
+    await markAsUnRead({
+      input: {
+        chatId: chat.id,
+        messageId: lastMessage?.id || "",
+      },
+    });
+    if (swipeableRef.current) {
+      swipeableRef.current.close();
+    }
   };
 
   return (
     <Swipeable
+      ref={swipeableRef as any}
       renderRightActions={(progress, dragX) => {
         return (
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              minWidth: 50,
-              backgroundColor: COLORS.tertiary,
-              borderRadius: 5,
-            }}
-            onPress={deleteChatHandler}
-          >
-            <MaterialIcons name="delete" size={24} color="white" />
-          </TouchableOpacity>
+          <>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                minWidth: 50,
+                backgroundColor: COLORS.tertiary,
+                borderRadius: 5,
+                borderTopLeftRadius: 0,
+                borderBottomLeftRadius: 0,
+              }}
+              onPress={deleteChatHandler}
+            >
+              <MaterialIcons name="delete" size={24} color="white" />
+            </TouchableOpacity>
+            {!!!lastMessage?.opened ? (
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  minWidth: 50,
+                  backgroundColor: COLORS.secondary,
+                  borderRadius: 5,
+                  borderTopRightRadius: 0,
+                  borderBottomRightRadius: 0,
+                }}
+                onPress={markAsReadHandler}
+              >
+                <Ionicons name="mail-open-outline" size={24} color="white" />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                activeOpacity={0.7}
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  minWidth: 50,
+                  backgroundColor: COLORS.secondary,
+                  borderRadius: 5,
+                  borderTopRightRadius: 0,
+                  borderBottomRightRadius: 0,
+                }}
+                onPress={markAsUnReadHandler}
+              >
+                <Ionicons name="ios-mail-outline" size={24} color="white" />
+              </TouchableOpacity>
+            )}
+          </>
         );
       }}
     >

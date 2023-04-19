@@ -1,6 +1,5 @@
 .notification {
   display: flex;
-  flex-direction: column;
   user-select: none;
   user-zoom: none;
   cursor: pointer;
@@ -10,12 +9,19 @@
   border-radius: 2px;
   transition: all 1s;
 }
-.notification > h1 {
+
+.notification__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+}
+.notification__main > h1 {
   color: white;
   font-size: 0.9rem;
   margin-bottom: 0;
 }
-.notification > p {
+.notification__main > p {
   margin: 0;
   text-overflow: ellipsis !important;
   overflow: hidden;
@@ -28,4 +34,36 @@
 }
 .notification:hover {
   background-color: var(--secondary);
+}
+
+.notification__delete__button {
+  height: 100%;
+  background-color: var(--tertiary);
+  color: white;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  border-radius: 5px;
+  font-size: 2rem;
+  padding: 0px 10px;
+  transition: all 1s ease;
+  display: none;
+  z-index: 1;
+}
+.notification__delete__button:hover {
+  background-color: var(--main);
+}
+.notification__delete__button:last-of-type {
+  background-color: var(--main);
+}
+.notification__delete__button:last-of-type:hover {
+  background-color: var(--secondary);
+}
+.notification:hover .notification__delete__button {
+  display: flex;
+}
+.notification__buttons {
+  display: flex;
+  flex-direction: row;
+  z-index: 10;
 }

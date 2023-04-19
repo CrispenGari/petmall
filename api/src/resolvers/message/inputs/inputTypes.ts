@@ -14,6 +14,14 @@ export class MarkMessagesAsReadInputType {
   @Field(() => String)
   chatId: string;
 }
+@InputType()
+export class MarkMessagesAsUnReadInputType {
+  @Field(() => String)
+  chatId: string;
+
+  @Field(() => String)
+  messageId: string;
+}
 
 @InputType()
 export class NewMessageSubscriptionInput {

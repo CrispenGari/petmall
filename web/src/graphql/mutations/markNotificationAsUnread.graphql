@@ -1,0 +1,5 @@
+mutation MarkNotificationAsUnRead($input: MarkNotificationAsUnReadInputType!) {
+  markNotificationAsUnRead(input: $input) {
+    success
+  }
+}

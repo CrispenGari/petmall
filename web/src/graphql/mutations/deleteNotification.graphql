@@ -1,0 +1,5 @@
+mutation DeleteNotification($input: DeleteNotificationInputType!) {
+  deleteNotification(input: $input) {
+    success
+  }
+}

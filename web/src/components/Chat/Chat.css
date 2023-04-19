@@ -71,6 +71,16 @@
 .chat__delete__button:hover {
   background-color: var(--main);
 }
+.chat__delete__button:last-of-type {
+  background-color: var(--main);
+}
+.chat__delete__button:last-of-type:hover {
+  background-color: var(--secondary);
+}
 .chat:hover .chat__delete__button {
   display: flex;
+}
+.chat__buttons {
+  display: flex;
+  flex-direction: row;
 }

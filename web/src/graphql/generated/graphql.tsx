@@ -110,6 +110,15 @@ export type DeleteChatObjectType = {
   success: Scalars['Boolean'];
 };
 
+export type DeleteNotificationInputType = {
+  id: Scalars['String'];
+};
+
+export type DeleteNotificationObjectType = {
+  __typename?: 'DeleteNotificationObjectType';
+  success: Scalars['Boolean'];
+};
+
 export type DeletePetInputType = {
   id: Scalars['String'];
 };
@@ -172,12 +181,31 @@ export type MarkMessagesAsReadObjectType = {
   success: Scalars['Boolean'];
 };
 
+export type MarkMessagesAsUnReadInputType = {
+  chatId: Scalars['String'];
+  messageId: Scalars['String'];
+};
+
+export type MarkMessagesAsUnReadObjectType = {
+  __typename?: 'MarkMessagesAsUnReadObjectType';
+  success: Scalars['Boolean'];
+};
+
 export type MarkNotificationAsReadInputType = {
   id: Scalars['String'];
 };
 
 export type MarkNotificationAsReadObjectType = {
   __typename?: 'MarkNotificationAsReadObjectType';
+  success: Scalars['Boolean'];
+};
+
+export type MarkNotificationAsUnReadInputType = {
+  id: Scalars['String'];
+};
+
+export type MarkNotificationAsUnReadObjectType = {
+  __typename?: 'MarkNotificationAsUnReadObjectType';
   success: Scalars['Boolean'];
 };
 
@@ -201,12 +229,15 @@ export type Mutation = {
   commentToPet: PetObjectType;
   deleteAccount: DeleteAccountObjectType;
   deleteChat: DeleteChatObjectType;
+  deleteNotification: DeleteNotificationObjectType;
   deletePet: PetObjectType;
   login: LoginObjectType;
   logout: Scalars['Boolean'];
   markAsSold: PetObjectType;
   markMessagesAsRead: MarkMessagesAsReadObjectType;
+  markMessagesAsUnRead: MarkMessagesAsUnReadObjectType;
   markNotificationAsRead: MarkNotificationAsReadObjectType;
+  markNotificationAsUnRead: MarkNotificationAsUnReadObjectType;
   newChat: NewChatObjectType;
   reactToComment: PetObjectType;
   reactToPet: PetObjectType;
@@ -254,6 +285,11 @@ export type MutationDeleteChatArgs = {
 };
 
 
+export type MutationDeleteNotificationArgs = {
+  input: DeleteNotificationInputType;
+};
+
+
 export type MutationDeletePetArgs = {
   input: DeletePetInputType;
 };
@@ -274,8 +310,18 @@ export type MutationMarkMessagesAsReadArgs = {
 };
 
 
+export type MutationMarkMessagesAsUnReadArgs = {
+  input: MarkMessagesAsUnReadInputType;
+};
+
+
 export type MutationMarkNotificationAsReadArgs = {
   input: MarkNotificationAsReadInputType;
+};
+
+
+export type MutationMarkNotificationAsUnReadArgs = {
+  input: MarkNotificationAsUnReadInputType;
 };
 
 
@@ -372,7 +418,7 @@ export type NewMessageSubscriptionInput = {
 export type NewMessageType = {
   __typename?: 'NewMessageType';
   chatId?: Maybe<Scalars['String']>;
-  message?: Maybe<MessageType>;
+  message: MessageType;
   userId: Scalars['String'];
 };
 
@@ -703,6 +749,13 @@ export type DeleteChatMutationVariables = Exact<{
 
 export type DeleteChatMutation = { __typename?: 'Mutation', deleteChat: { __typename?: 'DeleteChatObjectType', success: boolean } };
 
+export type DeleteNotificationMutationVariables = Exact<{
+  input: DeleteNotificationInputType;
+}>;
+
+
+export type DeleteNotificationMutation = { __typename?: 'Mutation', deleteNotification: { __typename?: 'DeleteNotificationObjectType', success: boolean } };
+
 export type DeletePetMutationVariables = Exact<{
   input: DeletePetInputType;
 }>;
@@ -736,6 +789,13 @@ export type MarkAsSoldMutationVariables = Exact<{
 
 export type MarkAsSoldMutation = { __typename?: 'Mutation', markAsSold: { __typename?: 'PetObjectType', success: boolean } };
 
+export type MarkMessageAsUnReadMutationVariables = Exact<{
+  input: MarkMessagesAsUnReadInputType;
+}>;
+
+
+export type MarkMessageAsUnReadMutation = { __typename?: 'Mutation', markMessagesAsUnRead: { __typename?: 'MarkMessagesAsUnReadObjectType', success: boolean } };
+
 export type MarkMessagesAsReadMutationVariables = Exact<{
   input: MarkMessagesAsReadInputType;
 }>;
@@ -749,6 +809,13 @@ export type MarkNotificationAsReadMutationVariables = Exact<{
 
 
 export type MarkNotificationAsReadMutation = { __typename?: 'Mutation', markNotificationAsRead: { __typename?: 'MarkNotificationAsReadObjectType', success: boolean } };
+
+export type MarkNotificationAsUnReadMutationVariables = Exact<{
+  input: MarkNotificationAsUnReadInputType;
+}>;
+
+
+export type MarkNotificationAsUnReadMutation = { __typename?: 'Mutation', markNotificationAsUnRead: { __typename?: 'MarkNotificationAsUnReadObjectType', success: boolean } };
 
 export type NewChatMutationVariables = Exact<{
   input: NewChatInputType;
@@ -906,7 +973,7 @@ export type NewMessageSubscriptionVariables = Exact<{
 }>;
 
 
-export type NewMessageSubscription = { __typename?: 'Subscription', newMessage: { __typename?: 'NewMessageType', userId: string, chatId?: string | null, message?: { __typename?: 'MessageType', id: string, message: string, chatId: string, senderId: string, opened: boolean, createdAt: string, updatedAt: string, sender?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null } | null } };
+export type NewMessageSubscription = { __typename?: 'Subscription', newMessage: { __typename?: 'NewMessageType', userId: string, chatId?: string | null, message: { __typename?: 'MessageType', id: string, message: string, chatId: string, senderId: string, opened: boolean, createdAt: string, updatedAt: string, sender?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null } } };
 
 export type NewNotificationSubscriptionVariables = Exact<{
   input: NewNotificationSubscriptionInput;
@@ -1215,6 +1282,17 @@ export const DeleteChatDocument = gql`
 export function useDeleteChatMutation() {
   return Urql.useMutation<DeleteChatMutation, DeleteChatMutationVariables>(DeleteChatDocument);
 };
+export const DeleteNotificationDocument = gql`
+    mutation DeleteNotification($input: DeleteNotificationInputType!) {
+  deleteNotification(input: $input) {
+    success
+  }
+}
+    `;
+
+export function useDeleteNotificationMutation() {
+  return Urql.useMutation<DeleteNotificationMutation, DeleteNotificationMutationVariables>(DeleteNotificationDocument);
+};
 export const DeletePetDocument = gql`
     mutation DeletePet($input: DeletePetInputType!) {
   deletePet(input: $input) {
@@ -1273,6 +1351,17 @@ export const MarkAsSoldDocument = gql`
 export function useMarkAsSoldMutation() {
   return Urql.useMutation<MarkAsSoldMutation, MarkAsSoldMutationVariables>(MarkAsSoldDocument);
 };
+export const MarkMessageAsUnReadDocument = gql`
+    mutation MarkMessageAsUnRead($input: MarkMessagesAsUnReadInputType!) {
+  markMessagesAsUnRead(input: $input) {
+    success
+  }
+}
+    `;
+
+export function useMarkMessageAsUnReadMutation() {
+  return Urql.useMutation<MarkMessageAsUnReadMutation, MarkMessageAsUnReadMutationVariables>(MarkMessageAsUnReadDocument);
+};
 export const MarkMessagesAsReadDocument = gql`
     mutation MarkMessagesAsRead($input: MarkMessagesAsReadInputType!) {
   markMessagesAsRead(input: $input) {
@@ -1294,6 +1383,17 @@ export const MarkNotificationAsReadDocument = gql`
 
 export function useMarkNotificationAsReadMutation() {
   return Urql.useMutation<MarkNotificationAsReadMutation, MarkNotificationAsReadMutationVariables>(MarkNotificationAsReadDocument);
+};
+export const MarkNotificationAsUnReadDocument = gql`
+    mutation MarkNotificationAsUnRead($input: MarkNotificationAsUnReadInputType!) {
+  markNotificationAsUnRead(input: $input) {
+    success
+  }
+}
+    `;
+
+export function useMarkNotificationAsUnReadMutation() {
+  return Urql.useMutation<MarkNotificationAsUnReadMutation, MarkNotificationAsUnReadMutationVariables>(MarkNotificationAsUnReadDocument);
 };
 export const NewChatDocument = gql`
     mutation NewChat($input: NewChatInputType!) {

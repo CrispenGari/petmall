@@ -11,6 +11,11 @@ export class MarkMessagesAsReadObjectType {
   @Field(() => Boolean)
   success: boolean;
 }
+@ObjectType()
+export class MarkMessagesAsUnReadObjectType {
+  @Field(() => Boolean)
+  success: boolean;
+}
 
 @ObjectType()
 export class NewMessageType {

@@ -14,11 +14,13 @@ import { CtxType } from "../../types";
 import { verifyJwt } from "../../utils";
 import {
   MarkMessagesAsReadInputType,
+  MarkMessagesAsUnReadInputType,
   NewMessageSubscriptionInput,
   SendMessageInputType,
 } from "./inputs/inputTypes";
 import {
   MarkMessagesAsReadObjectType,
+  MarkMessagesAsUnReadObjectType,
   NewMessageType,
   SendMessageObjectType,
 } from "./objects/objectTypes";
@@ -62,6 +64,52 @@ export class MessageResolver {
         },
       },
       data: { opened: true },
+    });
+    await pubsub.publish(Events.READ_CHAT_MESSAGE, {
+      userId: me.id,
+      chatId,
+    });
+    await pubsub.publish(Events.READ_CHAT_MESSAGE, {
+      userId: friendId,
+    });
+    return {
+      success: true,
+    };
+  }
+  @Mutation(() => MarkMessagesAsUnReadObjectType)
+  async markMessagesAsUnRead(
+    @Arg("input", () => MarkMessagesAsUnReadInputType)
+    { chatId, messageId }: MarkMessagesAsUnReadInputType,
+    @Ctx() { prisma, request }: CtxType,
+    @PubSub() pubsub: PubSubEngine
+  ): Promise<MarkMessagesAsUnReadObjectType> {
+    const jwt = request.headers.authorization?.split(" ")[1];
+    if (!!!jwt)
+      return {
+        success: false,
+      };
+    const payload = await verifyJwt(jwt);
+    if (!!!payload) {
+      return {
+        success: false,
+      };
+    }
+    const me = await prisma.user.findFirst({ where: { id: payload.id } });
+    if (!!!me) {
+      return {
+        success: false,
+      };
+    }
+    const chat = await prisma.chat.findFirst({ where: { id: chatId } });
+    if (!!!chat) {
+      return { success: false };
+    }
+    const friendId: string = chat.userIds.find((id) => id !== me.id) || "";
+    await prisma.message.update({
+      where: {
+        id: messageId,
+      },
+      data: { opened: false },
     });
     await pubsub.publish(Events.READ_CHAT_MESSAGE, {
       userId: me.id,

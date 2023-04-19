@@ -30,3 +30,14 @@ export class MarkNotificationAsReadObjectType {
   @Field(() => Boolean, { nullable: false })
   success: boolean;
 }
+
+@ObjectType()
+export class MarkNotificationAsUnReadObjectType {
+  @Field(() => Boolean, { nullable: false })
+  success: boolean;
+}
+@ObjectType()
+export class DeleteNotificationObjectType {
+  @Field(() => Boolean, { nullable: false })
+  success: boolean;
+}

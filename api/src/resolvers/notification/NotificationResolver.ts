@@ -14,11 +14,15 @@ import { Events } from "../../constants";
 import { CtxType } from "../../types";
 import { verifyJwt } from "../../utils";
 import {
+  DeleteNotificationInputType,
   MarkNotificationAsReadInputType,
+  MarkNotificationAsUnReadInputType,
   NewNotificationSubscriptionInput,
 } from "./inputs/inputTypes";
 import {
+  DeleteNotificationObjectType,
   MarkNotificationAsReadObjectType,
+  MarkNotificationAsUnReadObjectType,
   NewNotificationType,
   NotificationObjectType,
 } from "./objects/objectType";
@@ -58,6 +62,89 @@ export class NotificationResolver {
       data: {
         read: true,
       },
+    });
+    await pubsub.publish(Events.REFETCH_NOTIFICATIONS, {
+      notification,
+      userId: notification.userId,
+    });
+    return {
+      success: true,
+    };
+  }
+
+  @Mutation(() => MarkNotificationAsUnReadObjectType)
+  async markNotificationAsUnRead(
+    @Arg("input", () => MarkNotificationAsUnReadInputType)
+    { id }: MarkNotificationAsUnReadInputType,
+    @Ctx() { prisma, request }: CtxType,
+    @PubSub() pubsub: PubSubEngine
+  ): Promise<MarkNotificationAsUnReadObjectType> {
+    const jwt = request.headers.authorization?.split(" ")[1];
+    if (!!!jwt)
+      return {
+        success: false,
+      };
+    const payload = await verifyJwt(jwt);
+    if (!!!payload)
+      return {
+        success: false,
+      };
+    const user = await prisma.user.findFirst({ where: { id: payload.id } });
+    if (!!!user)
+      return {
+        success: false,
+      };
+
+    const notification = await prisma.notification.findFirst({
+      where: { id },
+      include: { user: true },
+    });
+    if (!!!notification) return { success: false };
+    await prisma.notification.update({
+      where: { id: notification.id },
+      data: {
+        read: false,
+      },
+    });
+    await pubsub.publish(Events.REFETCH_NOTIFICATIONS, {
+      notification,
+      userId: notification.userId,
+    });
+    return {
+      success: true,
+    };
+  }
+
+  @Mutation(() => DeleteNotificationObjectType)
+  async deleteNotification(
+    @Arg("input", () => DeleteNotificationInputType)
+    { id }: DeleteNotificationInputType,
+    @Ctx() { prisma, request }: CtxType,
+    @PubSub() pubsub: PubSubEngine
+  ): Promise<DeleteNotificationObjectType> {
+    const jwt = request.headers.authorization?.split(" ")[1];
+    if (!!!jwt)
+      return {
+        success: false,
+      };
+    const payload = await verifyJwt(jwt);
+    if (!!!payload)
+      return {
+        success: false,
+      };
+    const user = await prisma.user.findFirst({ where: { id: payload.id } });
+    if (!!!user)
+      return {
+        success: false,
+      };
+
+    const notification = await prisma.notification.findFirst({
+      where: { id },
+      include: { user: true },
+    });
+    if (!!!notification) return { success: false };
+    await prisma.notification.delete({
+      where: { id: notification.id },
     });
     await pubsub.publish(Events.REFETCH_NOTIFICATIONS, {
       notification,
