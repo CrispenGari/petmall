@@ -15,7 +15,10 @@ export class MarkMessagesAsReadObjectType {
 @ObjectType()
 export class NewMessageType {
   @Field(() => String, { nullable: false })
-  userId: String;
+  userId: string;
+
+  @Field(() => String, { nullable: false })
+  chatId: string;
 
   @Field(() => MessageType, { nullable: true })
   message?: MessageType;

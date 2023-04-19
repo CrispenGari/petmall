@@ -18,7 +18,6 @@ export class NewChatObjectType {
 export class DeleteChatObjectType {
   @Field(() => Boolean)
   success: boolean;
-
 }
 @ObjectType()
 export class ChatsObjectType {
@@ -35,5 +34,8 @@ export class ChatsObjectType {
 @ObjectType()
 export class NewChatMessageType {
   @Field(() => String, { nullable: false })
-  userId: String;
+  userId: string;
+
+  @Field(() => String, { nullable: false })
+  chatId: string;
 }

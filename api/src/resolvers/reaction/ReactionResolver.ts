@@ -116,6 +116,7 @@ export class ReactionResolver {
         await pubsub.publish(Events.NEW_REACTION_TO_COMMENT_NOTIFICATION, {
           notification,
           userId: comment.userId,
+          petId: comment.petId,
         });
       }
     } catch (error) {
@@ -219,6 +220,7 @@ export class ReactionResolver {
         await pubsub.publish(Events.NEW_REACTION_TO_PET_NOTIFICATION, {
           notification,
           userId: pet.sellerId,
+          petId: pet.id,
         });
       }
     } catch (error) {

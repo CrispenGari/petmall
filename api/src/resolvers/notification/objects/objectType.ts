@@ -4,10 +4,13 @@ import { NotificationType } from "../../common/objects/NotificationType";
 @ObjectType()
 export class NewNotificationType {
   @Field(() => String, { nullable: false })
-  userId: String;
+  userId: string;
 
   @Field(() => NotificationType, { nullable: true })
   notification?: NotificationType;
+
+  @Field(() => String, { nullable: false })
+  petId: string;
 }
 
 @ObjectType()

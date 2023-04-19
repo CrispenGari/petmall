@@ -4,5 +4,6 @@ subscription NewNotification($input: NewNotificationSubscriptionInput!) {
       ...NewNotificationFragment
     }
     userId
+    petId
   }
 }

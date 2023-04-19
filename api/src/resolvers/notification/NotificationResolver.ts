@@ -122,13 +122,18 @@ export class NotificationResolver {
     @Arg("input", () => NewNotificationSubscriptionInput)
     { userId: uid }: NewNotificationSubscriptionInput,
     @Root()
-    { userId, notification }: { userId: string; notification: Notification }
+    {
+      userId,
+      notification,
+      petId,
+    }: { userId: string; notification: Notification; petId: string }
   ): Promise<NewNotificationType | undefined> {
     // the notification does not belong to you
     if (userId !== uid) return undefined;
     return {
       userId,
       notification,
+      petId,
     };
   }
 }

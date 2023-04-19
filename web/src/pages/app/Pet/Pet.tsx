@@ -4,13 +4,16 @@ import { Header, PetComments, PetDetails } from "../../../components";
 import {
   CommentType,
   useGetPetByIdQuery,
+  useNewChatMessageSubscription,
+  useNewNotificationSubscription,
   usePetInteractionSubscription,
 } from "../../../graphql/generated/graphql";
 import { withGlobalProps } from "../../../hoc";
 import { GlobalPropsType, StateType } from "../../../types";
 import "./Pet.css";
 import { useSelector } from "react-redux";
-import { decodeId } from "../../../utils";
+import { decodeId, sendNotification } from "../../../utils";
+import { useNavigate } from "react-router-dom";
 interface Props {
   globalProps: GlobalPropsType;
 }
@@ -60,6 +63,97 @@ const Pet: React.FC<Props> = ({ globalProps: { params } }) => {
       mounted = false;
     };
   }, [user, data]);
+
+  const navigator = useNavigate();
+  const [noti, setNoti] = React.useState<{
+    message: string;
+    title: string;
+    data: {
+      type: "pet-interaction" | "new-message";
+      id: string;
+    };
+  }>({
+    message: "",
+    title: "",
+    data: { id: "", type: "pet-interaction" },
+  });
+  const { user: me } = useSelector((state: StateType) => state);
+  const [{ data: notification }] = useNewNotificationSubscription({
+    variables: {
+      input: {
+        userId: me?.id || "",
+      },
+    },
+  });
+  const [{ data: chatMessage }] = useNewChatMessageSubscription({
+    variables: {
+      input: {
+        userId: me?.id || "",
+      },
+    },
+  });
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!chatMessage?.newChatMessage.userId) {
+      (async () => {
+        if (!!chatMessage.newChatMessage) {
+          if (!!chatMessage.newChatMessage.chatId) {
+            setNoti({
+              title: `New Market Message - PetMall`,
+              message: "You have a new chat message.",
+              data: {
+                id: chatMessage.newChatMessage.chatId,
+                type: "new-message",
+              },
+            });
+          }
+        }
+      })();
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [chatMessage]);
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!notification?.newNotification) {
+      (async () => {
+        if (!!notification.newNotification.notification) {
+          if (!!notification.newNotification.petId) {
+            setNoti({
+              title: `New Notification - PetMall`,
+              message: notification.newNotification.notification.notification,
+              data: {
+                id: notification.newNotification.petId,
+                type: "pet-interaction",
+              },
+            });
+          }
+        }
+      })();
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [notification]);
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!noti.title && !!navigator) {
+      (async () => {
+        sendNotification(noti.title, noti.message, noti.data, navigator);
+        setNoti({
+          message: "",
+          title: "",
+          data: { id: "", type: "pet-interaction" },
+        });
+      })();
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [noti, navigator]);
 
   if (!!!data?.getPetById?.pet)
     return (

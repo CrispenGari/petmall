@@ -355,6 +355,7 @@ export type NewChatMessageSubscriptionInput = {
 
 export type NewChatMessageType = {
   __typename?: 'NewChatMessageType';
+  chatId: Scalars['String'];
   userId: Scalars['String'];
 };
 
@@ -370,6 +371,7 @@ export type NewMessageSubscriptionInput = {
 
 export type NewMessageType = {
   __typename?: 'NewMessageType';
+  chatId: Scalars['String'];
   message?: Maybe<MessageType>;
   userId: Scalars['String'];
 };
@@ -381,6 +383,7 @@ export type NewNotificationSubscriptionInput = {
 export type NewNotificationType = {
   __typename?: 'NewNotificationType';
   notification?: Maybe<NotificationType>;
+  petId: Scalars['String'];
   userId: Scalars['String'];
 };
 
@@ -896,14 +899,14 @@ export type NewChatMessageSubscriptionVariables = Exact<{
 }>;
 
 
-export type NewChatMessageSubscription = { __typename?: 'Subscription', newChatMessage: { __typename?: 'NewChatMessageType', userId: string } };
+export type NewChatMessageSubscription = { __typename?: 'Subscription', newChatMessage: { __typename?: 'NewChatMessageType', userId: string, chatId: string } };
 
 export type NewNotificationSubscriptionVariables = Exact<{
   input: NewNotificationSubscriptionInput;
 }>;
 
 
-export type NewNotificationSubscription = { __typename?: 'Subscription', newNotification: { __typename?: 'NewNotificationType', userId: string, notification?: { __typename?: 'NotificationType', id: string, notification: string, userId: string, read: boolean, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null } | null } };
+export type NewNotificationSubscription = { __typename?: 'Subscription', newNotification: { __typename?: 'NewNotificationType', userId: string, petId: string, notification?: { __typename?: 'NotificationType', id: string, notification: string, userId: string, read: boolean, createdAt: string, updatedAt: string, user?: { __typename?: 'UserType', id: string, email: string, avatar?: string | null, firstName: string, lastName: string, emailVerified: boolean, verified: boolean, isLoggedIn: boolean, createAt?: string | null, updateAt?: string | null } | null } | null } };
 
 export type PetInteractionSubscriptionVariables = Exact<{ [key: string]: never; }>;
 
@@ -1586,6 +1589,7 @@ export const NewChatMessageDocument = gql`
     subscription NewChatMessage($input: NewChatMessageSubscriptionInput!) {
   newChatMessage(input: $input) {
     userId
+    chatId
   }
 }
     `;
@@ -1600,6 +1604,7 @@ export const NewNotificationDocument = gql`
       ...NewNotificationFragment
     }
     userId
+    petId
   }
 }
     ${NewNotificationFragmentFragmentDoc}`;

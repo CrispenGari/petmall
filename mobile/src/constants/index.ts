@@ -14,7 +14,7 @@ export const REACTIONS = [
   "OFFER_MONEY",
   "DISLIKE",
 ];
-export const ngrokDomain: string = "cad5-102-66-82-146.ngrok-free.app";
+export const ngrokDomain: string = "8b26-102-66-181-77.ngrok-free.app";
 export const PETS_CATEGORIES = [
   "CATS",
   "DOGS",

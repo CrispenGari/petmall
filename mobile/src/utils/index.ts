@@ -5,14 +5,18 @@ import { Buffer } from "buffer";
 export const sendPushNotification = async (
   expoPushToken: string,
   title: string,
-  body: string
+  body: string,
+  data: {
+    type: "pet-interaction" | "new-message";
+    id: string;
+  }
 ) => {
   const message = {
     to: expoPushToken,
     sound: "default",
     title,
     body,
-    data: { testData: "test data" },
+    data,
   };
 
   await fetch("https://exp.host/--/api/v2/push/send", {

@@ -11,7 +11,6 @@ import {
 } from "./graphql/generated/graphql";
 import Routes from "./routes";
 import { StateType } from "./types";
-
 interface Props {}
 const App: React.FC<Props> = () => {
   const { user: me } = useSelector((state: StateType) => state);

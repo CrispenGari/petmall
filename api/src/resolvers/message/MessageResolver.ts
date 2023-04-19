@@ -111,8 +111,14 @@ export class MessageResolver {
         sender: { connect: { id: me.id } },
       },
     });
-    await pubsub.publish(Events.NEW_CHAT_MESSAGE, { userId: msg.senderId });
-    await pubsub.publish(Events.NEW_CHAT_MESSAGE, { userId: friendId });
+    await pubsub.publish(Events.NEW_CHAT_MESSAGE, {
+      userId: msg.senderId,
+      chatId: chat.id,
+    });
+    await pubsub.publish(Events.NEW_CHAT_MESSAGE, {
+      userId: friendId,
+      chatId: chat.id,
+    });
     return {
       success: true,
     };
@@ -126,13 +132,18 @@ export class MessageResolver {
     @Arg("input", () => NewMessageSubscriptionInput)
     { userId: uid }: NewMessageSubscriptionInput,
     @Root()
-    { userId, message }: { userId: string; message: Message }
+    {
+      userId,
+      message,
+      chatId,
+    }: { userId: string; message: Message; chatId: string }
   ): Promise<NewMessageType | undefined> {
     // the notification does not belong to you
     if (userId !== uid) return undefined;
     return {
       userId,
       message,
+      chatId,
     };
   }
 }

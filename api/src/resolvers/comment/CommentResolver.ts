@@ -92,6 +92,7 @@ export class CommentResolver {
         await pubsub.publish(Events.NEW_COMMENT_NOTIFICATION, {
           notification,
           userId: pet.sellerId,
+          petId: pet.id,
         });
       }
     } catch (error) {
@@ -186,6 +187,7 @@ export class CommentResolver {
         await pubsub.publish(Events.NEW_COMMENT_REPLY_NOTIFICATION, {
           notification,
           userId: friend.id,
+          petId: _comment.petId,
         });
       }
     } catch (error) {

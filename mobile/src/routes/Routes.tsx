@@ -41,6 +41,18 @@ const Routes = () => {
   const { granted } = useLocationPermission();
   const [loading, setLoading] = React.useState<boolean>(false);
   const { token } = useNotificationsToken();
+  const [noti, setNoti] = React.useState<{
+    message: string;
+    title: string;
+    data: {
+      type: "pet-interaction" | "new-message";
+      id: string;
+    };
+  }>({
+    message: "",
+    title: "",
+    data: { id: "", type: "pet-interaction" },
+  });
 
   const [{ data: notification }] = useNewNotificationSubscription({
     variables: {
@@ -59,6 +71,23 @@ const Routes = () => {
   const [{ data: chats }, refetchChats] = useMyChatsQuery({});
   const [{ data: notifications }, refetchNotifications] =
     useNotificationsQuery();
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!noti.title && !!token) {
+      (async () => {
+        await sendPushNotification(token, noti.title, noti.message, noti.data);
+        setNoti({
+          message: "",
+          title: "",
+          data: { id: "", type: "pet-interaction" },
+        });
+      })();
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [token, noti]);
   React.useEffect(() => {
     let mounted: boolean = true;
     if (mounted && granted && !!user) {
@@ -95,12 +124,17 @@ const Routes = () => {
     let mounted: boolean = true;
     if (mounted && !!notification?.newNotification) {
       (async () => {
-        if (token && !!notification.newNotification.notification) {
-          await sendPushNotification(
-            token,
-            `New Notification - PetMall`,
-            notification.newNotification.notification.notification
-          );
+        if (!!notification.newNotification.notification) {
+          if (!!notification.newNotification.petId) {
+            setNoti({
+              title: `New Notification - PetMall`,
+              message: notification.newNotification.notification.notification,
+              data: {
+                id: notification.newNotification.petId,
+                type: "pet-interaction",
+              },
+            });
+          }
         }
         await refetchNotifications();
       })();
@@ -108,7 +142,7 @@ const Routes = () => {
     return () => {
       mounted = false;
     };
-  }, [refetchNotifications, notification, token]);
+  }, [refetchNotifications, notification]);
 
   React.useEffect(() => {
     let mounted: boolean = true;
@@ -148,12 +182,17 @@ const Routes = () => {
     let mounted: boolean = true;
     if (mounted && !!chatMessage?.newChatMessage.userId) {
       (async () => {
-        if (!!token && !!chatMessage.newChatMessage) {
-          await sendPushNotification(
-            token,
-            `New Market Message - PetMall`,
-            "You have a new chat message."
-          );
+        if (!!chatMessage.newChatMessage) {
+          if (!!chatMessage.newChatMessage.chatId) {
+            setNoti({
+              title: `New Market Message - PetMall`,
+              message: "You have a new chat message.",
+              data: {
+                id: chatMessage.newChatMessage.chatId,
+                type: "new-message",
+              },
+            });
+          }
         }
         await refetchChats();
       })();
@@ -161,7 +200,7 @@ const Routes = () => {
     return () => {
       mounted = false;
     };
-  }, [chatMessage, refetchChats, token]);
+  }, [chatMessage, refetchChats]);
   React.useEffect(() => {
     let mounted: boolean = true;
     if (mounted && !!newUser?.me) {

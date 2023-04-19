@@ -2,11 +2,108 @@ import React from "react";
 
 import { Header, Banner, FlatList } from "../../../components";
 import { RELOADED_KEY, PETS_CATEGORIES } from "../../../constants";
-import { retrieve, store } from "../../../utils";
+import { retrieve, sendNotification, store } from "../../../utils";
 
 import "./Home.css";
+import { useSelector } from "react-redux";
+import { StateType } from "../../../types";
+import {
+  useNewNotificationSubscription,
+  useNewChatMessageSubscription,
+} from "../../../graphql/generated/graphql";
+import { useNavigate } from "react-router-dom";
 interface Props {}
 const Home: React.FC<Props> = () => {
+  const navigator = useNavigate();
+  const [noti, setNoti] = React.useState<{
+    message: string;
+    title: string;
+    data: {
+      type: "pet-interaction" | "new-message";
+      id: string;
+    };
+  }>({
+    message: "",
+    title: "",
+    data: { id: "", type: "pet-interaction" },
+  });
+  const { user: me } = useSelector((state: StateType) => state);
+  const [{ data: notification }] = useNewNotificationSubscription({
+    variables: {
+      input: {
+        userId: me?.id || "",
+      },
+    },
+  });
+  const [{ data: chatMessage }] = useNewChatMessageSubscription({
+    variables: {
+      input: {
+        userId: me?.id || "",
+      },
+    },
+  });
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!chatMessage?.newChatMessage.userId) {
+      (async () => {
+        if (!!chatMessage.newChatMessage) {
+          if (!!chatMessage.newChatMessage.chatId) {
+            setNoti({
+              title: `New Market Message - PetMall`,
+              message: "You have a new chat message.",
+              data: {
+                id: chatMessage.newChatMessage.chatId,
+                type: "new-message",
+              },
+            });
+          }
+        }
+      })();
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [chatMessage]);
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!notification?.newNotification) {
+      (async () => {
+        if (!!notification.newNotification.notification) {
+          if (!!notification.newNotification.petId) {
+            setNoti({
+              title: `New Notification - PetMall`,
+              message: notification.newNotification.notification.notification,
+              data: {
+                id: notification.newNotification.petId,
+                type: "pet-interaction",
+              },
+            });
+          }
+        }
+      })();
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [notification]);
+
+  React.useEffect(() => {
+    let mounted: boolean = true;
+    if (mounted && !!noti.title && !!navigator) {
+      (async () => {
+        sendNotification(noti.title, noti.message, noti.data, navigator);
+        setNoti({
+          message: "",
+          title: "",
+          data: { id: "", type: "pet-interaction" },
+        });
+      })();
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [noti, navigator]);
   React.useEffect(() => {
     let mounted: boolean = true;
     if (mounted) {
